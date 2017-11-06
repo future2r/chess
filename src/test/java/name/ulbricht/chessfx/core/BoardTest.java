@@ -11,10 +11,10 @@ import static org.junit.Assert.assertNull;
 public class BoardTest {
 
     @Test
-    public void testFields() {
+    public void testSquares() {
         Board board = new Board();
 
-        Coordinate.values().forEach(c -> assertEquals("field coordinate does not match " + c, c, board.getField(c).getCoordinate()));
+        Coordinate.values().forEach(c -> assertEquals("square coordinate does not match " + c, c, board.getSquare(c).getCoordinate()));
     }
 
     @Test

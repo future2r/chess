@@ -1,4 +1,4 @@
-package name.ulbricht.chessfx.core;
+package name.ulbricht.chessfx.gui;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -7,7 +7,7 @@ final class Messages {
 
     static String getString(String key) {
         try {
-            return ResourceBundle.getBundle("name/ulbricht/chessfx/core/messages").getString(key);
+            return ResourceBundle.getBundle("name/ulbricht/chessfx/gui/messages").getString(key);
         } catch (MissingResourceException ex) {
             return "!" + key + "!";
         }

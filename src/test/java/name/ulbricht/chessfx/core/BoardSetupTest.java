@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,6 +77,6 @@ public final class BoardSetupTest {
 
     @Test
     public void testSetup() {
-        assertEquals("Unexpected figure", figure, board.getField(this.coordinate).getFigure());
+        assertEquals("Unexpected figure", figure, board.getSquare(this.coordinate).getFigure());
     }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+
+
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="name.ulbricht.chessfx.gui.MainController">
+   <center>
+      <Pane fx:id="boardPane" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

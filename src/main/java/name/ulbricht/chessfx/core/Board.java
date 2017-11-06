@@ -4,17 +4,30 @@ import java.util.Objects;
 
 public final class Board {
 
-    public static final class Field {
+    public static final class Square {
+
+        public enum Color {
+            LIGHT, DARK;
+        }
 
         private final Coordinate coordinate;
         private Figure figure;
 
-        public Field(Coordinate coordinate) {
-            this.coordinate = Objects.requireNonNull(coordinate, "coordinate cannot ne null");
+        public Square(Coordinate coordinate) {
+            this.coordinate = Objects.requireNonNull(coordinate, "coordinate cannot be null");
         }
 
         public Coordinate getCoordinate() {
             return this.coordinate;
+        }
+
+        public Color getColor() {
+            if (this.coordinate.getRowIndex() % 2 == 0){
+                if (this.coordinate.getColumnIndex() % 2 == 0) return Color.LIGHT;
+                else return Color.DARK;
+            }
+            if (this.coordinate.getColumnIndex() % 2 == 0) return Color.DARK;
+            else return Color.LIGHT;
         }
 
         public void setFigure(Figure figure) {
@@ -25,21 +38,25 @@ public final class Board {
             return this.figure;
         }
 
+        public boolean isEmpty() {
+            return this.figure == null;
+        }
+
         @Override
         public String toString() {
             return String.format("%s: %s", this.coordinate, this.figure != null ? this.figure : "");
         }
     }
 
-    private final Field[] fields;
+    private final Square[] squares;
 
     public Board() {
-        // create all required fields
-        this.fields = Coordinate.values().map(Field::new).toArray(l -> new Field[l]);
+        // create all required squares
+        this.squares = Coordinate.values().map(Square::new).toArray(l -> new Square[l]);
     }
 
-    public Field getField(Coordinate coordinate) {
-        return fields[coordinate.getIndex()];
+    public Square getSquare(Coordinate coordinate) {
+        return squares[coordinate.getIndex()];
     }
 
     public void setup() {
@@ -69,12 +86,13 @@ public final class Board {
         }
     }
 
+
     public void setFigure(Coordinate coordinate, Figure figure) {
-        this.fields[coordinate.getIndex()].setFigure(figure);
+        getSquare(coordinate).setFigure(figure);
     }
 
-    public Figure getFigure(Coordinate coordinate){
-        return this.fields[coordinate.getIndex()].getFigure();
+    public Figure getFigure(Coordinate coordinate) {
+        return getSquare(coordinate).getFigure();
     }
 
 }
