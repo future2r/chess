@@ -9,18 +9,18 @@ import java.util.stream.Collectors;
 
 final class BoardCanvas extends Canvas {
 
-    private static class Dimensions {
+    private static final class Dimensions {
 
         final double xOffset;
         final double yOffset;
-        final double keySize;
+        final double borderSize;
         final double squareSize;
 
         Dimensions(double width, double height, BoardDesign design) {
             double prefSquareSize = design.getPrefSquareSize();
-            double prefKeySize = design.getPrefKeySize();
-            double prefBoardWidth = 2 * prefKeySize + Coordinate.COLUMNS * prefSquareSize;
-            double prefBoardHeight = 2 * prefKeySize + Coordinate.ROWS * prefSquareSize;
+            double prefBorderSize = design.getPrefBorderSize();
+            double prefBoardWidth = 2 * prefBorderSize + Coordinate.COLUMNS * prefSquareSize;
+            double prefBoardHeight = 2 * prefBorderSize + Coordinate.ROWS * prefSquareSize;
 
             double widthScale = width / prefBoardWidth;
             double heightScale = height / prefBoardHeight;
@@ -29,7 +29,7 @@ final class BoardCanvas extends Canvas {
             this.xOffset = (width - (scale * prefBoardWidth)) / 2;
             this.yOffset = (height - (scale * prefBoardHeight)) / 2;
 
-            this.keySize = scale * prefKeySize;
+            this.borderSize = scale * prefBorderSize;
             this.squareSize = scale * prefSquareSize;
         }
 
@@ -53,20 +53,84 @@ final class BoardCanvas extends Canvas {
     }
 
     private void draw() {
+        // calculate the dimensions
         double width = getWidth();
         double height = getHeight();
-
         Dimensions dim = new Dimensions(width, height, this.design);
 
+        // clear the drawing
         GraphicsContext gc = getGraphicsContext2D();
         gc.clearRect(0, 0, width, height);
 
+        // draw the canvas background
         this.design.drawBackground(gc, width, height);
 
+        // draw vertical borders
+        double xLeftBorder = dim.xOffset;
+        double xRightBorder = dim.xOffset + dim.borderSize + (Coordinate.COLUMNS * dim.squareSize);
+        for (int rowIndex = 0; rowIndex < Coordinate.ROWS; rowIndex++) {
+            double yBorder = dim.yOffset + dim.borderSize + (rowIndex * dim.squareSize);
+
+            // left border
+            gc.save();
+            gc.translate(xLeftBorder, yBorder);
+            this.design.drawBorder(gc, dim.borderSize, dim.squareSize, BoardDesign.Border.LEFT, rowIndex);
+            gc.restore();
+
+            // right border
+            gc.save();
+            gc.translate(xRightBorder, yBorder);
+            this.design.drawBorder(gc, dim.borderSize, dim.squareSize, BoardDesign.Border.RIGHT, rowIndex);
+            gc.restore();
+        }
+
+        // draw the horizontal borders
+        double yTopBorder = dim.yOffset;
+        double yBottomBorder = dim.yOffset + dim.borderSize + (Coordinate.ROWS * dim.squareSize);
+        for (int columnIndex = 0; columnIndex < Coordinate.COLUMNS; columnIndex++) {
+            double xBorder = dim.xOffset + dim.borderSize + (columnIndex * dim.squareSize);
+            // top border
+            gc.save();
+            gc.translate(xBorder, yTopBorder);
+            this.design.drawBorder(gc, dim.squareSize, dim.borderSize, BoardDesign.Border.TOP, columnIndex);
+            gc.restore();
+
+            // bottom border
+            gc.save();
+            gc.translate(xBorder, yBottomBorder);
+            this.design.drawBorder(gc, dim.squareSize, dim.borderSize, BoardDesign.Border.BOTTOM, columnIndex);
+            gc.restore();
+        }
+
+        // draw top-left corner
+        gc.save();
+        gc.translate(xLeftBorder, yTopBorder);
+        this.design.drawCorner(gc, dim.borderSize, BoardDesign.Corner.TOP_LEFT);
+        gc.restore();
+
+        // draw top-right corner
+        gc.save();
+        gc.translate(xRightBorder, yTopBorder);
+        this.design.drawCorner(gc, dim.borderSize, BoardDesign.Corner.TOP_LEFT);
+        gc.restore();
+
+        // draw bottom-left corner
+        gc.save();
+        gc.translate(xLeftBorder, yBottomBorder);
+        this.design.drawCorner(gc, dim.borderSize, BoardDesign.Corner.TOP_LEFT);
+        gc.restore();
+
+        // draw bottom-right corner
+        gc.save();
+        gc.translate(xRightBorder, yBottomBorder);
+        this.design.drawCorner(gc, dim.borderSize, BoardDesign.Corner.TOP_LEFT);
+        gc.restore();
+
+        // draw the squares
         for (Coordinate coordinate : Coordinate.values().collect(Collectors.toList())) {
 
-            double squareXOffset = dim.keySize + dim.xOffset + (coordinate.getColumnIndex() * dim.squareSize);
-            double squareYOffset = dim.keySize + (dim.yOffset + ((Coordinate.ROWS - 1) * dim.squareSize))
+            double squareXOffset = dim.borderSize + dim.xOffset + (coordinate.getColumnIndex() * dim.squareSize);
+            double squareYOffset = dim.borderSize + (dim.yOffset + ((Coordinate.ROWS - 1) * dim.squareSize))
                     - (coordinate.getRowIndex() * dim.squareSize);
 
             gc.save();

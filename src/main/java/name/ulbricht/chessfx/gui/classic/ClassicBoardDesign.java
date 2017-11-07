@@ -31,7 +31,7 @@ public final class ClassicBoardDesign implements BoardDesign {
     }
 
     @Override
-    public double getPrefKeySize() {
+    public double getPrefBorderSize() {
         return 30;
     }
 
@@ -58,6 +58,18 @@ public final class ClassicBoardDesign implements BoardDesign {
 
             gc.drawImage(image, (size - scaledImageWidth) / 2, (size - scaledImageHeight) / 2, scaledImageWidth, scaledImageHeight);
         }
+    }
+
+    @Override
+    public void drawBorder(GraphicsContext gc, double width, double height, Border border, int index) {
+        gc.setFill(Color.RED);
+        gc.fillRect(0, 0, width, height);
+    }
+
+    @Override
+    public void drawCorner(GraphicsContext gc, double size, Corner corner) {
+        gc.setFill(Color.BLUE);
+        gc.fillRect(0, 0, size, size);
     }
 
     private Image loadSquareImage(Coordinate.Color color) {

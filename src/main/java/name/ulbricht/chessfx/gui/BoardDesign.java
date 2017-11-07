@@ -5,12 +5,24 @@ import name.ulbricht.chessfx.core.Board;
 
 public interface BoardDesign {
 
+    enum Border {
+        LEFT, RIGHT, TOP, BOTTOM
+    }
+
+    enum Corner {
+        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+    }
+
     double getPrefSquareSize();
 
-    double getPrefKeySize();
+    double getPrefBorderSize();
 
     void drawBackground(GraphicsContext gc, double width, double height);
 
     void drawSquare(GraphicsContext gc, double size, Board.Square square);
+
+    void drawBorder(GraphicsContext gc, double width, double height, Border border, int index);
+
+    void drawCorner(GraphicsContext gc, double size, Corner corner);
 
 }
