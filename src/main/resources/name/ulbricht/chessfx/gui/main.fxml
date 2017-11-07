@@ -34,12 +34,12 @@
     <bottom>
         <HBox BorderPane.alignment="CENTER">
             <children>
-                <Label text="%squareStatusLabel.text">
+                <Label text="%selectedSquareLabel.text">
                     <padding>
                         <Insets left="2.0" right="2.0"/>
                     </padding>
                 </Label>
-                <Label fx:id="squareStatusLabel">
+                <Label fx:id="selectedSquareLabel">
                     <padding>
                         <Insets left="2.0" right="2.0"/>
                     </padding>

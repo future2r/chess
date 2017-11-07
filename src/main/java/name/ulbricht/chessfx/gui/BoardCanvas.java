@@ -1,13 +1,13 @@
 package name.ulbricht.chessfx.gui;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.core.Coordinate;
-import name.ulbricht.chessfx.gui.design.BoardDesign;
 import name.ulbricht.chessfx.gui.design.BoardRenderer;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 final class BoardCanvas extends Canvas {
@@ -38,6 +38,7 @@ final class BoardCanvas extends Canvas {
     }
 
     private final Board board;
+    private final ObjectProperty<Coordinate> selectedSquareProperty = new SimpleObjectProperty<>();
     private BoardRenderer renderer;
 
     BoardCanvas(Board board) {
@@ -47,9 +48,17 @@ final class BoardCanvas extends Canvas {
         heightProperty().addListener(e -> draw());
     }
 
-    @Override
-    public boolean isResizable() {
-        return true;
+    ObjectProperty<Coordinate> getSelectedSquareProperty(){
+        return this.selectedSquareProperty;
+    }
+
+    Coordinate getSelectedSquare() {
+        return this.selectedSquareProperty.get();
+    }
+
+    void setSelectedSquare(Coordinate selectedSquare) {
+        this.selectedSquareProperty.set(selectedSquare);
+        draw();
     }
 
     void setRenderer(BoardRenderer renderer) {
@@ -57,15 +66,15 @@ final class BoardCanvas extends Canvas {
         draw();
     }
 
-    Optional<Coordinate> getCoordinateAt(double x, double y) {
+    Coordinate getCoordinateAt(double x, double y) {
         if (this.renderer != null) {
             Dimensions dim = new Dimensions(getWidth(), getHeight(), this.renderer);
             int columnIndex = (int) Math.floor((x - dim.xOffset - dim.borderSize) / dim.squareSize);
             int rowIndex = (int) Math.floor(Coordinate.ROWS - (y - dim.yOffset - dim.borderSize) / dim.squareSize);
             if (columnIndex >= 0 && columnIndex < Coordinate.COLUMNS && rowIndex >= 0 && rowIndex < Coordinate.ROWS)
-                return Optional.of(Coordinate.valueOf(columnIndex, rowIndex));
+                return Coordinate.valueOf(columnIndex, rowIndex);
         }
-        return Optional.empty();
+        return null;
     }
 
     private void draw() {
