@@ -13,7 +13,7 @@ import java.util.Map;
 
 final class ClassicBoardRenderer extends AbstractBoardRenderer {
 
-    static final String ID = "simple";
+    static final String ID = "classic";
 
     private final Map<Coordinate.Color, Image> squareImages = new HashMap<>();
     private final Map<Player, Map<Figure.Type, Image>> figureImages = new HashMap<>();
