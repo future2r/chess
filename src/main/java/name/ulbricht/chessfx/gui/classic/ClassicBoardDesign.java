@@ -18,11 +18,8 @@ public final class ClassicBoardDesign implements BoardDesign {
     private final Map<Player, Map<Figure.Type, Image>> figureImages = new HashMap<>();
 
     public ClassicBoardDesign() {
-        for (Coordinate.Color color : Coordinate.Color.values())
-            this.squareImages.put(color, loadSquareImage(color));
-
         for (Player player : Player.values())
-            this.figureImages.put(player, loadFigureImages(player));
+            this.figureImages.put(player, new HashMap<>());
     }
 
     @Override
@@ -43,12 +40,12 @@ public final class ClassicBoardDesign implements BoardDesign {
 
     @Override
     public void drawSquare(GraphicsContext gc, double size, Board.Square square) {
-        Image squareImage = this.squareImages.get(square.getCoordinate().getColor());
+        Image squareImage = this.squareImages.computeIfAbsent(square.getCoordinate().getColor(), this::loadSquareImage);
         gc.drawImage(squareImage, 0, 0, size, size);
 
         if (!square.isEmpty()) {
             Figure figure = square.getFigure();
-            Image image = this.figureImages.get(figure.getPlayer()).get(figure.getType());
+            Image image = this.figureImages.get(figure.getPlayer()).computeIfAbsent(figure.getType(), t -> loadFigureImage(t, figure.getPlayer()));
 
             double imageWidth = image.getWidth();
             double imageHeight = image.getHeight();
@@ -77,13 +74,8 @@ public final class ClassicBoardDesign implements BoardDesign {
         return new Image(this.getClass().getResource(resourceName).toString());
     }
 
-    private Map<Figure.Type, Image> loadFigureImages(Player player) {
-        Map<Figure.Type, Image> images = new HashMap<>();
-        for (Figure.Type type : Figure.Type.values()) {
-            String resourceName = player.name().toLowerCase() + "-" + type.name().toLowerCase() + ".png";
-            Image image = new Image(this.getClass().getResource(resourceName).toString());
-            images.put(type, image);
-        }
-        return images;
+    private Image loadFigureImage(Figure.Type type, Player player) {
+        String resourceName = player.name().toLowerCase() + "-" + type.name().toLowerCase() + ".png";
+        return new Image(this.getClass().getResource(resourceName).toString());
     }
 }
