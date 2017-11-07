@@ -6,10 +6,6 @@ public final class Board {
 
     public static final class Square {
 
-        public enum Color {
-            LIGHT, DARK;
-        }
-
         private final Coordinate coordinate;
         private Figure figure;
 
@@ -19,15 +15,6 @@ public final class Board {
 
         public Coordinate getCoordinate() {
             return this.coordinate;
-        }
-
-        public Color getColor() {
-            if (this.coordinate.getRowIndex() % 2 == 0){
-                if (this.coordinate.getColumnIndex() % 2 == 0) return Color.LIGHT;
-                else return Color.DARK;
-            }
-            if (this.coordinate.getColumnIndex() % 2 == 0) return Color.DARK;
-            else return Color.LIGHT;
         }
 
         public void setFigure(Figure figure) {

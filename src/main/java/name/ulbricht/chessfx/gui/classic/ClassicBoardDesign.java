@@ -4,6 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import name.ulbricht.chessfx.core.Board;
+import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.core.Figure;
 import name.ulbricht.chessfx.core.Player;
 import name.ulbricht.chessfx.gui.BoardDesign;
@@ -13,11 +14,11 @@ import java.util.Map;
 
 public final class ClassicBoardDesign implements BoardDesign {
 
-    private final Map<Board.Square.Color, Image> squareImages = new HashMap<>();
+    private final Map<Coordinate.Color, Image> squareImages = new HashMap<>();
     private final Map<Player, Map<Figure.Type, Image>> figureImages = new HashMap<>();
 
     public ClassicBoardDesign() {
-        for (Board.Square.Color color : Board.Square.Color.values())
+        for (Coordinate.Color color : Coordinate.Color.values())
             this.squareImages.put(color, loadSquareImage(color));
 
         for (Player player : Player.values())
@@ -42,7 +43,7 @@ public final class ClassicBoardDesign implements BoardDesign {
 
     @Override
     public void drawSquare(GraphicsContext gc, double size, Board.Square square) {
-        Image squareImage = this.squareImages.get(square.getColor());
+        Image squareImage = this.squareImages.get(square.getCoordinate().getColor());
         gc.drawImage(squareImage, 0, 0, size, size);
 
         if (!square.isEmpty()) {
@@ -59,7 +60,7 @@ public final class ClassicBoardDesign implements BoardDesign {
         }
     }
 
-    private Image loadSquareImage(Board.Square.Color color) {
+    private Image loadSquareImage(Coordinate.Color color) {
         String resourceName = "square-" + color.name().toLowerCase() + ".png";
         return new Image(this.getClass().getResource(resourceName).toString());
     }

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MainController implements Initializable{
+public final class MainController implements Initializable{
 
     public static void loadAndShow(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(MainController.class.getResource("main.fxml"));

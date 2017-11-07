@@ -11,6 +11,10 @@ public final class Coordinate {
     public static final int COLUMNS = 8;
     public static final int ROWS = 8;
 
+    public enum Color {
+        LIGHT, DARK;
+    }
+
     private static final Coordinate[] cachedCoordinates;
 
     static {
@@ -43,6 +47,15 @@ public final class Coordinate {
 
     public String getRowName() {
         return toRowName(getRowIndex());
+    }
+
+    public Color getColor() {
+        if (getRowIndex() % 2 == 0){
+            if (getColumnIndex() % 2 == 0) return Color.LIGHT;
+            else return Color.DARK;
+        }
+        if (getColumnIndex() % 2 == 0) return Color.DARK;
+        else return Color.LIGHT;
     }
 
     @Override
