@@ -7,6 +7,7 @@ import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.gui.design.BoardDesign;
 import name.ulbricht.chessfx.gui.design.BoardRenderer;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 final class BoardCanvas extends Canvas {
@@ -54,6 +55,17 @@ final class BoardCanvas extends Canvas {
     void setRenderer(BoardRenderer renderer) {
         this.renderer = renderer;
         draw();
+    }
+
+    Optional<Coordinate> getCoordinateAt(double x, double y) {
+        if (this.renderer != null) {
+            Dimensions dim = new Dimensions(getWidth(), getHeight(), this.renderer);
+            int columnIndex = (int) Math.floor((x - dim.xOffset - dim.borderSize) / dim.squareSize);
+            int rowIndex = (int) Math.floor(Coordinate.ROWS - (y - dim.yOffset - dim.borderSize) / dim.squareSize);
+            if (columnIndex >= 0 && columnIndex < Coordinate.COLUMNS && rowIndex >= 0 && rowIndex < Coordinate.ROWS)
+                return Optional.of(Coordinate.valueOf(columnIndex, rowIndex));
+        }
+        return Optional.empty();
     }
 
     private void draw() {

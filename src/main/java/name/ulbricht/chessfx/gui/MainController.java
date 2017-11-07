@@ -7,11 +7,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import name.ulbricht.chessfx.core.Board;
+import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.gui.design.BoardDesign;
 
 import java.io.IOException;
@@ -36,10 +38,11 @@ public final class MainController implements Initializable {
     private Menu designMenu;
     @FXML
     private Pane boardPane;
-
-    private BoardCanvas boardCanvas;
+    @FXML
+    private Label squareStatusLabel;
 
     private Board board;
+    private BoardCanvas boardCanvas;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -50,9 +53,11 @@ public final class MainController implements Initializable {
         this.boardPane.getChildren().addAll(this.boardCanvas);
         this.boardCanvas.widthProperty().bind(this.boardPane.widthProperty());
         this.boardCanvas.heightProperty().bind(this.boardPane.heightProperty());
+        this.boardCanvas.setOnMouseMoved(this::mouseMovedOnBoard);
 
         createDesignMenuItems();
     }
+
 
     private void createDesignMenuItems() {
         RadioMenuItem firstMenuItem = null;
@@ -76,6 +81,20 @@ public final class MainController implements Initializable {
         this.boardCanvas.setRenderer(design.createRenderer());
     }
 
+    private void mouseMovedOnBoard(MouseEvent e) {
+        this.boardCanvas.getCoordinateAt(e.getX(), e.getY()).ifPresentOrElse(this::updateSquareStatus, this::clearSquareStatus);
+    }
+
+    private void updateSquareStatus(Coordinate coordinate) {
+        Board.Square square = this.board.getSquare(coordinate);
+        if (square.isEmpty()) this.squareStatusLabel.setText(square.getCoordinate().toString());
+        else this.squareStatusLabel.setText(square.getCoordinate() + " " + square.getFigure());
+    }
+
+    private void clearSquareStatus() {
+        this.squareStatusLabel.setText(null);
+    }
+
     @FXML
     private void exitApplication() {
         Stage stage = (Stage) getWindow();
@@ -92,7 +111,7 @@ public final class MainController implements Initializable {
         alert.showAndWait();
     }
 
-    private Window getWindow(){
+    private Window getWindow() {
         return this.root.getScene().getWindow();
     }
 }

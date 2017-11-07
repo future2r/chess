@@ -50,7 +50,7 @@ public final class Coordinate {
     }
 
     public Color getColor() {
-        if (getRowIndex() % 2 == 0){
+        if (getRowIndex() % 2 == 0) {
             if (getColumnIndex() % 2 == 0) return Color.LIGHT;
             else return Color.DARK;
         }
@@ -104,7 +104,7 @@ public final class Coordinate {
         throw new IllegalStateException("Cannot move up from " + toString());
     }
 
-    public boolean isBottomRow(){
+    public boolean isBottomRow() {
         return getRowIndex() == 0;
     }
 
@@ -123,6 +123,10 @@ public final class Coordinate {
 
     public static Coordinate valueOf(int index) {
         return cachedCoordinates[checkIndex(index)];
+    }
+
+    public static Coordinate valueOf(int columnIndex, int rowIndex) {
+        return valueOf(checkRowIndex(rowIndex) * COLUMNS + checkColumnIndex(columnIndex));
     }
 
     public static Coordinate valueOf(String name) {
