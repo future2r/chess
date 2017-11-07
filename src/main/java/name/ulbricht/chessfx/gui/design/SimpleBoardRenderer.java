@@ -11,7 +11,9 @@ import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.core.Figure;
 import name.ulbricht.chessfx.core.Player;
 
-public class SimpleBoardDesign extends AbstractBoardDesign {
+final class SimpleBoardRenderer extends AbstractBoardRenderer {
+
+    static final String ID = "simple";
 
     @Override
     public void drawBackground(GraphicsContext gc, double width, double height) {
@@ -56,20 +58,8 @@ public class SimpleBoardDesign extends AbstractBoardDesign {
             gc.setFill(figureForegroundColor);
             gc.setTextAlign(TextAlignment.CENTER);
             gc.setTextBaseline(VPos.CENTER);
-            gc.setFont(Font.font("SansSerif", FontWeight.BOLD, size / 3));
-            gc.fillText(figure.getType().getShortName(), size / 2, size / 2, size);
+            gc.setFont(Font.font("SansSerif", FontWeight.BOLD, size * 0.3));
+            gc.fillText(figure.getType().getShortName(), size / 2, size / 2);
         }
-    }
-
-    @Override
-    public void drawBorder(GraphicsContext gc, double width, double height, Border border, int index) {
-        gc.setFill(Color.GRAY);
-        gc.fillRect(0, 0, width, height);
-    }
-
-    @Override
-    public void drawCorner(GraphicsContext gc, double size, Corner corner) {
-        gc.setFill(Color.GRAY);
-        gc.fillRect(0, 0, size, size);
     }
 }

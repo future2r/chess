@@ -1,13 +1,11 @@
 package name.ulbricht.chessfx.gui;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Menu;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ToggleGroup;
@@ -16,8 +14,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.gui.design.BoardDesign;
-import name.ulbricht.chessfx.gui.design.ClassicBoardDesign;
-import name.ulbricht.chessfx.gui.design.SimpleBoardDesign;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,7 +24,7 @@ public final class MainController implements Initializable {
     public static void loadAndShow(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(MainController.class.getResource("main.fxml"), ResourceBundle.getBundle(Messages.BUNDLE_NAME));
 
-        Scene scene = new Scene(root, 600, 400);
+        Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
         stage.setTitle(Messages.getString("main.title"));
         stage.getIcons().addAll(GUIUtils.loadImages("main.icons"));
@@ -60,11 +56,9 @@ public final class MainController implements Initializable {
     }
 
     private void createDesignMenuItems() {
-        BoardDesign[] designs = new BoardDesign[]{new ClassicBoardDesign(), new SimpleBoardDesign()};
-
         RadioMenuItem firstMenuItem = null;
         ToggleGroup toggleGroup = new ToggleGroup();
-        for (BoardDesign design : designs) {
+        for (BoardDesign design : BoardDesign.getDesigns()) {
             RadioMenuItem menuItem = new RadioMenuItem(design.getDisplayName());
             menuItem.setUserData(design);
             menuItem.setToggleGroup(toggleGroup);
@@ -80,6 +74,6 @@ public final class MainController implements Initializable {
     private void changeDesign(ActionEvent e) {
         RadioMenuItem menuItem = (RadioMenuItem) e.getSource();
         BoardDesign design = (BoardDesign) menuItem.getUserData();
-        this.boardCanvas.setDesign(design);
+        this.boardCanvas.setRenderer(design.createRenderer());
     }
 }

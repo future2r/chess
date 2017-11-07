@@ -11,19 +11,21 @@ import name.ulbricht.chessfx.core.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class ClassicBoardDesign extends AbstractBoardDesign {
+final class ClassicBoardRenderer extends AbstractBoardRenderer {
+
+    static final String ID = "simple";
 
     private final Map<Coordinate.Color, Image> squareImages = new HashMap<>();
     private final Map<Player, Map<Figure.Type, Image>> figureImages = new HashMap<>();
 
-    public ClassicBoardDesign() {
+    public ClassicBoardRenderer() {
         for (Player player : Player.values())
             this.figureImages.put(player, new HashMap<>());
     }
 
     @Override
     public void drawBackground(GraphicsContext gc, double width, double height) {
-        gc.setFill(Color.GRAY);
+        gc.setFill(Color.DARKGRAY);
         gc.fillRect(0, 0, width, height);
     }
 
@@ -46,25 +48,13 @@ public final class ClassicBoardDesign extends AbstractBoardDesign {
         }
     }
 
-    @Override
-    public void drawBorder(GraphicsContext gc, double width, double height, Border border, int index) {
-        gc.setFill(Color.RED);
-        gc.fillRect(0, 0, width, height);
-    }
-
-    @Override
-    public void drawCorner(GraphicsContext gc, double size, Corner corner) {
-        gc.setFill(Color.BLUE);
-        gc.fillRect(0, 0, size, size);
-    }
-
     private Image loadSquareImage(Coordinate.Color color) {
-        String resourceName = "square-" + color.name().toLowerCase() + ".png";
+        String resourceName = "classic-square-" + color.name().toLowerCase() + ".png";
         return new Image(this.getClass().getResource(resourceName).toString());
     }
 
     private Image loadFigureImage(Figure.Type type, Player player) {
-        String resourceName = player.name().toLowerCase() + "-" + type.name().toLowerCase() + ".png";
+        String resourceName = "classic-" + player.name().toLowerCase() + "-" + type.name().toLowerCase() + ".png";
         return new Image(this.getClass().getResource(resourceName).toString());
     }
 }

@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.gui.design.BoardDesign;
+import name.ulbricht.chessfx.gui.design.BoardRenderer;
 
 import java.util.stream.Collectors;
 
@@ -17,9 +18,9 @@ final class BoardCanvas extends Canvas {
         final double borderSize;
         final double squareSize;
 
-        Dimensions(double width, double height, BoardDesign design) {
-            double prefSquareSize = design.getPrefSquareSize();
-            double prefBorderSize = design.getPrefBorderSize();
+        Dimensions(double width, double height, BoardRenderer renderer) {
+            double prefSquareSize = renderer.getPrefSquareSize();
+            double prefBorderSize = renderer.getPrefBorderSize();
             double prefBoardWidth = 2 * prefBorderSize + Coordinate.COLUMNS * prefSquareSize;
             double prefBoardHeight = 2 * prefBorderSize + Coordinate.ROWS * prefSquareSize;
 
@@ -36,7 +37,7 @@ final class BoardCanvas extends Canvas {
     }
 
     private final Board board;
-    private BoardDesign design;
+    private BoardRenderer renderer;
 
     BoardCanvas(Board board) {
         this.board = board;
@@ -50,8 +51,8 @@ final class BoardCanvas extends Canvas {
         return true;
     }
 
-    void setDesign(BoardDesign design) {
-        this.design = design;
+    void setRenderer(BoardRenderer renderer) {
+        this.renderer = renderer;
         draw();
     }
 
@@ -63,30 +64,30 @@ final class BoardCanvas extends Canvas {
         GraphicsContext gc = getGraphicsContext2D();
         gc.clearRect(0, 0, width, height);
 
-        if (design == null) return;
+        if (renderer == null) return;
 
         // calculate the dimensions
-        Dimensions dim = new Dimensions(width, height, this.design);
+        Dimensions dim = new Dimensions(width, height, this.renderer);
 
         // draw the canvas background
-        this.design.drawBackground(gc, width, height);
+        this.renderer.drawBackground(gc, width, height);
 
         // draw vertical borders
         double xLeftBorder = dim.xOffset;
         double xRightBorder = dim.xOffset + dim.borderSize + (Coordinate.COLUMNS * dim.squareSize);
         for (int rowIndex = 0; rowIndex < Coordinate.ROWS; rowIndex++) {
-            double yBorder = dim.yOffset + dim.borderSize + (rowIndex * dim.squareSize);
+            double yBorder = dim.yOffset + dim.borderSize + ((Coordinate.ROWS - rowIndex - 1) * dim.squareSize);
 
             // left border
             gc.save();
             gc.translate(xLeftBorder, yBorder);
-            this.design.drawBorder(gc, dim.borderSize, dim.squareSize, BoardDesign.Border.LEFT, rowIndex);
+            this.renderer.drawBorder(gc, dim.borderSize, dim.squareSize, BoardRenderer.Border.LEFT, rowIndex);
             gc.restore();
 
             // right border
             gc.save();
             gc.translate(xRightBorder, yBorder);
-            this.design.drawBorder(gc, dim.borderSize, dim.squareSize, BoardDesign.Border.RIGHT, rowIndex);
+            this.renderer.drawBorder(gc, dim.borderSize, dim.squareSize, BoardRenderer.Border.RIGHT, rowIndex);
             gc.restore();
         }
 
@@ -98,38 +99,38 @@ final class BoardCanvas extends Canvas {
             // top border
             gc.save();
             gc.translate(xBorder, yTopBorder);
-            this.design.drawBorder(gc, dim.squareSize, dim.borderSize, BoardDesign.Border.TOP, columnIndex);
+            this.renderer.drawBorder(gc, dim.squareSize, dim.borderSize, BoardRenderer.Border.TOP, columnIndex);
             gc.restore();
 
             // bottom border
             gc.save();
             gc.translate(xBorder, yBottomBorder);
-            this.design.drawBorder(gc, dim.squareSize, dim.borderSize, BoardDesign.Border.BOTTOM, columnIndex);
+            this.renderer.drawBorder(gc, dim.squareSize, dim.borderSize, BoardRenderer.Border.BOTTOM, columnIndex);
             gc.restore();
         }
 
         // draw top-left corner
         gc.save();
         gc.translate(xLeftBorder, yTopBorder);
-        this.design.drawCorner(gc, dim.borderSize, BoardDesign.Corner.TOP_LEFT);
+        this.renderer.drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
         gc.restore();
 
         // draw top-right corner
         gc.save();
         gc.translate(xRightBorder, yTopBorder);
-        this.design.drawCorner(gc, dim.borderSize, BoardDesign.Corner.TOP_LEFT);
+        this.renderer.drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
         gc.restore();
 
         // draw bottom-left corner
         gc.save();
         gc.translate(xLeftBorder, yBottomBorder);
-        this.design.drawCorner(gc, dim.borderSize, BoardDesign.Corner.TOP_LEFT);
+        this.renderer.drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
         gc.restore();
 
         // draw bottom-right corner
         gc.save();
         gc.translate(xRightBorder, yBottomBorder);
-        this.design.drawCorner(gc, dim.borderSize, BoardDesign.Corner.TOP_LEFT);
+        this.renderer.drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
         gc.restore();
 
         // draw the squares
@@ -141,7 +142,7 @@ final class BoardCanvas extends Canvas {
 
             gc.save();
             gc.translate(squareXOffset, squareYOffset);
-            this.design.drawSquare(gc, dim.squareSize, board.getSquare(coordinate));
+            this.renderer.drawSquare(gc, dim.squareSize, board.getSquare(coordinate));
             gc.restore();
         }
     }

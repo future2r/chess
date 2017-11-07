@@ -1,30 +1,37 @@
 package name.ulbricht.chessfx.gui.design;
 
-import javafx.scene.canvas.GraphicsContext;
-import name.ulbricht.chessfx.core.Board;
+import java.util.*;
 
-public interface BoardDesign {
+public final class BoardDesign {
 
-    enum Border {
-        LEFT, RIGHT, TOP, BOTTOM
+    private static List<BoardDesign> designs = new ArrayList<>();
+
+    static {
+        designs.add(new BoardDesign(ClassicBoardRenderer.ID, ClassicBoardRenderer.class));
+        designs.add(new BoardDesign(SimpleBoardRenderer.ID, SimpleBoardRenderer.class));
     }
 
-    enum Corner {
-        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+    public static List<BoardDesign> getDesigns(){
+        return Collections.unmodifiableList(designs);
     }
 
-    String getDisplayName();
+    private final String id;
+    private final Class<? extends BoardRenderer> rendererClass;
 
-    double getPrefSquareSize();
+    private BoardDesign(String id, Class<? extends BoardRenderer> rendererClass) {
+        this.id = Objects.requireNonNull(id, "id cannot be null");
+        this.rendererClass = Objects.requireNonNull(rendererClass, "rendererClass cannot be null");
+    }
 
-    double getPrefBorderSize();
+    public String getDisplayName() {
+        return Messages.getString("BoardDesign." + this.id + ".displayName");
+    }
 
-    void drawBackground(GraphicsContext gc, double width, double height);
-
-    void drawSquare(GraphicsContext gc, double size, Board.Square square);
-
-    void drawBorder(GraphicsContext gc, double width, double height, Border border, int index);
-
-    void drawCorner(GraphicsContext gc, double size, Corner corner);
-
+    public BoardRenderer createRenderer() {
+        try {
+            return this.rendererClass.newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new InternalError(e);
+        }
+    }
 }

@@ -2,34 +2,30 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a2c2f208-ce19-4c28-a2c3-731210466884" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/AbstractBoardDesign.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/Messages.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/SimpleBoardDesign.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages_de.properties" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/BoardDesign.java" afterPath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/BoardDesign.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/classic/ClassicBoardDesign.java" afterPath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/ClassicBoardDesign.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/black-bishop.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/black-bishop.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/black-king.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/black-king.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/black-knight.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/black-knight.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/black-pawn.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/black-pawn.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/black-queen.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/black-queen.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/black-rook.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/black-rook.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/square-dark.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/square-dark.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/square-light.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/square-light.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/white-bishop.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/white-bishop.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/white-king.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/white-king.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/white-knight.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/white-knight.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/white-pawn.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/white-pawn.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/white-queen.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/white-queen.png" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/classic/white-rook.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/white-rook.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/BoardRenderer.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/AbstractBoardDesign.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/black-knight.png" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/ClassicBoardDesign.java" afterPath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/ClassicBoardRenderer.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/SimpleBoardDesign.java" afterPath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/SimpleBoardRenderer.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/black-bishop.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/classic-black-bishop.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/black-king.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/classic-black-king.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/black-pawn.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/classic-black-pawn.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/black-queen.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/classic-black-queen.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/black-rook.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/classic-black-rook.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/square-dark.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/classic-square-dark.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/square-light.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/classic-square-light.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/white-bishop.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/classic-white-bishop.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/white-king.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/classic-white-king.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/white-knight.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/classic-white-knight.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/white-pawn.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/classic-white-pawn.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/white-queen.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/classic-white-queen.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/white-rook.png" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/classic-white-rook.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/BoardCanvas.java" afterPath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/BoardCanvas.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/MainController.java" afterPath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/MainController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/Messages.java" afterPath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/Messages.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/main.fxml" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/main.fxml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/messages.properties" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/messages.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/messages_de.properties" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/messages_de.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/BoardDesign.java" afterPath="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/BoardDesign.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages.properties" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages_de.properties" afterPath="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages_de.properties" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -43,37 +39,37 @@
   <component name="ChangesViewManager" show_ignored="true" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.fxml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/main.fxml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="13" lean-forward="true" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-          <provider editor-type-id="JavaFX-Scene-Builder">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MainController.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MainController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/MainController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="66" column="44" lean-forward="true" selection-start-line="66" selection-start-column="44" selection-end-line="66" selection-end-column="44" />
-              <folding />
+            <state relative-caret-position="742">
+              <caret line="76" column="60" lean-forward="false" selection-start-line="76" selection-start-column="60" selection-end-line="76" selection-end-column="60" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AbstractBoardDesign.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/AbstractBoardDesign.java">
+      <file leaf-file-name="ClassicBoardRenderer.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/ClassicBoardRenderer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="17" column="5" lean-forward="true" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
+            <state relative-caret-position="255">
+              <caret line="15" column="38" lean-forward="false" selection-start-line="15" selection-start-column="38" selection-end-line="15" selection-end-column="38" />
               <folding>
-                <element signature="e#153#154#0" expanded="true" />
-                <element signature="e#244#245#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AbstractBoardRenderer.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/AbstractBoardRenderer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="466">
+              <caret line="49" column="44" lean-forward="false" selection-start-line="49" selection-start-column="44" selection-end-line="49" selection-end-column="44" />
+              <folding>
+                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -82,11 +78,9 @@
       <file leaf-file-name="BoardCanvas.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/BoardCanvas.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="52" column="4" lean-forward="false" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="4" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="198">
+              <caret line="114" column="66" lean-forward="false" selection-start-line="114" selection-start-column="66" selection-end-line="114" selection-end-column="66" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -124,14 +118,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/core/Coord.java" />
-        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/core/Player.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/test/java/name/ulbricht/core/CoordinateParseTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/core/Board.java" />
-        <option value="$PROJECT_DIR$/src/test/resources/name/ulbricht/core/coordinates.txt" />
-        <option value="$PROJECT_DIR$/src/test/java/name/ulbricht/core/CoordinateTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/core/Coordinate.java" />
         <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/core/Field.java" />
         <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/core/Figure.java" />
         <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/core/Player.java" />
@@ -161,19 +147,28 @@
         <option value="$PROJECT_DIR$/src/test/java/name/ulbricht/chessfx/core/CoordinateIndexTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/BoardDesign.java" />
         <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/classic/ClassicBoardDesign.java" />
-        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/BoardDesign.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages.properties" />
-        <option value="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages_de.properties" />
-        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/ClassicBoardDesign.java" />
-        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/AbstractBoardDesign.java" />
-        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/SimpleBoardDesign.java" />
         <option value="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/messages.properties" />
         <option value="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/messages_de.properties" />
         <option value="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/main.fxml" />
         <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/Messages.java" />
         <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/Messages.java" />
+        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/AbstractBoardDesign.java" />
+        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/AbstractBoardDesignRenderer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/ClassicBoardDesign.java" />
+        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/SimpleBoardDesign.java" />
+        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/SimpleRenderer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/ClassicRenderer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/BoardDesignRenderer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/BoardRenderer.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages.properties" />
+        <option value="$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages_de.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/AbstractRenderer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/SimpleBoardRenderer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/ClassicBoardRenderer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/BoardDesign.java" />
         <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/BoardCanvas.java" />
         <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/MainController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/AbstractBoardRenderer.java" />
       </list>
     </option>
   </component>
@@ -195,7 +190,7 @@
       <select />
     </treeState>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1612" />
@@ -217,6 +212,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -311,15 +307,15 @@
               <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="chessfx" type="462c0819:PsiDirectoryNode" />
               <item name="gui" type="462c0819:PsiDirectoryNode" />
+              <item name="design" type="462c0819:PsiDirectoryNode" />
               <item name="Resource Bundle 'messages'" type="a6c14932:ResourceBundleNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="AndroidView" />
       <pane id="Scope" />
-      <pane id="PackagesPane" />
+      <pane id="AndroidView" />
       <pane id="Scratches" />
     </panes>
   </component>
@@ -328,14 +324,13 @@
     <property name="last_opened_file_path" value="$USER_HOME$/AppData/Local/SceneBuilder/SceneBuilder.exe" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Frank.Ulbricht\IdeaProjects\chessfx\src\main\resources\name\ulbricht\chessfx\core" />
+      <recent name="C:\Users\Frank.Ulbricht\IdeaProjects\chessfx\src\test\resources\name\ulbricht\chessfx" />
+    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="name.ulbricht.chessfx.gui.design" />
       <recent name="name.ulbricht.chessfx" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Frank.Ulbricht\IdeaProjects\chessfx\src\main\resources\name\ulbricht\chessfx\core" />
-      <recent name="C:\Users\Frank.Ulbricht\IdeaProjects\chessfx\src\test\java\name\ulbricht\core" />
-      <recent name="C:\Users\Frank.Ulbricht\IdeaProjects\chessfx\src\main\java\name\ulbricht\core" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="name.ulbricht.chessfx.gui.design" />
@@ -343,9 +338,10 @@
       <recent name="name.ulbricht.chessfx.gui" />
       <recent name="name.ulbricht.chessfx.core" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Frank.Ulbricht\IdeaProjects\chessfx\src\main\resources\name\ulbricht\chessfx\core" />
-      <recent name="C:\Users\Frank.Ulbricht\IdeaProjects\chessfx\src\test\resources\name\ulbricht\chessfx" />
+      <recent name="C:\Users\Frank.Ulbricht\IdeaProjects\chessfx\src\test\java\name\ulbricht\core" />
+      <recent name="C:\Users\Frank.Ulbricht\IdeaProjects\chessfx\src\main\java\name\ulbricht\core" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -624,7 +620,7 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -634,8 +630,8 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15364583" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29268292" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30010605" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29268292" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -643,8 +639,8 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -661,17 +657,27 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/MainController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1122">
+          <caret line="66" column="44" lean-forward="true" selection-start-line="66" selection-start-column="44" selection-end-line="66" selection-end-column="44" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/BoardDesign.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="391">
           <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="false" />
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/ClassicBoardDesign.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/ClassicBoardRenderer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1207">
           <caret line="71" column="36" lean-forward="false" selection-start-line="71" selection-start-column="36" selection-end-line="71" selection-end-column="36" />
@@ -686,30 +692,30 @@
         <state relative-caret-position="1054">
           <caret line="69" column="56" lean-forward="true" selection-start-line="69" selection-start-column="56" selection-end-line="69" selection-end-column="56" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/messages.properties">
+      <provider editor-type-id="ResourceBundle">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="21" lean-forward="false" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />
         </state>
       </provider>
-      <provider editor-type-id="ResourceBundle">
-        <state />
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/main.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
           <folding />
         </state>
-      </provider>
-      <provider editor-type-id="JavaFX-Scene-Builder">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
@@ -766,13 +772,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/core/messages_de.properties">
+      <provider editor-type-id="ResourceBundle">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
           <caret line="20" column="29" lean-forward="false" selection-start-line="20" selection-start-column="29" selection-end-line="20" selection-end-column="29" />
         </state>
-      </provider>
-      <provider editor-type-id="ResourceBundle">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/name/ulbricht/chessfx/core/PlayerTest.java">
@@ -820,17 +826,17 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="18" lean-forward="true" selection-start-line="1" selection-start-column="18" selection-end-line="1" selection-end-column="18" />
-        </state>
-      </provider>
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="68">
             <caret line="4" column="0" lean-forward="true" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
           </first_editor>
           <second_editor />
+        </state>
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="18" lean-forward="true" selection-start-line="1" selection-start-column="18" selection-end-line="1" selection-end-column="18" />
         </state>
       </provider>
     </entry>
@@ -842,13 +848,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/core/messages.properties">
+      <provider editor-type-id="ResourceBundle">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
           <caret line="22" column="28" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="23" selection-end-column="28" />
         </state>
-      </provider>
-      <provider editor-type-id="ResourceBundle">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/core/Messages.java">
@@ -932,82 +938,28 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="214">
           <caret line="48" column="6" lean-forward="false" selection-start-line="48" selection-start-column="6" selection-end-line="48" selection-end-column="6" />
-          <folding />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages_de.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="37" lean-forward="false" selection-start-line="1" selection-start-column="37" selection-end-line="1" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="ResourceBundle">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/BoardDesign.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="4" lean-forward="false" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/ClassicBoardDesign.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="58" column="5" lean-forward="true" selection-start-line="48" selection-start-column="4" selection-end-line="58" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/SimpleBoardDesign.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="799">
-          <caret line="47" column="45" lean-forward="true" selection-start-line="47" selection-start-column="45" selection-end-line="47" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="36" lean-forward="false" selection-start-line="1" selection-start-column="36" selection-end-line="1" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="ResourceBundle">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/messages.properties">
+      <provider editor-type-id="ResourceBundle">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
           <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="22" />
           <folding />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/messages_de.properties">
       <provider editor-type-id="ResourceBundle">
         <state />
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/messages_de.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="27" lean-forward="false" selection-start-line="0" selection-start-column="27" selection-end-line="0" selection-end-column="27" />
-          <folding />
         </state>
-      </provider>
-      <provider editor-type-id="ResourceBundle">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/Messages.java">
@@ -1019,14 +971,14 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/main.fxml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="13" lean-forward="true" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
       <provider editor-type-id="JavaFX-Scene-Builder">
         <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="13" lean-forward="false" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/Messages.java">
@@ -1037,32 +989,94 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/AbstractBoardDesign.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/BoardRenderer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="17" column="5" lean-forward="true" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
-          <folding>
-            <element signature="e#153#154#0" expanded="true" />
-            <element signature="e#244#245#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="68">
+          <caret line="5" column="22" lean-forward="false" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/BoardCanvas.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages_de.properties">
+      <provider editor-type-id="ResourceBundle">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="52" column="4" lean-forward="false" selection-start-line="52" selection-start-column="4" selection-end-line="52" selection-end-column="4" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/name/ulbricht/chessfx/gui/design/messages.properties">
+      <provider editor-type-id="ResourceBundle">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/SimpleBoardRenderer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="15" column="4" lean-forward="true" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="38" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/BoardDesign.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="34" lean-forward="false" selection-start-line="18" selection-start-column="34" selection-end-line="18" selection-end-column="34" />
+          <folding>
+            <element signature="e#413#414#0" expanded="true" />
+            <element signature="e#473#474#0" expanded="true" />
+            <element signature="e#862#863#0" expanded="true" />
+            <element signature="e#946#947#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/BoardCanvas.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="114" column="66" lean-forward="false" selection-start-line="114" selection-start-column="66" selection-end-line="114" selection-end-column="66" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/MainController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="66" column="44" lean-forward="true" selection-start-line="66" selection-start-column="44" selection-end-line="66" selection-end-column="44" />
-          <folding />
+        <state relative-caret-position="742">
+          <caret line="76" column="60" lean-forward="false" selection-start-line="76" selection-start-column="60" selection-end-line="76" selection-end-column="60" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/ClassicBoardRenderer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="38" lean-forward="false" selection-start-line="15" selection-start-column="38" selection-end-line="15" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/name/ulbricht/chessfx/gui/design/AbstractBoardRenderer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="466">
+          <caret line="49" column="44" lean-forward="false" selection-start-line="49" selection-start-column="44" selection-end-line="49" selection-end-column="44" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
