@@ -1,4 +1,4 @@
-package name.ulbricht.chessfx.gui;
+package name.ulbricht.chessfx.gui.design;
 
 import javafx.scene.canvas.GraphicsContext;
 import name.ulbricht.chessfx.core.Board;
@@ -12,6 +12,8 @@ public interface BoardDesign {
     enum Corner {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
+
+    String getDisplayName();
 
     double getPrefSquareSize();
 

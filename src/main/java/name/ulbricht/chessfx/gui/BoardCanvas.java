@@ -4,6 +4,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.core.Coordinate;
+import name.ulbricht.chessfx.gui.design.BoardDesign;
 
 import java.util.stream.Collectors;
 
@@ -32,16 +33,13 @@ final class BoardCanvas extends Canvas {
             this.borderSize = scale * prefBorderSize;
             this.squareSize = scale * prefSquareSize;
         }
-
-
     }
 
-    private Board board;
+    private final Board board;
     private BoardDesign design;
 
-    BoardCanvas(Board board, BoardDesign design) {
+    BoardCanvas(Board board) {
         this.board = board;
-        this.design = design;
 
         widthProperty().addListener(e -> draw());
         heightProperty().addListener(e -> draw());
@@ -52,15 +50,23 @@ final class BoardCanvas extends Canvas {
         return true;
     }
 
+    void setDesign(BoardDesign design) {
+        this.design = design;
+        draw();
+    }
+
     private void draw() {
-        // calculate the dimensions
         double width = getWidth();
         double height = getHeight();
-        Dimensions dim = new Dimensions(width, height, this.design);
 
         // clear the drawing
         GraphicsContext gc = getGraphicsContext2D();
         gc.clearRect(0, 0, width, height);
+
+        if (design == null) return;
+
+        // calculate the dimensions
+        Dimensions dim = new Dimensions(width, height, this.design);
 
         // draw the canvas background
         this.design.drawBackground(gc, width, height);

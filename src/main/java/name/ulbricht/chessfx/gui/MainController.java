@@ -1,25 +1,32 @@
 package name.ulbricht.chessfx.gui;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Menu;
+import javafx.scene.control.RadioMenuItem;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import name.ulbricht.chessfx.core.Board;
-import name.ulbricht.chessfx.gui.classic.ClassicBoardDesign;
+import name.ulbricht.chessfx.gui.design.BoardDesign;
+import name.ulbricht.chessfx.gui.design.ClassicBoardDesign;
+import name.ulbricht.chessfx.gui.design.SimpleBoardDesign;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public final class MainController implements Initializable{
+public final class MainController implements Initializable {
 
     public static void loadAndShow(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(MainController.class.getResource("main.fxml"));
+        Parent root = FXMLLoader.load(MainController.class.getResource("main.fxml"), ResourceBundle.getBundle(Messages.BUNDLE_NAME));
 
         Scene scene = new Scene(root, 600, 400);
         stage.setScene(scene);
@@ -31,9 +38,11 @@ public final class MainController implements Initializable{
     @FXML
     private BorderPane root;
     @FXML
+    private Menu designMenu;
+    @FXML
     private Pane boardPane;
 
-    private Canvas boardCanvas;
+    private BoardCanvas boardCanvas;
 
     private Board board;
 
@@ -42,10 +51,35 @@ public final class MainController implements Initializable{
         this.board = new Board();
         this.board.setup();
 
-        this.boardCanvas = new BoardCanvas(board, new ClassicBoardDesign());
+        this.boardCanvas = new BoardCanvas(board);
         this.boardPane.getChildren().addAll(this.boardCanvas);
         this.boardCanvas.widthProperty().bind(this.boardPane.widthProperty());
         this.boardCanvas.heightProperty().bind(this.boardPane.heightProperty());
 
+        createDesignMenuItems();
+    }
+
+    private void createDesignMenuItems() {
+        BoardDesign[] designs = new BoardDesign[]{new ClassicBoardDesign(), new SimpleBoardDesign()};
+
+        RadioMenuItem firstMenuItem = null;
+        ToggleGroup toggleGroup = new ToggleGroup();
+        for (BoardDesign design : designs) {
+            RadioMenuItem menuItem = new RadioMenuItem(design.getDisplayName());
+            menuItem.setUserData(design);
+            menuItem.setToggleGroup(toggleGroup);
+            menuItem.setOnAction(this::changeDesign);
+            this.designMenu.getItems().add(menuItem);
+
+            if (firstMenuItem == null) firstMenuItem = menuItem;
+        }
+        firstMenuItem.setSelected(true);
+        firstMenuItem.fire();
+    }
+
+    private void changeDesign(ActionEvent e) {
+        RadioMenuItem menuItem = (RadioMenuItem) e.getSource();
+        BoardDesign design = (BoardDesign) menuItem.getUserData();
+        this.boardCanvas.setDesign(design);
     }
 }

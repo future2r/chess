@@ -1,4 +1,4 @@
-package name.ulbricht.chessfx.gui.classic;
+package name.ulbricht.chessfx.gui.design;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -7,12 +7,11 @@ import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.core.Figure;
 import name.ulbricht.chessfx.core.Player;
-import name.ulbricht.chessfx.gui.BoardDesign;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public final class ClassicBoardDesign implements BoardDesign {
+public final class ClassicBoardDesign extends AbstractBoardDesign {
 
     private final Map<Coordinate.Color, Image> squareImages = new HashMap<>();
     private final Map<Player, Map<Figure.Type, Image>> figureImages = new HashMap<>();
@@ -20,16 +19,6 @@ public final class ClassicBoardDesign implements BoardDesign {
     public ClassicBoardDesign() {
         for (Player player : Player.values())
             this.figureImages.put(player, new HashMap<>());
-    }
-
-    @Override
-    public double getPrefSquareSize() {
-        return 100;
-    }
-
-    @Override
-    public double getPrefBorderSize() {
-        return 30;
     }
 
     @Override
