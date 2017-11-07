@@ -2,18 +2,30 @@
 
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 
-<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="name.ulbricht.chessfx.gui.MainController">
-   <center>
-      <Pane fx:id="boardPane" BorderPane.alignment="CENTER" />
-   </center>
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-          <Menu fx:id="designMenu" mnemonicParsing="false" text="%designMenu.text" />
-        </menus>
-      </MenuBar>
-   </top>
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="name.ulbricht.chessfx.gui.MainController">
+    <center>
+        <Pane fx:id="boardPane" BorderPane.alignment="CENTER"/>
+    </center>
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="%gameMenu.text">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="%exitMenuItem.text"/>
+                    </items>
+                </Menu>
+                <Menu fx:id="designMenu" mnemonicParsing="false" text="%designMenu.text"/>
+                <Menu mnemonicParsing="false" text="%helpMenu.text">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#showAbout" text="%aboutMenuItem.text"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
 </BorderPane>

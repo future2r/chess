@@ -6,12 +6,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.control.RadioMenuItem;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.gui.design.BoardDesign;
 
@@ -75,5 +74,25 @@ public final class MainController implements Initializable {
         RadioMenuItem menuItem = (RadioMenuItem) e.getSource();
         BoardDesign design = (BoardDesign) menuItem.getUserData();
         this.boardCanvas.setRenderer(design.createRenderer());
+    }
+
+    @FXML
+    private void exitApplication() {
+        Stage stage = (Stage) getWindow();
+        stage.close();
+    }
+
+    @FXML
+    private void showAbout() {
+        Alert alert = new Alert(Alert.AlertType.NONE);
+        alert.getButtonTypes().add(ButtonType.OK);
+        alert.initOwner(getWindow());
+        alert.setTitle(Messages.getString("aboutAlert.title"));
+        alert.setContentText(Messages.getString("aboutAlert.contentText"));
+        alert.showAndWait();
+    }
+
+    private Window getWindow(){
+        return this.root.getScene().getWindow();
     }
 }
