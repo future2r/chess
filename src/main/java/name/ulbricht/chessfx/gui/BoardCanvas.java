@@ -39,36 +39,59 @@ final class BoardCanvas extends Canvas {
 
     private final Board board;
     private final ObjectProperty<Coordinate> selectedSquareProperty = new SimpleObjectProperty<>();
-    private BoardRenderer renderer;
+    private final ObjectProperty<Coordinate> focusedSquareProperty = new SimpleObjectProperty<>();
+    private final ObjectProperty<BoardRenderer> rendererProperty = new SimpleObjectProperty<>();
 
     BoardCanvas(Board board) {
         this.board = board;
 
         widthProperty().addListener(e -> draw());
         heightProperty().addListener(e -> draw());
+
+        selectedSquareProperty().addListener(e -> draw());
+        focusedSquareProperty().addListener(e -> draw());
+        rendererProperty().addListener(e -> draw());
     }
 
-    ObjectProperty<Coordinate> getSelectedSquareProperty(){
+    ObjectProperty<Coordinate> selectedSquareProperty() {
         return this.selectedSquareProperty;
     }
 
     Coordinate getSelectedSquare() {
-        return this.selectedSquareProperty.get();
+        return selectedSquareProperty().get();
     }
 
     void setSelectedSquare(Coordinate selectedSquare) {
-        this.selectedSquareProperty.set(selectedSquare);
-        draw();
+        selectedSquareProperty().set(selectedSquare);
+    }
+
+    ObjectProperty<Coordinate> focusedSquareProperty() {
+        return this.focusedSquareProperty;
+    }
+
+    Coordinate getFocusedSquare() {
+        return focusedSquareProperty().get();
+    }
+
+    void setFocusedSquare(Coordinate focusedSquare) {
+        focusedSquareProperty().set(focusedSquare);
+    }
+
+    ObjectProperty<BoardRenderer> rendererProperty() {
+        return this.rendererProperty;
+    }
+
+    BoardRenderer getRenderer() {
+        return rendererProperty().get();
     }
 
     void setRenderer(BoardRenderer renderer) {
-        this.renderer = renderer;
-        draw();
+        rendererProperty().set(renderer);
     }
 
     Coordinate getCoordinateAt(double x, double y) {
-        if (this.renderer != null) {
-            Dimensions dim = new Dimensions(getWidth(), getHeight(), this.renderer);
+        if (rendererProperty().get() != null) {
+            Dimensions dim = new Dimensions(getWidth(), getHeight(), rendererProperty().get());
             int columnIndex = (int) Math.floor((x - dim.xOffset - dim.borderSize) / dim.squareSize);
             int rowIndex = (int) Math.floor(Coordinate.ROWS - (y - dim.yOffset - dim.borderSize) / dim.squareSize);
             if (columnIndex >= 0 && columnIndex < Coordinate.COLUMNS && rowIndex >= 0 && rowIndex < Coordinate.ROWS)
@@ -85,13 +108,13 @@ final class BoardCanvas extends Canvas {
         GraphicsContext gc = getGraphicsContext2D();
         gc.clearRect(0, 0, width, height);
 
-        if (renderer == null) return;
+        if (rendererProperty().get() == null) return;
 
         // calculate the dimensions
-        Dimensions dim = new Dimensions(width, height, this.renderer);
+        Dimensions dim = new Dimensions(width, height, rendererProperty().get());
 
         // draw the canvas background
-        this.renderer.drawBackground(gc, width, height);
+        rendererProperty().get().drawBackground(gc, width, height);
 
         // draw vertical borders
         double xLeftBorder = dim.xOffset;
@@ -102,13 +125,13 @@ final class BoardCanvas extends Canvas {
             // left border
             gc.save();
             gc.translate(xLeftBorder, yBorder);
-            this.renderer.drawBorder(gc, dim.borderSize, dim.squareSize, BoardRenderer.Border.LEFT, rowIndex);
+            rendererProperty().get().drawBorder(gc, dim.borderSize, dim.squareSize, BoardRenderer.Border.LEFT, rowIndex);
             gc.restore();
 
             // right border
             gc.save();
             gc.translate(xRightBorder, yBorder);
-            this.renderer.drawBorder(gc, dim.borderSize, dim.squareSize, BoardRenderer.Border.RIGHT, rowIndex);
+            rendererProperty().get().drawBorder(gc, dim.borderSize, dim.squareSize, BoardRenderer.Border.RIGHT, rowIndex);
             gc.restore();
         }
 
@@ -120,38 +143,38 @@ final class BoardCanvas extends Canvas {
             // top border
             gc.save();
             gc.translate(xBorder, yTopBorder);
-            this.renderer.drawBorder(gc, dim.squareSize, dim.borderSize, BoardRenderer.Border.TOP, columnIndex);
+            rendererProperty().get().drawBorder(gc, dim.squareSize, dim.borderSize, BoardRenderer.Border.TOP, columnIndex);
             gc.restore();
 
             // bottom border
             gc.save();
             gc.translate(xBorder, yBottomBorder);
-            this.renderer.drawBorder(gc, dim.squareSize, dim.borderSize, BoardRenderer.Border.BOTTOM, columnIndex);
+            rendererProperty().get().drawBorder(gc, dim.squareSize, dim.borderSize, BoardRenderer.Border.BOTTOM, columnIndex);
             gc.restore();
         }
 
         // draw top-left corner
         gc.save();
         gc.translate(xLeftBorder, yTopBorder);
-        this.renderer.drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
+        rendererProperty().get().drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
         gc.restore();
 
         // draw top-right corner
         gc.save();
         gc.translate(xRightBorder, yTopBorder);
-        this.renderer.drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
+        rendererProperty().get().drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
         gc.restore();
 
         // draw bottom-left corner
         gc.save();
         gc.translate(xLeftBorder, yBottomBorder);
-        this.renderer.drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
+        rendererProperty().get().drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
         gc.restore();
 
         // draw bottom-right corner
         gc.save();
         gc.translate(xRightBorder, yBottomBorder);
-        this.renderer.drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
+        rendererProperty().get().drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
         gc.restore();
 
         // draw the squares
@@ -163,7 +186,7 @@ final class BoardCanvas extends Canvas {
 
             gc.save();
             gc.translate(squareXOffset, squareYOffset);
-            this.renderer.drawSquare(gc, dim.squareSize, board.getSquare(coordinate));
+            rendererProperty().get().drawSquare(gc, dim.squareSize, board.getSquare(coordinate), coordinate.equals(getFocusedSquare()), coordinate.equals(getSelectedSquare()));
             gc.restore();
         }
     }

@@ -19,7 +19,7 @@ public interface BoardRenderer {
 
     void drawBackground(GraphicsContext gc, double width, double height);
 
-    void drawSquare(GraphicsContext gc, double size, Board.Square square);
+    void drawSquare(GraphicsContext gc, double size, Board.Square square, boolean focused, boolean selected);
 
     void drawBorder(GraphicsContext gc, double width, double height, Border border, int index);
 

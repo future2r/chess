@@ -68,7 +68,7 @@ public final class MainController implements Initializable {
 
         this.canvas.setOnMousePressed(this::mousePressedOnBoard);
         this.canvas.setOnMouseMoved(this::mouseMovedOnBoard);
-        this.canvas.getSelectedSquareProperty().addListener(this::selectedSquareChanged);
+        this.canvas.selectedSquareProperty().addListener(e -> updateSelectedSquareLabel());
 
         Platform.runLater(() -> getScene().setOnKeyPressed(this::keyPressedOnBoard));
 
@@ -104,7 +104,9 @@ public final class MainController implements Initializable {
     }
 
     private void mousePressedOnBoard(MouseEvent e) {
-        this.canvas.setSelectedSquare(this.canvas.getCoordinateAt(e.getX(), e.getY()));
+        Coordinate coordinate = this.canvas.getCoordinateAt(e.getX(), e.getY());
+        this.canvas.setFocusedSquare(coordinate);
+        this.canvas.setSelectedSquare(coordinate);
     }
 
     private void mouseMovedOnBoard(MouseEvent e) {
@@ -119,29 +121,38 @@ public final class MainController implements Initializable {
     }
 
     private void keyPressedOnBoard(KeyEvent e) {
-        KeyCode code = e.getCode();
-        if (code == KeyCode.LEFT || code == KeyCode.RIGHT || code == KeyCode.UP || code == KeyCode.DOWN) {
-            Coordinate coordinate = this.canvas.getSelectedSquare();
-            if (coordinate != null) {
-                switch (e.getCode()) {
-                    case LEFT:
-                        if (!coordinate.isLeftColumn()) this.canvas.setSelectedSquare(coordinate.moveLeft());
-                        break;
-                    case RIGHT:
-                        if (!coordinate.isRightColumn()) this.canvas.setSelectedSquare(coordinate.moveRight());
-                        break;
-                    case UP:
-                        if (!coordinate.isTopRow()) this.canvas.setSelectedSquare(coordinate.moveUp());
-                        break;
-                    case DOWN:
-                        if (!coordinate.isBottomRow()) this.canvas.setSelectedSquare(coordinate.moveDown());
-                        break;
-                }
-            } else {
-                this.canvas.setSelectedSquare(Coordinate.valueOf("a8"));
-            }
-        }
+        Coordinate focused = this.canvas.getFocusedSquare();
+        Coordinate selected = this.canvas.getSelectedSquare();
 
+        switch (e.getCode()) {
+            case LEFT:
+                if (focused != null) {
+                    if (!focused.isLeftColumn()) this.canvas.setFocusedSquare(focused.moveLeft());
+                } else this.canvas.setFocusedSquare(Coordinate.valueOf("a8"));
+                break;
+            case RIGHT:
+                if (focused != null) {
+                    if (!focused.isRightColumn()) this.canvas.setFocusedSquare(focused.moveRight());
+                } else this.canvas.setFocusedSquare(Coordinate.valueOf("a8"));
+                break;
+            case UP:
+                if (focused != null) {
+                    if (!focused.isTopRow()) this.canvas.setFocusedSquare(focused.moveUp());
+                } else this.canvas.setFocusedSquare(Coordinate.valueOf("a8"));
+                break;
+            case DOWN:
+                if (focused != null) {
+                    if (!focused.isBottomRow()) this.canvas.setFocusedSquare(focused.moveDown());
+                } else this.canvas.setFocusedSquare(Coordinate.valueOf("a8"));
+                break;
+            case ENTER:
+                if (focused != null) this.canvas.setSelectedSquare(focused);
+                break;
+            case ESCAPE:
+                if (selected != null) this.canvas.setSelectedSquare(null);
+                else if (focused != null) this.canvas.setFocusedSquare(null);
+                break;
+        }
     }
 
     private String createSquareText(Coordinate coordinate) {
@@ -152,7 +163,7 @@ public final class MainController implements Initializable {
             return String.format(Messages.getString("squareText.pattern"), coordinate, square.getFigure());
     }
 
-    private void selectedSquareChanged(Observable observable) {
+    private void updateSelectedSquareLabel() {
         String text = null;
         Coordinate coordinate = this.canvas.getSelectedSquare();
         if (coordinate != null) {
