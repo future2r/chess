@@ -1,6 +1,9 @@
 package name.ulbricht.chessfx.gui.design;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public final class BoardDesign {
 
@@ -11,7 +14,7 @@ public final class BoardDesign {
         designs.add(new BoardDesign(SimpleBoardRenderer.ID, SimpleBoardRenderer.class));
     }
 
-    public static List<BoardDesign> getDesigns(){
+    public static List<BoardDesign> getDesigns() {
         return Collections.unmodifiableList(designs);
     }
 

@@ -6,7 +6,7 @@ import name.ulbricht.chessfx.gui.MainController;
 
 public class ChessFX extends Application {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         launch(args);
     }
 

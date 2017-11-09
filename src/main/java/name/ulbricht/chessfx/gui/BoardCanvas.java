@@ -56,7 +56,7 @@ final class BoardCanvas extends Canvas implements BoardRendererContext {
         rendererProperty().addListener(e -> draw());
     }
 
-    public Board getBoard(){
+    public Board getBoard() {
         return this.board;
     }
 
@@ -68,11 +68,11 @@ final class BoardCanvas extends Canvas implements BoardRendererContext {
         return selectedSquareProperty().get();
     }
 
-    void selectSquareAt(Coordinate coordinate){
+    void selectSquareAt(Coordinate coordinate) {
         this.selectedSquareProperty.set(this.board.getSquare(coordinate));
     }
 
-    void clearSquareSelection(){
+    void clearSquareSelection() {
         this.selectedSquareProperty.set(null);
     }
 
@@ -84,11 +84,11 @@ final class BoardCanvas extends Canvas implements BoardRendererContext {
         return focusedSquareProperty().get();
     }
 
-    void focusSquareAt(Coordinate coordinate){
+    void focusSquareAt(Coordinate coordinate) {
         this.focusedSquareProperty.set(this.board.getSquare(coordinate));
     }
 
-    void clearSquareFocus(){
+    void clearSquareFocus() {
         this.focusedSquareProperty.set(null);
     }
 

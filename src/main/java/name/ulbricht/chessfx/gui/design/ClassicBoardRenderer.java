@@ -44,9 +44,9 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
 
         // focused & selected
         if (square.equals(getContext().getSelectedSquare())) {
-            drawHighlight(gc,size,COLOR_SELECTED);
+            drawHighlight(gc, size, COLOR_SELECTED);
         } else if (square.equals(getContext().getFocusedSquare())) {
-            drawHighlight(gc,size,COLOR_FOCUSED);
+            drawHighlight(gc, size, COLOR_FOCUSED);
         }
 
         if (!square.isEmpty()) {
