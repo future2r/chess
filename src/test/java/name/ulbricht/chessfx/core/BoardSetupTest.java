@@ -17,43 +17,43 @@ public final class BoardSetupTest {
     @Parameterized.Parameters(name = "{index}: {0} {1}")
     public static Collection<Object[]> createParameters() {
 
-        Map<String, Figure> exp = new HashMap<>();
+        Map<String, Piece> exp = new HashMap<>();
 
-        exp.put("a1", new Figure(Figure.Type.ROOK, Player.WHITE));
-        exp.put("b1", new Figure(Figure.Type.KNIGHT, Player.WHITE));
-        exp.put("c1", new Figure(Figure.Type.BISHOP, Player.WHITE));
-        exp.put("d1", new Figure(Figure.Type.QUEEN, Player.WHITE));
-        exp.put("e1", new Figure(Figure.Type.KING, Player.WHITE));
-        exp.put("f1", new Figure(Figure.Type.BISHOP, Player.WHITE));
-        exp.put("g1", new Figure(Figure.Type.KNIGHT, Player.WHITE));
-        exp.put("h1", new Figure(Figure.Type.ROOK, Player.WHITE));
+        exp.put("a1", new Piece(Piece.Type.ROOK, Player.WHITE));
+        exp.put("b1", new Piece(Piece.Type.KNIGHT, Player.WHITE));
+        exp.put("c1", new Piece(Piece.Type.BISHOP, Player.WHITE));
+        exp.put("d1", new Piece(Piece.Type.QUEEN, Player.WHITE));
+        exp.put("e1", new Piece(Piece.Type.KING, Player.WHITE));
+        exp.put("f1", new Piece(Piece.Type.BISHOP, Player.WHITE));
+        exp.put("g1", new Piece(Piece.Type.KNIGHT, Player.WHITE));
+        exp.put("h1", new Piece(Piece.Type.ROOK, Player.WHITE));
 
-        exp.put("a2", new Figure(Figure.Type.PAWN, Player.WHITE));
-        exp.put("b2", new Figure(Figure.Type.PAWN, Player.WHITE));
-        exp.put("c2", new Figure(Figure.Type.PAWN, Player.WHITE));
-        exp.put("d2", new Figure(Figure.Type.PAWN, Player.WHITE));
-        exp.put("e2", new Figure(Figure.Type.PAWN, Player.WHITE));
-        exp.put("f2", new Figure(Figure.Type.PAWN, Player.WHITE));
-        exp.put("g2", new Figure(Figure.Type.PAWN, Player.WHITE));
-        exp.put("h2", new Figure(Figure.Type.PAWN, Player.WHITE));
+        exp.put("a2", new Piece(Piece.Type.PAWN, Player.WHITE));
+        exp.put("b2", new Piece(Piece.Type.PAWN, Player.WHITE));
+        exp.put("c2", new Piece(Piece.Type.PAWN, Player.WHITE));
+        exp.put("d2", new Piece(Piece.Type.PAWN, Player.WHITE));
+        exp.put("e2", new Piece(Piece.Type.PAWN, Player.WHITE));
+        exp.put("f2", new Piece(Piece.Type.PAWN, Player.WHITE));
+        exp.put("g2", new Piece(Piece.Type.PAWN, Player.WHITE));
+        exp.put("h2", new Piece(Piece.Type.PAWN, Player.WHITE));
 
-        exp.put("a7", new Figure(Figure.Type.PAWN, Player.BLACK));
-        exp.put("b7", new Figure(Figure.Type.PAWN, Player.BLACK));
-        exp.put("c7", new Figure(Figure.Type.PAWN, Player.BLACK));
-        exp.put("d7", new Figure(Figure.Type.PAWN, Player.BLACK));
-        exp.put("e7", new Figure(Figure.Type.PAWN, Player.BLACK));
-        exp.put("f7", new Figure(Figure.Type.PAWN, Player.BLACK));
-        exp.put("g7", new Figure(Figure.Type.PAWN, Player.BLACK));
-        exp.put("h7", new Figure(Figure.Type.PAWN, Player.BLACK));
+        exp.put("a7", new Piece(Piece.Type.PAWN, Player.BLACK));
+        exp.put("b7", new Piece(Piece.Type.PAWN, Player.BLACK));
+        exp.put("c7", new Piece(Piece.Type.PAWN, Player.BLACK));
+        exp.put("d7", new Piece(Piece.Type.PAWN, Player.BLACK));
+        exp.put("e7", new Piece(Piece.Type.PAWN, Player.BLACK));
+        exp.put("f7", new Piece(Piece.Type.PAWN, Player.BLACK));
+        exp.put("g7", new Piece(Piece.Type.PAWN, Player.BLACK));
+        exp.put("h7", new Piece(Piece.Type.PAWN, Player.BLACK));
 
-        exp.put("a8", new Figure(Figure.Type.ROOK, Player.BLACK));
-        exp.put("b8", new Figure(Figure.Type.KNIGHT, Player.BLACK));
-        exp.put("c8", new Figure(Figure.Type.BISHOP, Player.BLACK));
-        exp.put("d8", new Figure(Figure.Type.QUEEN, Player.BLACK));
-        exp.put("e8", new Figure(Figure.Type.KING, Player.BLACK));
-        exp.put("f8", new Figure(Figure.Type.BISHOP, Player.BLACK));
-        exp.put("g8", new Figure(Figure.Type.KNIGHT, Player.BLACK));
-        exp.put("h8", new Figure(Figure.Type.ROOK, Player.BLACK));
+        exp.put("a8", new Piece(Piece.Type.ROOK, Player.BLACK));
+        exp.put("b8", new Piece(Piece.Type.KNIGHT, Player.BLACK));
+        exp.put("c8", new Piece(Piece.Type.BISHOP, Player.BLACK));
+        exp.put("d8", new Piece(Piece.Type.QUEEN, Player.BLACK));
+        exp.put("e8", new Piece(Piece.Type.KING, Player.BLACK));
+        exp.put("f8", new Piece(Piece.Type.BISHOP, Player.BLACK));
+        exp.put("g8", new Piece(Piece.Type.KNIGHT, Player.BLACK));
+        exp.put("h8", new Piece(Piece.Type.ROOK, Player.BLACK));
 
         return Coordinate.values()
                 .map(c -> new Object[]{c, exp.getOrDefault(c.toString(), null)})
@@ -68,15 +68,15 @@ public final class BoardSetupTest {
     }
 
     private final Coordinate coordinate;
-    private final Figure figure;
+    private final Piece piece;
 
-    public BoardSetupTest(Coordinate coordinate, Figure figure) {
+    public BoardSetupTest(Coordinate coordinate, Piece piece) {
         this.coordinate = coordinate;
-        this.figure = figure;
+        this.piece = piece;
     }
 
     @Test
     public void testSetup() {
-        assertEquals("Unexpected figure", figure, board.getSquare(this.coordinate).getFigure());
+        assertEquals("Unexpected piece", piece, board.getSquare(this.coordinate).getPiece());
     }
 }

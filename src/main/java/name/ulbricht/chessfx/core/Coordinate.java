@@ -12,7 +12,7 @@ public final class Coordinate {
     public static final int ROWS = 8;
 
     public enum Color {
-        LIGHT, DARK;
+        LIGHT, DARK
     }
 
     private static final Coordinate[] cachedCoordinates;
@@ -20,7 +20,7 @@ public final class Coordinate {
     static {
         cachedCoordinates = IntStream.range(0, COLUMNS * ROWS)
                 .mapToObj(Coordinate::new)
-                .toArray(l -> new Coordinate[l]);
+                .toArray(Coordinate[]::new);
     }
 
     private final int index;
@@ -50,12 +50,7 @@ public final class Coordinate {
     }
 
     public Color getColor() {
-        if (getRowIndex() % 2 == 0) {
-            if (getColumnIndex() % 2 == 0) return Color.LIGHT;
-            else return Color.DARK;
-        }
-        if (getColumnIndex() % 2 == 0) return Color.DARK;
-        else return Color.LIGHT;
+        return ((getColumnIndex() + getRowIndex()) % 2 == 0) ? Color.LIGHT : Color.DARK;
     }
 
     @Override

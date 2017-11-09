@@ -7,7 +7,7 @@ public final class Board {
     public static final class Square {
 
         private final Coordinate coordinate;
-        private Figure figure;
+        private Piece piece;
 
         public Square(Coordinate coordinate) {
             this.coordinate = Objects.requireNonNull(coordinate, "coordinate cannot be null");
@@ -17,21 +17,21 @@ public final class Board {
             return this.coordinate;
         }
 
-        public void setFigure(Figure figure) {
-            this.figure = figure;
+        public void setPiece(Piece piece) {
+            this.piece = piece;
         }
 
-        public Figure getFigure() {
-            return this.figure;
+        public Piece getPiece() {
+            return this.piece;
         }
 
         public boolean isEmpty() {
-            return this.figure == null;
+            return this.piece == null;
         }
 
         @Override
         public String toString() {
-            return String.format("%s: %s", this.coordinate, this.figure != null ? this.figure : "");
+            return String.format("%s: %s", this.coordinate, this.piece != null ? this.piece : "");
         }
     }
 
@@ -39,7 +39,7 @@ public final class Board {
 
     public Board() {
         // create all required squares
-        this.squares = Coordinate.values().map(Square::new).toArray(l -> new Square[l]);
+        this.squares = Coordinate.values().map(Square::new).toArray(Square[]::new);
     }
 
     public Square getSquare(Coordinate coordinate) {
@@ -48,38 +48,38 @@ public final class Board {
 
     public void setup() {
 
-        Figure.Type[] baseLineFigures = new Figure.Type[]{
-                Figure.Type.ROOK,
-                Figure.Type.KNIGHT,
-                Figure.Type.BISHOP,
-                Figure.Type.QUEEN,
-                Figure.Type.KING,
-                Figure.Type.BISHOP,
-                Figure.Type.KNIGHT,
-                Figure.Type.ROOK};
+        Piece.Type[] baseLinePieces = new Piece.Type[]{
+                Piece.Type.ROOK,
+                Piece.Type.KNIGHT,
+                Piece.Type.BISHOP,
+                Piece.Type.QUEEN,
+                Piece.Type.KING,
+                Piece.Type.BISHOP,
+                Piece.Type.KNIGHT,
+                Piece.Type.ROOK};
 
         Coordinate whiteCoordinate = Coordinate.valueOf("a1");
         Coordinate blackCoordinate = Coordinate.valueOf("a8");
 
         for (int i = 0; i < Coordinate.COLUMNS; i++) {
 
-            setFigure(whiteCoordinate, new Figure(baseLineFigures[i], Player.WHITE));
-            setFigure(whiteCoordinate.moveUp(), new Figure(Figure.Type.PAWN, Player.WHITE));
+            setPiece(whiteCoordinate, new Piece(baseLinePieces[i], Player.WHITE));
+            setPiece(whiteCoordinate.moveUp(), new Piece(Piece.Type.PAWN, Player.WHITE));
             if (!whiteCoordinate.isRightColumn()) whiteCoordinate = whiteCoordinate.moveRight();
 
-            setFigure(blackCoordinate, new Figure(baseLineFigures[i], Player.BLACK));
-            setFigure(blackCoordinate.moveDown(), new Figure(Figure.Type.PAWN, Player.BLACK));
+            setPiece(blackCoordinate, new Piece(baseLinePieces[i], Player.BLACK));
+            setPiece(blackCoordinate.moveDown(), new Piece(Piece.Type.PAWN, Player.BLACK));
             if (!blackCoordinate.isRightColumn()) blackCoordinate = blackCoordinate.moveRight();
         }
     }
 
 
-    public void setFigure(Coordinate coordinate, Figure figure) {
-        getSquare(coordinate).setFigure(figure);
+    public void setPiece(Coordinate coordinate, Piece piece) {
+        getSquare(coordinate).setPiece(piece);
     }
 
-    public Figure getFigure(Coordinate coordinate) {
-        return getSquare(coordinate).getFigure();
+    public Piece getPiece(Coordinate coordinate) {
+        return getSquare(coordinate).getPiece();
     }
 
 }

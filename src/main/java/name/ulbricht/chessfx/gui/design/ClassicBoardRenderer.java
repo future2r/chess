@@ -6,15 +6,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
-import javafx.scene.shape.Path;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.core.Coordinate;
-import name.ulbricht.chessfx.core.Figure;
+import name.ulbricht.chessfx.core.Piece;
 import name.ulbricht.chessfx.core.Player;
 
-import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,13 +20,15 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
 
     private static final Color COLOR_FOCUSED = Color.rgb(255, 255, 0, 0.5);
     private static final Color COLOR_SELECTED = Color.rgb(255, 255, 0, 1.0);
+    private static final Color COLOR_MOVE_TARGET = Color.rgb(0, 255, 0, 1.0);
+    private static final Color COLOR_CAPTURE = Color.rgb(255, 0, 0, 1.0);
 
     private final Map<Coordinate.Color, Image> squareImages = new HashMap<>();
-    private final Map<Player, Map<Figure.Type, Image>> figureImages = new HashMap<>();
+    private final Map<Player, Map<Piece.Type, Image>> pieceImages = new HashMap<>();
 
     public ClassicBoardRenderer() {
         for (Player player : Player.values())
-            this.figureImages.put(player, new HashMap<>());
+            this.pieceImages.put(player, new HashMap<>());
     }
 
     @Override
@@ -40,20 +38,20 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
     }
 
     @Override
-    public void drawSquare(GraphicsContext gc, double size, Board.Square square, boolean focused, boolean selected) {
+    public void drawSquare(GraphicsContext gc, double size, Board.Square square) {
         Image squareImage = this.squareImages.computeIfAbsent(square.getCoordinate().getColor(), this::loadSquareImage);
         gc.drawImage(squareImage, 0, 0, size, size);
 
         // focused & selected
-        if (selected) {
+        if (square.equals(getContext().getSelectedSquare())) {
             drawHighlight(gc,size,COLOR_SELECTED);
-        } else if (focused) {
+        } else if (square.equals(getContext().getFocusedSquare())) {
             drawHighlight(gc,size,COLOR_FOCUSED);
         }
 
         if (!square.isEmpty()) {
-            Figure figure = square.getFigure();
-            Image image = this.figureImages.get(figure.getPlayer()).computeIfAbsent(figure.getType(), t -> loadFigureImage(t, figure.getPlayer()));
+            Piece piece = square.getPiece();
+            Image image = this.pieceImages.get(piece.getPlayer()).computeIfAbsent(piece.getType(), t -> loadPieceImage(t, piece.getPlayer()));
 
             double imageWidth = image.getWidth();
             double imageHeight = image.getHeight();
@@ -84,7 +82,7 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
         return new Image(this.getClass().getResource(resourceName).toString());
     }
 
-    private Image loadFigureImage(Figure.Type type, Player player) {
+    private Image loadPieceImage(Piece.Type type, Player player) {
         String resourceName = "classic-" + player.name().toLowerCase() + "-" + type.name().toLowerCase() + ".png";
         return new Image(this.getClass().getResource(resourceName).toString());
     }

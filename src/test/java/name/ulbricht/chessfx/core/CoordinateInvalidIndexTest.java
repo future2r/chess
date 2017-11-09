@@ -1,15 +1,8 @@
 package name.ulbricht.chessfx.core;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public final class CoordinateInvalidIndexTest {

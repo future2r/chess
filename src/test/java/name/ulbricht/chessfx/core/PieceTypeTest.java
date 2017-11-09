@@ -12,16 +12,16 @@ import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
-public final class FigureTypeTest {
+public final class PieceTypeTest {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> createParameters() {
-        return Stream.of(Figure.Type.values()).map(v -> new Object[]{v}).collect(Collectors.toList());
+        return Stream.of(Piece.Type.values()).map(v -> new Object[]{v}).collect(Collectors.toList());
     }
 
-    private final Figure.Type type;
+    private final Piece.Type type;
 
-    public FigureTypeTest(Figure.Type type) {
+    public PieceTypeTest(Piece.Type type) {
         this.type = type;
     }
 
@@ -32,7 +32,7 @@ public final class FigureTypeTest {
 
         // the short name should be just one characters
         assertFalse("short name not found", this.type.getShortName().startsWith("!"));
-        if (this.type != Figure.Type.PAWN) {
+        if (this.type != Piece.Type.PAWN) {
             assertEquals("short name should be one character only", 1, this.type.getShortName().length());
         } else {
             assertEquals("short name should be empty", "", this.type.getShortName());

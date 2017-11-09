@@ -10,6 +10,17 @@ import name.ulbricht.chessfx.core.Coordinate;
 
 abstract class AbstractBoardRenderer implements BoardRenderer {
 
+    private BoardRendererContext context;
+
+    @Override
+    public void setContext(BoardRendererContext context) {
+        this.context = context;
+    }
+
+    protected BoardRendererContext getContext() {
+        return this.context;
+    }
+
     @Override
     public double getPrefSquareSize() {
         return 100;

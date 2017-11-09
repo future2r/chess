@@ -18,25 +18,25 @@ public class BoardTest {
     }
 
     @Test
-    public void testSetGetFigure() {
+    public void testSetGetPiece() {
 
         Board board = new Board();
-        Figure figure = new Figure(Figure.Type.PAWN, Player.WHITE);
+        Piece piece = new Piece(Piece.Type.PAWN, Player.WHITE);
         List<Coordinate> coordinates = Coordinate.values().collect(Collectors.toList());
 
         for (Coordinate setCoordinate : coordinates) {
-            board.setFigure(setCoordinate, figure);
+            board.setPiece(setCoordinate, piece);
 
             for (Coordinate getCoordinate : coordinates) {
 
                 if (setCoordinate.equals(getCoordinate)) {
-                    assertEquals("figure expected", figure, board.getFigure(getCoordinate));
+                    assertEquals("piece expected", piece, board.getPiece(getCoordinate));
                 } else {
-                    assertNull("no figure expected", board.getFigure(getCoordinate));
+                    assertNull("no piece expected", board.getPiece(getCoordinate));
                 }
             }
 
-            board.setFigure(setCoordinate, null);
+            board.setPiece(setCoordinate, null);
         }
     }
 }

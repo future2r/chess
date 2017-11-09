@@ -1,16 +1,19 @@
 package name.ulbricht.chessfx.gui;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.gui.design.BoardRenderer;
+import name.ulbricht.chessfx.gui.design.BoardRendererContext;
 
 import java.util.stream.Collectors;
 
-final class BoardCanvas extends Canvas {
+final class BoardCanvas extends Canvas implements BoardRendererContext {
 
     private static final class Dimensions {
 
@@ -38,8 +41,8 @@ final class BoardCanvas extends Canvas {
     }
 
     private final Board board;
-    private final ObjectProperty<Coordinate> selectedSquareProperty = new SimpleObjectProperty<>();
-    private final ObjectProperty<Coordinate> focusedSquareProperty = new SimpleObjectProperty<>();
+    private final ReadOnlyObjectWrapper<Board.Square> selectedSquareProperty = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<Board.Square> focusedSquareProperty = new ReadOnlyObjectWrapper<>();
     private final ObjectProperty<BoardRenderer> rendererProperty = new SimpleObjectProperty<>();
 
     BoardCanvas(Board board) {
@@ -53,28 +56,40 @@ final class BoardCanvas extends Canvas {
         rendererProperty().addListener(e -> draw());
     }
 
-    ObjectProperty<Coordinate> selectedSquareProperty() {
-        return this.selectedSquareProperty;
+    public Board getBoard(){
+        return this.board;
     }
 
-    Coordinate getSelectedSquare() {
+    ReadOnlyObjectProperty<Board.Square> selectedSquareProperty() {
+        return this.selectedSquareProperty.getReadOnlyProperty();
+    }
+
+    public Board.Square getSelectedSquare() {
         return selectedSquareProperty().get();
     }
 
-    void setSelectedSquare(Coordinate selectedSquare) {
-        selectedSquareProperty().set(selectedSquare);
+    void selectSquareAt(Coordinate coordinate){
+        this.selectedSquareProperty.set(this.board.getSquare(coordinate));
     }
 
-    ObjectProperty<Coordinate> focusedSquareProperty() {
-        return this.focusedSquareProperty;
+    void clearSquareSelection(){
+        this.selectedSquareProperty.set(null);
     }
 
-    Coordinate getFocusedSquare() {
+    ReadOnlyObjectProperty<Board.Square> focusedSquareProperty() {
+        return this.focusedSquareProperty.getReadOnlyProperty();
+    }
+
+    public Board.Square getFocusedSquare() {
         return focusedSquareProperty().get();
     }
 
-    void setFocusedSquare(Coordinate focusedSquare) {
-        focusedSquareProperty().set(focusedSquare);
+    void focusSquareAt(Coordinate coordinate){
+        this.focusedSquareProperty.set(this.board.getSquare(coordinate));
+    }
+
+    void clearSquareFocus(){
+        this.focusedSquareProperty.set(null);
     }
 
     ObjectProperty<BoardRenderer> rendererProperty() {
@@ -89,13 +104,15 @@ final class BoardCanvas extends Canvas {
         rendererProperty().set(renderer);
     }
 
-    Coordinate getCoordinateAt(double x, double y) {
+    Board.Square getSquareAt(double x, double y) {
         if (rendererProperty().get() != null) {
             Dimensions dim = new Dimensions(getWidth(), getHeight(), rendererProperty().get());
             int columnIndex = (int) Math.floor((x - dim.xOffset - dim.borderSize) / dim.squareSize);
             int rowIndex = (int) Math.floor(Coordinate.ROWS - (y - dim.yOffset - dim.borderSize) / dim.squareSize);
-            if (columnIndex >= 0 && columnIndex < Coordinate.COLUMNS && rowIndex >= 0 && rowIndex < Coordinate.ROWS)
-                return Coordinate.valueOf(columnIndex, rowIndex);
+            if (columnIndex >= 0 && columnIndex < Coordinate.COLUMNS && rowIndex >= 0 && rowIndex < Coordinate.ROWS) {
+                Coordinate coordinate = Coordinate.valueOf(columnIndex, rowIndex);
+                return this.board.getSquare(coordinate);
+            }
         }
         return null;
     }
@@ -162,19 +179,19 @@ final class BoardCanvas extends Canvas {
         // draw top-right corner
         gc.save();
         gc.translate(xRightBorder, yTopBorder);
-        rendererProperty().get().drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
+        rendererProperty().get().drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_RIGHT);
         gc.restore();
 
         // draw bottom-left corner
         gc.save();
         gc.translate(xLeftBorder, yBottomBorder);
-        rendererProperty().get().drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
+        rendererProperty().get().drawCorner(gc, dim.borderSize, BoardRenderer.Corner.BOTTOM_LEFT);
         gc.restore();
 
         // draw bottom-right corner
         gc.save();
         gc.translate(xRightBorder, yBottomBorder);
-        rendererProperty().get().drawCorner(gc, dim.borderSize, BoardRenderer.Corner.TOP_LEFT);
+        rendererProperty().get().drawCorner(gc, dim.borderSize, BoardRenderer.Corner.BOTTOM_RIGHT);
         gc.restore();
 
         // draw the squares
@@ -186,7 +203,7 @@ final class BoardCanvas extends Canvas {
 
             gc.save();
             gc.translate(squareXOffset, squareYOffset);
-            rendererProperty().get().drawSquare(gc, dim.squareSize, board.getSquare(coordinate), coordinate.equals(getFocusedSquare()), coordinate.equals(getSelectedSquare()));
+            rendererProperty().get().drawSquare(gc, dim.squareSize, board.getSquare(coordinate));
             gc.restore();
         }
     }
