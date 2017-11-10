@@ -1,34 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.cell.TreeItemPropertyValueFactory?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <BorderPane fx:id="root" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="name.ulbricht.chessfx.gui.MainController">
-    <center>
-        <Pane fx:id="boardPane" BorderPane.alignment="CENTER"/>
-    </center>
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
-                <Menu mnemonicParsing="false" text="%gameMenu.text">
+                <Menu mnemonicParsing="false" text="%main.gameMenu.text">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="%exitMenuItem.text"/>
+                        <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="%main.exitMenuItem.text"/>
                     </items>
                 </Menu>
-                <Menu fx:id="designMenu" mnemonicParsing="false" text="%designMenu.text"/>
-                <Menu mnemonicParsing="false" text="%helpMenu.text">
+                <Menu fx:id="designMenu" mnemonicParsing="false" text="%main.designMenu.text"/>
+                <Menu mnemonicParsing="false" text="%main.helpMenu.text">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#showAbout" text="%aboutMenuItem.text"/>
+                        <MenuItem mnemonicParsing="false" onAction="#showAbout" text="%main.aboutMenuItem.text"/>
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
     </top>
+    <center>
+        <SplitPane dividerPositions="0.7" BorderPane.alignment="CENTER">
+            <items>
+                <Pane fx:id="boardPane"/>
+                <GridPane>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES"/>
+                        <RowConstraints vgrow="SOMETIMES"/>
+                        <RowConstraints vgrow="ALWAYS"/>
+                    </rowConstraints>
+                    <children>
+                        <Label text="%main.currentPlayer.text">
+                            <GridPane.margin>
+                                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                            </GridPane.margin>
+                        </Label>
+                        <Label fx:id="currentPlayerValueLabel" text="Label" GridPane.columnIndex="1">
+                            <GridPane.margin>
+                                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                            </GridPane.margin>
+                        </Label>
+                        <Label text="%main.legalMovesLabel.text" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                            <GridPane.margin>
+                                <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                            </GridPane.margin>
+                        </Label>
+                        <TreeTableView fx:id="legalMovesTreeTableView" prefWidth="300.0" showRoot="false"
+                                       GridPane.columnSpan="2" GridPane.rowIndex="2">
+                            <columns>
+                                <TreeTableColumn prefWidth="150.0" text="%main.legalMovesTreeTableView.columnName.text">
+                                    <cellValueFactory>
+                                        <TreeItemPropertyValueFactory property="name"/>
+                                    </cellValueFactory>
+                                </TreeTableColumn>
+                                <TreeTableColumn prefWidth="150.0"
+                                                 text="%main.legalMovesTreeTableView.columnCaptures.text">
+                                    <cellValueFactory>
+                                        <TreeItemPropertyValueFactory property="captures"/>
+                                    </cellValueFactory>
+                                </TreeTableColumn>
+                            </columns>
+                            <GridPane.margin>
+                                <Insets bottom="0.0" left="4.0" right="4.0" top="4.0"/>
+                            </GridPane.margin>
+                        </TreeTableView>
+                    </children>
+                </GridPane>
+            </items>
+        </SplitPane>
+    </center>
     <bottom>
         <HBox BorderPane.alignment="CENTER">
             <children>
-                <Label text="%selectedSquareLabel.text">
+                <Label text="%main.selectedSquareLabel.text">
                     <padding>
                         <Insets left="2.0" right="2.0"/>
                     </padding>
@@ -44,4 +96,5 @@
             </padding>
         </HBox>
     </bottom>
+
 </BorderPane>

@@ -18,6 +18,8 @@ import javafx.stage.Window;
 import javafx.util.Duration;
 import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.core.Coordinate;
+import name.ulbricht.chessfx.core.Game;
+import name.ulbricht.chessfx.core.Move;
 import name.ulbricht.chessfx.gui.design.BoardDesign;
 
 import java.io.IOException;
@@ -29,7 +31,7 @@ public final class MainController implements Initializable {
     public static void loadAndShow(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(MainController.class.getResource("main.fxml"), ResourceBundle.getBundle(Messages.BUNDLE_NAME));
 
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 900, 600);
         stage.setScene(scene);
         stage.setTitle(Messages.getString("main.title"));
         stage.getIcons().addAll(GUIUtils.loadImages("main.icons"));
@@ -44,17 +46,21 @@ public final class MainController implements Initializable {
     private Pane boardPane;
     @FXML
     private Label selectedSquareLabel;
+    @FXML
+    private Label currentPlayerValueLabel;
+    @FXML
+    private TreeTableView<MoveItem> legalMovesTreeTableView;
 
-    private Board board;
+    private Game game;
     private BoardCanvas canvas;
     private Tooltip canvasTooltip;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.board = new Board();
-        this.board.setup();
+        this.game = new Game();
+        this.game.start();
 
-        this.canvas = new BoardCanvas(board);
+        this.canvas = new BoardCanvas(game.getBoard());
         this.boardPane.getChildren().addAll(this.canvas);
         this.canvas.widthProperty().bind(this.boardPane.widthProperty());
         this.canvas.heightProperty().bind(this.boardPane.heightProperty());
@@ -63,13 +69,15 @@ public final class MainController implements Initializable {
         this.canvasTooltip.setShowDelay(Duration.ZERO);
         this.canvasTooltip.setOnShowing(e -> boardTooltipShowing());
 
+        this.canvas.setFocusTraversable(true);
         this.canvas.setOnMousePressed(this::mousePressedOnBoard);
         this.canvas.setOnMouseMoved(this::mouseMovedOnBoard);
         this.canvas.selectedSquareProperty().addListener(e -> updateSelectedSquareLabel());
-
-        Platform.runLater(() -> getScene().setOnKeyPressed(this::keyPressedOnBoard));
+        this.canvas.setOnKeyPressed(this::keyPressedOnBoard);
 
         createDesignMenuItems();
+        this.currentPlayerValueLabel.setText(this.game.getCurrentPlayer().getDisplayName());
+        updateLegalMoves();
     }
 
     private void createDesignMenuItems() {
@@ -131,24 +139,28 @@ public final class MainController implements Initializable {
                     Coordinate coordinate = focused.getCoordinate();
                     if (!coordinate.isLeftColumn()) this.canvas.focusSquareAt(coordinate.moveLeft());
                 } else this.canvas.focusSquareAt(Coordinate.valueOf("a8"));
+                e.consume();
                 break;
             case RIGHT:
                 if (focused != null) {
                     Coordinate coordinate = focused.getCoordinate();
                     if (!coordinate.isRightColumn()) this.canvas.focusSquareAt(coordinate.moveRight());
                 } else this.canvas.focusSquareAt(Coordinate.valueOf("a8"));
+                e.consume();
                 break;
             case UP:
                 if (focused != null) {
                     Coordinate coordinate = focused.getCoordinate();
                     if (!coordinate.isTopRow()) this.canvas.focusSquareAt(coordinate.moveUp());
                 } else this.canvas.focusSquareAt(Coordinate.valueOf("a8"));
+                e.consume();
                 break;
             case DOWN:
                 if (focused != null) {
                     Coordinate coordinate = focused.getCoordinate();
                     if (!coordinate.isBottomRow()) this.canvas.focusSquareAt(coordinate.moveDown());
                 } else this.canvas.focusSquareAt(Coordinate.valueOf("a8"));
+                e.consume();
                 break;
             case ENTER:
                 if (focused != null) this.canvas.selectSquareAt(focused.getCoordinate());
@@ -156,6 +168,7 @@ public final class MainController implements Initializable {
             case ESCAPE:
                 if (selected != null) this.canvas.clearSquareFocus();
                 else if (focused != null) this.canvas.clearSquareSelection();
+                e.consume();
                 break;
         }
     }
@@ -176,6 +189,24 @@ public final class MainController implements Initializable {
         this.selectedSquareLabel.setText(text);
     }
 
+    private void updateLegalMoves() {
+        TreeItem<MoveItem> rootItem = new TreeItem<>(MoveItem.root());
+
+        TreeItem<MoveItem> squareItem = new TreeItem<>(MoveItem.source(this.game.getBoard().getSquare(Coordinate.valueOf("a2"))));
+        squareItem.setExpanded(true);
+        rootItem.getChildren().add(squareItem);
+        squareItem.getChildren().add(new TreeItem<>(MoveItem.move(null)));
+        squareItem.getChildren().add(new TreeItem<>(MoveItem.move(null)));
+
+        squareItem = new TreeItem<>(MoveItem.source(this.game.getBoard().getSquare(Coordinate.valueOf("b1"))));
+        squareItem.setExpanded(true);
+        rootItem.getChildren().add(squareItem);
+        squareItem.getChildren().add(new TreeItem<>(MoveItem.move(null)));
+        squareItem.getChildren().add(new TreeItem<>(MoveItem.move(null)));
+
+        this.legalMovesTreeTableView.setRoot(rootItem);
+    }
+
     @FXML
     private void exitApplication() {
         getStage().close();
@@ -186,8 +217,8 @@ public final class MainController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.getButtonTypes().add(ButtonType.OK);
         alert.initOwner(getWindow());
-        alert.setTitle(Messages.getString("aboutAlert.title"));
-        alert.setContentText(Messages.getString("aboutAlert.contentText"));
+        alert.setTitle(Messages.getString("about.title"));
+        alert.setContentText(Messages.getString("about.contentText"));
         alert.showAndWait();
     }
 

@@ -18,7 +18,11 @@ final class SimpleBoardRenderer extends AbstractBoardRenderer {
     private static final Color COLOR_FOCUSED = Color.rgb(255, 255, 0, 0.3);
     private static final Color COLOR_SELECTED = Color.rgb(255, 255, 0, 0.8);
     private static final Color COLOR_MOVE_TARGET = Color.rgb(0, 255, 0, 0.8);
-    private static final Color COLOR_CAPTURE = Color.rgb(255, 0, 0, 8.0);
+    private static final Color COLOR_CAPTURE = Color.rgb(255, 0, 0, 0.8);
+
+    public SimpleBoardRenderer(){
+
+    }
 
     @Override
     public void drawBackground(GraphicsContext gc, double width, double height) {
