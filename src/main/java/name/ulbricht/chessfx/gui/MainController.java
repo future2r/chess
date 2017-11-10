@@ -152,28 +152,36 @@ public final class MainController implements Initializable {
                 if (focused != null) {
                     Coordinate coordinate = focused.getCoordinate();
                     if (!coordinate.isLeftColumn()) this.canvas.focusSquareAt(coordinate.moveLeft());
-                } else this.canvas.focusSquareAt(Coordinate.valueOf("a8"));
+                    else
+                        this.canvas.focusSquareAt(Coordinate.valueOf(Coordinate.COLUMNS - 1, coordinate.getRowIndex()));
+                } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
                 e.consume();
                 break;
             case RIGHT:
                 if (focused != null) {
                     Coordinate coordinate = focused.getCoordinate();
                     if (!coordinate.isRightColumn()) this.canvas.focusSquareAt(coordinate.moveRight());
-                } else this.canvas.focusSquareAt(Coordinate.valueOf("a8"));
+                    else
+                        this.canvas.focusSquareAt(Coordinate.valueOf(0, coordinate.getRowIndex()));
+                } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
                 e.consume();
                 break;
             case UP:
                 if (focused != null) {
                     Coordinate coordinate = focused.getCoordinate();
                     if (!coordinate.isTopRow()) this.canvas.focusSquareAt(coordinate.moveUp());
-                } else this.canvas.focusSquareAt(Coordinate.valueOf("a8"));
+                    else
+                        this.canvas.focusSquareAt(Coordinate.valueOf(coordinate.getColumnIndex(), 0));
+                } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
                 e.consume();
                 break;
             case DOWN:
                 if (focused != null) {
                     Coordinate coordinate = focused.getCoordinate();
                     if (!coordinate.isBottomRow()) this.canvas.focusSquareAt(coordinate.moveDown());
-                } else this.canvas.focusSquareAt(Coordinate.valueOf("a8"));
+                    else
+                        this.canvas.focusSquareAt(Coordinate.valueOf(coordinate.getColumnIndex(), Coordinate.ROWS - 1));
+                } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
                 e.consume();
                 break;
             case ENTER:
