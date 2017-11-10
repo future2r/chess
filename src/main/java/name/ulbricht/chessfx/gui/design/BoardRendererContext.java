@@ -6,6 +6,8 @@ public interface BoardRendererContext {
 
     Board getBoard();
 
+    boolean isBoardFocused();
+
     Board.Square getFocusedSquare();
 
     Board.Square getSelectedSquare();

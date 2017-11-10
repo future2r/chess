@@ -1,6 +1,7 @@
 package name.ulbricht.chessfx.gui;
 
-import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,7 +20,6 @@ import javafx.util.Duration;
 import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.core.Game;
-import name.ulbricht.chessfx.core.Move;
 import name.ulbricht.chessfx.gui.design.BoardDesign;
 
 import java.io.IOException;
@@ -50,6 +50,8 @@ public final class MainController implements Initializable {
     private Label currentPlayerValueLabel;
     @FXML
     private TreeTableView<MoveItem> legalMovesTreeTableView;
+    @FXML
+    private Button performMoveButton;
 
     private Game game;
     private BoardCanvas canvas;
@@ -76,7 +78,17 @@ public final class MainController implements Initializable {
         this.canvas.setOnKeyPressed(this::keyPressedOnBoard);
 
         createDesignMenuItems();
+
         this.currentPlayerValueLabel.setText(this.game.getCurrentPlayer().getDisplayName());
+
+        this.legalMovesTreeTableView.getSelectionModel().selectedItemProperty().addListener(a -> moveSelected());
+
+        ReadOnlyObjectProperty<TreeItem<MoveItem>> selectedMoveProperty = this.legalMovesTreeTableView.getSelectionModel().selectedItemProperty();
+        performMoveButton.disableProperty().bind(
+                Bindings.isNull(selectedMoveProperty)
+                        .or(Bindings.createBooleanBinding(() -> (selectedMoveProperty.get() != null)
+                                && (selectedMoveProperty.get().getValue().getType() != MoveItem.Type.MOVE), selectedMoveProperty)));
+
         updateLegalMoves();
     }
 
@@ -111,6 +123,8 @@ public final class MainController implements Initializable {
     }
 
     private void mousePressedOnBoard(MouseEvent e) {
+        if (!this.canvas.isFocused()) this.canvas.requestFocus();
+
         Board.Square square = this.canvas.getSquareAt(e.getX(), e.getY());
         if (square != null) {
             this.canvas.focusSquareAt(square.getCoordinate());
@@ -207,6 +221,10 @@ public final class MainController implements Initializable {
         this.legalMovesTreeTableView.setRoot(rootItem);
     }
 
+    private void moveSelected() {
+
+    }
+
     @FXML
     private void exitApplication() {
         getStage().close();
@@ -220,6 +238,11 @@ public final class MainController implements Initializable {
         alert.setTitle(Messages.getString("about.title"));
         alert.setContentText(Messages.getString("about.contentText"));
         alert.showAndWait();
+    }
+
+    @FXML
+    private void performMove() {
+
     }
 
     private Scene getScene() {

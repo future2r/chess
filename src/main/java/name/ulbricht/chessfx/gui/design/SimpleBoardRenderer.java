@@ -25,12 +25,6 @@ final class SimpleBoardRenderer extends AbstractBoardRenderer {
     }
 
     @Override
-    public void drawBackground(GraphicsContext gc, double width, double height) {
-        gc.setFill(Color.WHITE);
-        gc.fillRect(0, 0, width, height);
-    }
-
-    @Override
     public void drawSquare(GraphicsContext gc, double size, Board.Square square) {
         // background
         Color backgroundColor;
@@ -43,7 +37,7 @@ final class SimpleBoardRenderer extends AbstractBoardRenderer {
         if (square.equals(getContext().getSelectedSquare())) {
             gc.setFill(COLOR_SELECTED);
             gc.fillRect(0, 0, size + 1, size + 1);
-        } else if (square.equals(getContext().getFocusedSquare())) {
+        } else if (getContext().isBoardFocused() && square.equals(getContext().getFocusedSquare())) {
             gc.setFill(COLOR_FOCUSED);
             gc.fillRect(0, 0, size + 1, size + 1);
         }

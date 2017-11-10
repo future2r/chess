@@ -50,6 +50,10 @@ public final class MoveItem {
 
     }
 
+    Type getType(){
+        return type;
+    }
+
     public ReadOnlyStringProperty nameProperty() {
         return this.nameProperty.getReadOnlyProperty();
     }

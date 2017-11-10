@@ -31,11 +31,7 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
             this.pieceImages.put(player, new HashMap<>());
     }
 
-    @Override
-    public void drawBackground(GraphicsContext gc, double width, double height) {
-        gc.setFill(Color.DARKGRAY);
-        gc.fillRect(0, 0, width, height);
-    }
+
 
     @Override
     public void drawSquare(GraphicsContext gc, double size, Board.Square square) {
@@ -45,7 +41,7 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
         // focused & selected
         if (square.equals(getContext().getSelectedSquare())) {
             drawHighlight(gc, size, COLOR_SELECTED);
-        } else if (square.equals(getContext().getFocusedSquare())) {
+        } else if (getContext().isBoardFocused() && square.equals(getContext().getFocusedSquare())) {
             drawHighlight(gc, size, COLOR_FOCUSED);
         }
 

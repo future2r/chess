@@ -51,6 +51,8 @@ final class BoardCanvas extends Canvas implements BoardRendererContext {
         widthProperty().addListener(e -> draw());
         heightProperty().addListener(e -> draw());
 
+        focusedProperty().addListener(e -> draw());
+
         selectedSquareProperty().addListener(e -> draw());
         focusedSquareProperty().addListener(e -> draw());
         rendererProperty().addListener(e -> draw());
@@ -58,6 +60,11 @@ final class BoardCanvas extends Canvas implements BoardRendererContext {
 
     public Board getBoard() {
         return this.board;
+    }
+
+    @Override
+    public boolean isBoardFocused() {
+        return this.isFocused();
     }
 
     ReadOnlyObjectProperty<Board.Square> selectedSquareProperty() {
