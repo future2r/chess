@@ -7,19 +7,19 @@ import name.ulbricht.chessfx.core.Move;
 
 public final class MoveItem {
 
-    enum Type  {
+    enum Type {
         ROOT, SOURCE, MOVE;
     }
 
-    static MoveItem root(){
-        return new MoveItem(Type.ROOT, null,null);
+    static MoveItem root() {
+        return new MoveItem(Type.ROOT, null, null);
     }
 
-    static MoveItem source(Board.Square square){
+    static MoveItem source(Board.Square square) {
         return new MoveItem(Type.SOURCE, square, null);
     }
 
-    static MoveItem move(Move move){
+    static MoveItem move(Move move) {
         return new MoveItem(Type.MOVE, null, move);
     }
 
@@ -28,14 +28,9 @@ public final class MoveItem {
     private final ReadOnlyStringWrapper capturesProperty = new ReadOnlyStringWrapper();
     private Move move;
 
-    MoveItem(Move move) {
-        nameProperty.set("?#");
-        capturesProperty.set("?");
-    }
-
     private MoveItem(Type type, Board.Square source, Move move) {
-        this.type=type;
-        switch (this.type){
+        this.type = type;
+        switch (this.type) {
             case ROOT:
                 nameProperty.set("root");
                 break;
@@ -43,14 +38,14 @@ public final class MoveItem {
                 nameProperty.set(source.toString());
                 break;
             case MOVE:
-                nameProperty.set("?#");
-                capturesProperty.set("?");
+                nameProperty.set(move.getTo().getCoordinate().toString());
+                capturesProperty.set(move.getCaptures() != null ? move.getCaptures().toString() : null);
                 break;
         }
 
     }
 
-    Type getType(){
+    Type getType() {
         return type;
     }
 
@@ -70,7 +65,7 @@ public final class MoveItem {
         return capturesProperty.get();
     }
 
-    Move getMove(){
+    Move getMove() {
         return this.move;
     }
 }

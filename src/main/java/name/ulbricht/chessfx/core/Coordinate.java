@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public final class Coordinate {
+public final class Coordinate implements Comparable<Coordinate> {
 
     public static final int COLUMNS = 8;
     public static final int ROWS = 8;
@@ -70,6 +70,11 @@ public final class Coordinate {
     @Override
     public String toString() {
         return getColumnName() + getRowName();
+    }
+
+    @Override
+    public int compareTo(Coordinate other) {
+        return Integer.compare(this.index, other.index);
     }
 
     public boolean isLeftColumn() {

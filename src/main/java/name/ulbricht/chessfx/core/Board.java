@@ -1,10 +1,11 @@
 package name.ulbricht.chessfx.core;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public final class Board {
 
-    public static final class Square {
+    public static final class Square implements Comparable<Square> {
 
         private final Coordinate coordinate;
         private Piece piece;
@@ -33,6 +34,11 @@ public final class Board {
         public String toString() {
             return String.format("%s: %s", this.coordinate, this.piece != null ? this.piece : "");
         }
+
+        @Override
+        public int compareTo(Square other) {
+            return this.coordinate.compareTo(other.coordinate);
+        }
     }
 
     private final Square[] squares;
@@ -40,6 +46,10 @@ public final class Board {
     public Board() {
         // create all required squares
         this.squares = Coordinate.values().map(Square::new).toArray(Square[]::new);
+    }
+
+    Stream<Square> getSquares() {
+        return Stream.of(this.squares);
     }
 
     public Square getSquare(Coordinate coordinate) {

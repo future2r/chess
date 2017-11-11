@@ -23,6 +23,7 @@ public final class Piece {
 
     private final Type type;
     private final Player player;
+    private int moveCount;
 
     public Piece(Type type, Player player) {
         this.type = Objects.requireNonNull(type, "type cannot be null");
@@ -35,6 +36,10 @@ public final class Piece {
 
     public Player getPlayer() {
         return this.player;
+    }
+
+    public int getMoveCount() {
+        return this.moveCount;
     }
 
     @Override

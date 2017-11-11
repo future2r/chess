@@ -20,10 +20,13 @@ import javafx.util.Duration;
 import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.core.Game;
+import name.ulbricht.chessfx.core.Move;
 import name.ulbricht.chessfx.gui.design.BoardDesign;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public final class MainController implements Initializable {
@@ -214,17 +217,18 @@ public final class MainController implements Initializable {
     private void updateLegalMoves() {
         TreeItem<MoveItem> rootItem = new TreeItem<>(MoveItem.root());
 
-        TreeItem<MoveItem> squareItem = new TreeItem<>(MoveItem.source(this.game.getBoard().getSquare(Coordinate.valueOf("a2"))));
-        squareItem.setExpanded(true);
-        rootItem.getChildren().add(squareItem);
-        squareItem.getChildren().add(new TreeItem<>(MoveItem.move(null)));
-        squareItem.getChildren().add(new TreeItem<>(MoveItem.move(null)));
+        for (Map.Entry<Board.Square, List<Move>> entry : this.game.getLegalMoves().entrySet()) {
 
-        squareItem = new TreeItem<>(MoveItem.source(this.game.getBoard().getSquare(Coordinate.valueOf("b1"))));
-        squareItem.setExpanded(true);
-        rootItem.getChildren().add(squareItem);
-        squareItem.getChildren().add(new TreeItem<>(MoveItem.move(null)));
-        squareItem.getChildren().add(new TreeItem<>(MoveItem.move(null)));
+            Board.Square from = entry.getKey();
+            TreeItem<MoveItem> sourceItem = new TreeItem<>(MoveItem.source(from));
+            rootItem.getChildren().add(sourceItem);
+
+            List<Move> moves = entry.getValue();
+            for (Move move : moves){
+                TreeItem<MoveItem> moveItem = new TreeItem<>(MoveItem.move(move));
+                sourceItem.getChildren().add(moveItem);
+            }
+        }
 
         this.legalMovesTreeTableView.setRoot(rootItem);
     }
