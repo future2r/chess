@@ -16,8 +16,8 @@ final class SimpleBoardRenderer extends AbstractBoardRenderer {
 
     private static final Color COLOR_FOCUSED = Color.rgb(255, 255, 0, 0.3);
     private static final Color COLOR_SELECTED = Color.rgb(255, 255, 0, 0.8);
-    private static final Color COLOR_MOVE_TARGET = Color.rgb(0, 255, 0, 0.8);
-    private static final Color COLOR_CAPTURE = Color.rgb(255, 0, 0, 0.8);
+    private static final Color COLOR_TO = Color.rgb(0, 255, 0, 0.5);
+    private static final Color COLOR_CAPTURED = Color.rgb(255, 0, 0, 0.5);
 
     public SimpleBoardRenderer() {
 
@@ -72,6 +72,22 @@ final class SimpleBoardRenderer extends AbstractBoardRenderer {
             gc.setTextBaseline(VPos.CENTER);
             gc.setFont(Font.font("SansSerif", FontWeight.BOLD, size * 0.3));
             gc.fillText(piece.getType().getShortName(), size / 2, size / 2);
+        }
+
+        // move target
+        if (getContext().isDisplayedToSquare(square)) {
+            gc.setFill(COLOR_TO);
+            double circleInset = 0.25 * size;
+            double circleSize = size - (2 * circleInset);
+            gc.fillOval(circleInset, circleInset, circleSize, circleSize);
+        }
+
+        // captured
+        if (getContext().isDisplayedCapturedSquare(square)) {
+            gc.setFill(COLOR_CAPTURED);
+            double circleInset = 0.25 * size;
+            double circleSize = size - (2 * circleInset);
+            gc.fillOval(circleInset, circleInset, circleSize, circleSize);
         }
     }
 }

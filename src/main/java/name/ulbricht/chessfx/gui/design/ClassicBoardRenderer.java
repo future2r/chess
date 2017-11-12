@@ -19,8 +19,8 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
 
     private static final Color COLOR_FOCUSED = Color.rgb(255, 255, 0, 0.5);
     private static final Color COLOR_SELECTED = Color.rgb(255, 255, 0, 1.0);
-    private static final Color COLOR_MOVE_TARGET = Color.rgb(0, 255, 0, 1.0);
-    private static final Color COLOR_CAPTURE = Color.rgb(255, 0, 0, 1.0);
+    private static final Color COLOR_TO = Color.rgb(0, 255, 0, 1.0);
+    private static final Color COLOR_CAPTURED = Color.rgb(255, 0, 0, 1.0);
 
     private final Image lightSquareImage;
     private final Image darkSquareImage;
@@ -48,9 +48,9 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
 
         // focused & selected
         if (square.equals(getContext().getSelectedSquare())) {
-            drawHighlight(gc, size, COLOR_SELECTED);
+            drawOuterHighlight(gc, size, COLOR_SELECTED);
         } else if (getContext().isBoardFocused() && square.equals(getContext().getFocusedSquare())) {
-            drawHighlight(gc, size, COLOR_FOCUSED);
+            drawOuterHighlight(gc, size, COLOR_FOCUSED);
         }
 
         if (!square.isEmpty()) {
@@ -65,9 +65,15 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
 
             gc.drawImage(image, (size - scaledImageWidth) / 2, (size - scaledImageHeight) / 2, scaledImageWidth, scaledImageHeight);
         }
+
+        // move target
+        if (getContext().isDisplayedToSquare(square)) drawInnerHighlight(gc, size, COLOR_TO);
+
+        // captured
+        if (getContext().isDisplayedCapturedSquare(square)) drawInnerHighlight(gc, size, COLOR_CAPTURED);
     }
 
-    private void drawHighlight(GraphicsContext gc, double size, Color color) {
+    private void drawOuterHighlight(GraphicsContext gc, double squareSize, Color color) {
         Stop[] stops = new Stop[]{
                 new Stop(0.0, Color.TRANSPARENT),
                 new Stop(0.6, Color.TRANSPARENT),
@@ -75,10 +81,22 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
                 new Stop(1.0, Color.TRANSPARENT)
         };
         RadialGradient radialGradient =
-                new RadialGradient(0, 0, size / 2, size / 2,
-                        size / 2, false, CycleMethod.NO_CYCLE, stops);
+                new RadialGradient(0, 0, squareSize / 2, squareSize / 2,
+                        squareSize / 2, false, CycleMethod.NO_CYCLE, stops);
         gc.setFill(radialGradient);
-        gc.fillOval(0, 0, size, size);
+        gc.fillOval(0, 0, squareSize, squareSize);
+    }
+
+    private void drawInnerHighlight(GraphicsContext gc, double squareSize, Color color) {
+        Stop[] stops = new Stop[]{
+                new Stop(0.0, color),
+                new Stop(1.0, Color.TRANSPARENT)
+        };
+        RadialGradient radialGradient =
+                new RadialGradient(0, 0, squareSize / 2, squareSize / 2,
+                        squareSize / 4, false, CycleMethod.NO_CYCLE, stops);
+        gc.setFill(radialGradient);
+        gc.fillOval(0, 0, squareSize, squareSize);
     }
 
     private Image loadImage(String resourceName) {

@@ -4,17 +4,21 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.core.Coordinate;
+import name.ulbricht.chessfx.core.Move;
 import name.ulbricht.chessfx.core.Square;
 import name.ulbricht.chessfx.gui.design.BoardRenderer;
 import name.ulbricht.chessfx.gui.design.BoardRendererContext;
 
 import java.util.stream.Collectors;
 
-final class BoardCanvas extends Canvas implements BoardRendererContext {
+final class BoardCanvas extends Canvas {
 
     private static final class Dimensions {
 
@@ -41,9 +45,46 @@ final class BoardCanvas extends Canvas implements BoardRendererContext {
         }
     }
 
+    private class RendererContextImpl implements BoardRendererContext {
+
+        @Override
+        public Board getBoard() {
+            return BoardCanvas.this.boardProperty().get();
+        }
+
+        @Override
+        public boolean isBoardFocused() {
+            return BoardCanvas.this.isFocused();
+        }
+
+        @Override
+        public Square getFocusedSquare() {
+            return BoardCanvas.this.focusedSquareProperty().get();
+        }
+
+        @Override
+        public Square getSelectedSquare() {
+            return BoardCanvas.this.selectedSquareProperty().get();
+        }
+
+        @Override
+        public boolean isDisplayedToSquare(Square square) {
+            return BoardCanvas.this.displayedMovesProperty().get().stream()
+                    .anyMatch(m -> square.equals(m.getToSquare()));
+        }
+
+        @Override
+        public boolean isDisplayedCapturedSquare(Square square) {
+            return BoardCanvas.this.displayedMovesProperty().get().stream()
+                    .anyMatch(m -> square.equals(m.getCapturedSquare()));
+        }
+    }
+
+    private final BoardRendererContext rendererContext = new RendererContextImpl();
     private final ObjectProperty<Board> boardProperty = new SimpleObjectProperty<>();
     private final ReadOnlyObjectWrapper<Square> selectedSquareProperty = new ReadOnlyObjectWrapper<>();
     private final ReadOnlyObjectWrapper<Square> focusedSquareProperty = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<ObservableList<Move>> displayedMovesProperty = new ReadOnlyObjectWrapper(FXCollections.observableArrayList());
     private final ObjectProperty<BoardRenderer> rendererProperty = new SimpleObjectProperty<>();
 
     BoardCanvas(Board board) {
@@ -56,23 +97,23 @@ final class BoardCanvas extends Canvas implements BoardRendererContext {
         boardProperty.addListener(e -> draw());
         selectedSquareProperty().addListener(e -> draw());
         focusedSquareProperty().addListener(e -> draw());
+        displayedMovesProperty().get().addListener((ListChangeListener<? super Move>) c -> draw());
         rendererProperty().addListener(e -> draw());
     }
 
-    @Override
-    public boolean isBoardFocused() {
-        return this.isFocused();
+    BoardRendererContext getRendererContext() {
+        return this.rendererContext;
     }
 
-    ObjectProperty<Board> boardProperty(){
+    ObjectProperty<Board> boardProperty() {
         return this.boardProperty;
     }
 
-    public Board getBoard(){
+    public Board getBoard() {
         return boardProperty().get();
     }
 
-    void setBoard(Board board){
+    void setBoard(Board board) {
         this.boardProperty().set(board);
     }
 
@@ -106,6 +147,14 @@ final class BoardCanvas extends Canvas implements BoardRendererContext {
 
     void clearSquareFocus() {
         this.focusedSquareProperty.set(null);
+    }
+
+    ReadOnlyObjectProperty<ObservableList<Move>> displayedMovesProperty() {
+        return this.displayedMovesProperty.getReadOnlyProperty();
+    }
+
+    ObservableList<Move> getDisplayedMoves() {
+        return displayedMovesProperty.get();
     }
 
     ObjectProperty<BoardRenderer> rendererProperty() {

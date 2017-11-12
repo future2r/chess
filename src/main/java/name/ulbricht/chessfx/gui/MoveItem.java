@@ -8,46 +8,58 @@ import name.ulbricht.chessfx.core.Square;
 public final class MoveItem {
 
     enum Type {
-        ROOT, SOURCE, MOVE;
+        ROOT, FROM, MOVE
     }
 
     static MoveItem root() {
         return new MoveItem(Type.ROOT, null, null);
     }
 
-    static MoveItem source(Square square) {
-        return new MoveItem(Type.SOURCE, square, null);
+    static MoveItem from(Square square) {
+        return new MoveItem(Type.FROM, square, null);
     }
 
     static MoveItem move(Move move) {
         return new MoveItem(Type.MOVE, null, move);
     }
 
-    private Type type;
+    private final Type type;
+    private final Square fromSquare;
+    private final Move move;
     private final ReadOnlyStringWrapper nameProperty = new ReadOnlyStringWrapper();
-    private final ReadOnlyStringWrapper capturesProperty = new ReadOnlyStringWrapper();
-    private Move move;
+    private final ReadOnlyStringWrapper capturedSquareProperty = new ReadOnlyStringWrapper();
 
-    private MoveItem(Type type, Square source, Move move) {
+    private MoveItem(Type type, Square fromSquare, Move move) {
         this.type = type;
         switch (this.type) {
             case ROOT:
-                nameProperty.set("root");
+                this.fromSquare = null;
+                this.move = null;
+                this.nameProperty.set("root");
                 break;
-            case SOURCE:
-                nameProperty.set(source.toString());
+            case FROM:
+                this.fromSquare = fromSquare;
+                this.move = null;
+                this.nameProperty.set(fromSquare.toString());
                 break;
             case MOVE:
+                this.fromSquare = move.getFromSquare();
                 this.move = move;
-                nameProperty.set(move.getTo().getCoordinate().toString());
-                capturesProperty.set(move.getCaptures() != null ? move.getCaptures().toString() : null);
+                this.nameProperty.set(move.getToSquare().getCoordinate().toString());
+                this.capturedSquareProperty.set(move.getCapturedSquare() != null ? move.getCapturedSquare().toString() : null);
                 break;
+            default:
+                throw new IllegalArgumentException("Unexpected type " + this.type);
         }
 
     }
 
     Type getType() {
         return type;
+    }
+
+    Square getFromSquare() {
+        return this.fromSquare;
     }
 
     public ReadOnlyStringProperty nameProperty() {
@@ -58,12 +70,12 @@ public final class MoveItem {
         return nameProperty.get();
     }
 
-    public ReadOnlyStringProperty capturesProperty() {
-        return this.capturesProperty.getReadOnlyProperty();
+    public ReadOnlyStringProperty capturedSquareProperty() {
+        return this.capturedSquareProperty.getReadOnlyProperty();
     }
 
-    public String getCaptures() {
-        return capturesProperty.get();
+    public String getCapturedSquare() {
+        return capturedSquareProperty.get();
     }
 
     Move getMove() {

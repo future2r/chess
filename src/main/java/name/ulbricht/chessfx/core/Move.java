@@ -4,42 +4,42 @@ import java.util.Objects;
 
 public final class Move {
 
-    private final Square from;
-    private final Square to;
-    private final Square captures;
+    private final Square fromSquare;
+    private final Square toSquare;
+    private final Square capturedSquare;
 
-    public Move(Square from, Square to) {
-        this(from, to, null);
+    public Move(Square fromSquare, Square toSquare) {
+        this(fromSquare, toSquare, null);
     }
 
-    public Move(Square from, Square to, Square captures) {
-        this.from = Objects.requireNonNull(from, "from cannot be null");
-        this.to = Objects.requireNonNull(to, "to cannot be null");
-        if (captures == null && !this.to.isEmpty()) this.captures = this.to;
-        else this.captures = null;
+    public Move(Square fromSquare, Square toSquare, Square capturedSquare) {
+        this.fromSquare = Objects.requireNonNull(fromSquare, "fromSquare cannot be null");
+        this.toSquare = Objects.requireNonNull(toSquare, "toSquare cannot be null");
+        if (capturedSquare == null && !this.toSquare.isEmpty()) this.capturedSquare = this.toSquare;
+        else this.capturedSquare = null;
     }
 
-    public Square getFrom() {
-        return this.from;
+    public Square getFromSquare() {
+        return this.fromSquare;
     }
 
-    public Square getTo() {
-        return this.to;
+    public Square getToSquare() {
+        return this.toSquare;
     }
 
-    public Square getCaptures() {
-        return this.captures;
+    public Square getCapturedSquare() {
+        return this.capturedSquare;
     }
 
     void perform() {
-        if (this.captures != null) {
-            this.captures.setPiece(null);
+        if (this.capturedSquare != null) {
+            this.capturedSquare.setPiece(null);
         }
 
-        Piece piece = this.from.getPiece();
-        this.from.setPiece(null);
+        Piece piece = this.fromSquare.getPiece();
+        this.fromSquare.setPiece(null);
 
-        this.to.setPiece(piece);
+        this.toSquare.setPiece(piece);
         piece.incrementMoveCount();
     }
 }

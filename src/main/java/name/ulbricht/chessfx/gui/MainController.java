@@ -84,7 +84,7 @@ public final class MainController implements Initializable {
 
         updateCurrentPlayer();
 
-        this.legalMovesTreeTableView.getSelectionModel().selectedItemProperty().addListener(a -> moveSelected());
+        this.legalMovesTreeTableView.getSelectionModel().selectedItemProperty().addListener(a -> moveSelectionChanged());
 
         ReadOnlyObjectProperty<TreeItem<MoveItem>> selectedMoveProperty = this.legalMovesTreeTableView.getSelectionModel().selectedItemProperty();
         performMoveButton.disableProperty().bind(
@@ -116,7 +116,7 @@ public final class MainController implements Initializable {
     private void changeDesign(ActionEvent e) {
         RadioMenuItem menuItem = (RadioMenuItem) e.getSource();
         BoardDesign design = (BoardDesign) menuItem.getUserData();
-        this.canvas.setRenderer(design.createRenderer(this.canvas));
+        this.canvas.setRenderer(design.createRenderer(this.canvas.getRendererContext()));
     }
 
     private void boardTooltipShowing() {
@@ -214,7 +214,7 @@ public final class MainController implements Initializable {
         this.selectedSquareLabel.setText(text);
     }
 
-    private void updateCurrentPlayer(){
+    private void updateCurrentPlayer() {
         this.currentPlayerValueLabel.setText(this.game.getCurrentPlayer().getDisplayName());
     }
 
@@ -224,7 +224,7 @@ public final class MainController implements Initializable {
         for (Map.Entry<Square, List<Move>> entry : this.game.getLegalMoves().entrySet()) {
 
             Square from = entry.getKey();
-            TreeItem<MoveItem> sourceItem = new TreeItem<>(MoveItem.source(from));
+            TreeItem<MoveItem> sourceItem = new TreeItem<>(MoveItem.from(from));
             rootItem.getChildren().add(sourceItem);
 
             List<Move> moves = entry.getValue();
@@ -237,8 +237,25 @@ public final class MainController implements Initializable {
         this.legalMovesTreeTableView.setRoot(rootItem);
     }
 
-    private void moveSelected() {
+    private void moveSelectionChanged() {
+        this.canvas.getDisplayedMoves().clear();
 
+        TreeItem<MoveItem> selectedItem = this.legalMovesTreeTableView.getSelectionModel().getSelectedItem();
+        if (selectedItem != null) {
+            MoveItem moveItem = selectedItem.getValue();
+            switch (moveItem.getType()) {
+                case FROM:
+                    this.canvas.focusSquareAt(moveItem.getFromSquare().getCoordinate());
+                    this.canvas.selectSquareAt(moveItem.getFromSquare().getCoordinate());
+                    this.canvas.getDisplayedMoves().addAll(this.game.getLegalMoves().get(moveItem.getFromSquare()));
+                    break;
+                case MOVE:
+                    this.canvas.focusSquareAt(moveItem.getFromSquare().getCoordinate());
+                    this.canvas.selectSquareAt(moveItem.getFromSquare().getCoordinate());
+                    this.canvas.getDisplayedMoves().add(moveItem.getMove());
+                    break;
+            }
+        }
     }
 
     @FXML
@@ -258,9 +275,9 @@ public final class MainController implements Initializable {
 
     @FXML
     private void performMove() {
-        TreeItem<MoveItem> item = this.legalMovesTreeTableView.getSelectionModel().getSelectedItem();
-        if (item != null) {
-            MoveItem moveItem = item.getValue();
+        TreeItem<MoveItem> selectedItem = this.legalMovesTreeTableView.getSelectionModel().getSelectedItem();
+        if (selectedItem != null) {
+            MoveItem moveItem = selectedItem.getValue();
             if (moveItem.getType() == MoveItem.Type.MOVE) {
                 Move move = moveItem.getMove();
                 this.game.performMove(move);

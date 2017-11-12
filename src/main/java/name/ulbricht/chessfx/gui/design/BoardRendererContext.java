@@ -12,4 +12,8 @@ public interface BoardRendererContext {
     Square getFocusedSquare();
 
     Square getSelectedSquare();
+
+    boolean isDisplayedToSquare(Square square);
+
+    boolean isDisplayedCapturedSquare(Square square);
 }

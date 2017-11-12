@@ -16,9 +16,9 @@ public class MoveTest {
 
         Move move = new Move(fromSquare, toSquare);
 
-        assertEquals(fromSquare, move.getFrom());
-        assertEquals(toSquare, move.getTo());
-        assertNull(move.getCaptures());
+        assertEquals(fromSquare, move.getFromSquare());
+        assertEquals(toSquare, move.getToSquare());
+        assertNull(move.getCapturedSquare());
     }
 
     @Test
@@ -31,8 +31,8 @@ public class MoveTest {
 
         Move move = new Move(fromSquare, toSquare);
 
-        assertEquals(fromSquare, move.getFrom());
-        assertEquals(toSquare, move.getTo());
-        assertEquals(toSquare, move.getCaptures());
+        assertEquals(fromSquare, move.getFromSquare());
+        assertEquals(toSquare, move.getToSquare());
+        assertEquals(toSquare, move.getCapturedSquare());
     }
 }
