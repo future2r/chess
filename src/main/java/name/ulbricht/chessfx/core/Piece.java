@@ -2,7 +2,7 @@ package name.ulbricht.chessfx.core;
 
 import java.util.Objects;
 
-public final class Piece {
+public final class Piece implements Cloneable {
 
     public enum Type {
         PAWN, ROOK, KNIGHT, BISHOP, QUEEN, KING;
@@ -42,6 +42,23 @@ public final class Piece {
         return this.moveCount;
     }
 
+    public void setMoveCount(int moveCount) {
+        this.moveCount = moveCount;
+    }
+
+    public void incrementMoveCount() {
+        this.moveCount++;
+    }
+
+    @Override
+    public Piece clone() {
+        try {
+            return (Piece) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw new InternalError(ex);
+        }
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(this.type, this.player);
@@ -53,7 +70,9 @@ public final class Piece {
         if (obj == null || this.getClass() != obj.getClass()) return false;
         Piece other = (Piece) obj;
 
-        return Objects.equals(this.type, other.type) && Objects.equals(this.player, other.player);
+        return Objects.equals(this.type, other.type)
+                && Objects.equals(this.player, other.player)
+                && this.moveCount == other.moveCount;
     }
 
     @Override

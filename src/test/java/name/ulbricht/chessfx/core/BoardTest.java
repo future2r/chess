@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 public class BoardTest {
@@ -38,5 +39,16 @@ public class BoardTest {
 
             board.setPiece(setCoordinate, null);
         }
+    }
+
+    @Test
+    public void testClone() {
+        Board board = new Board();
+
+        Board clone = board.clone();
+
+        assertFalse(board == clone);
+        assertEquals(board, clone);
+
     }
 }

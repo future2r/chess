@@ -1,17 +1,19 @@
 package name.ulbricht.chessfx.core;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Stream;
 
-public final class Board {
+public final class Board implements Cloneable {
 
-    private final Square[] squares;
+    private Square[] squares;
 
     public Board() {
         // create all required squares
         this.squares = Coordinate.values().map(Square::new).toArray(Square[]::new);
     }
 
-    Stream<Square> getSquares() {
+    Stream<Square> squares() {
         return Stream.of(this.squares);
     }
 
@@ -55,4 +57,28 @@ public final class Board {
         return getSquare(coordinate).getPiece();
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(Arrays.deepHashCode(this.squares));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || this.getClass() != obj.getClass()) return false;
+
+        Board other = (Board) obj;
+        return Arrays.deepEquals(this.squares, other.squares);
+    }
+
+    @Override
+    public Board clone() {
+        try {
+            Board clone = (Board) super.clone();
+            clone.squares = Stream.of(this.squares).map(s -> s.clone()).toArray(Square[]::new);
+            return clone;
+        } catch (CloneNotSupportedException ex) {
+            throw new InternalError(ex);
+        }
+    }
 }

@@ -2,8 +2,7 @@ package name.ulbricht.chessfx.core;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public final class PieceTest {
 
@@ -40,5 +39,20 @@ public final class PieceTest {
         Piece piece = new Piece(Piece.Type.KING, Player.WHITE);
 
         assertEquals(String.format("%s (%s)", Piece.Type.KING.getDisplayName(), Player.WHITE.getDisplayName()), piece.toString());
+    }
+
+    @Test
+    public void testClone() {
+        Piece piece = new Piece(Piece.Type.KING, Player.WHITE);
+        piece.incrementMoveCount();
+
+        Piece clone = piece.clone();
+
+        assertFalse(piece == clone);
+        assertEquals(piece, clone);
+
+        assertEquals(piece.getType(), clone.getType());
+        assertEquals(piece.getPlayer(), clone.getPlayer());
+        assertEquals(piece.getMoveCount(), clone.getMoveCount());
     }
 }

@@ -8,7 +8,7 @@ final class Rules {
     static Map<Square, List<Move>> findLegalMoves(Board board, Player player) {
         Map<Square, List<Move>> legalMoves = new TreeMap<>();
 
-        List<Square> legalSquares = board.getSquares()
+        List<Square> legalSquares = board.squares()
                 .filter(square -> !square.isEmpty())
                 .filter(square -> square.getPiece().getPlayer() == player)
                 .collect(Collectors.toList());
