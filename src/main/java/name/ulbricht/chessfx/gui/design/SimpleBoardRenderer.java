@@ -6,7 +6,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-import name.ulbricht.chessfx.core.*;
+import name.ulbricht.chessfx.core.Piece;
+import name.ulbricht.chessfx.core.Player;
+import name.ulbricht.chessfx.core.Square;
 
 final class SimpleBoardRenderer extends AbstractBoardRenderer {
 
@@ -17,7 +19,7 @@ final class SimpleBoardRenderer extends AbstractBoardRenderer {
     private static final Color COLOR_MOVE_TARGET = Color.rgb(0, 255, 0, 0.8);
     private static final Color COLOR_CAPTURE = Color.rgb(255, 0, 0, 0.8);
 
-    public SimpleBoardRenderer(){
+    public SimpleBoardRenderer() {
 
     }
 
@@ -25,7 +27,8 @@ final class SimpleBoardRenderer extends AbstractBoardRenderer {
     public void drawSquare(GraphicsContext gc, double size, Square square) {
         // background
         Color backgroundColor;
-        if (square.getCoordinate().getColor() == Coordinate.Color.LIGHT) backgroundColor = Color.LIGHTGRAY;
+        if (((square.getCoordinate().getColumnIndex() + square.getCoordinate().getRowIndex()) % 2) == 0)
+            backgroundColor = Color.LIGHTGRAY;
         else backgroundColor = Color.DARKGRAY;
         gc.setFill(backgroundColor);
         gc.fillRect(0, 0, size + 1, size + 1);

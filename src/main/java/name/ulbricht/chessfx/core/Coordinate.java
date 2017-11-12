@@ -12,10 +12,6 @@ public final class Coordinate implements Comparable<Coordinate> {
     public static final int COLUMNS = 8;
     public static final int ROWS = 8;
 
-    public enum Color {
-        LIGHT, DARK
-    }
-
     private static final Coordinate[] cachedCoordinates;
 
     static {
@@ -48,10 +44,6 @@ public final class Coordinate implements Comparable<Coordinate> {
 
     public String getRowName() {
         return toRowName(getRowIndex());
-    }
-
-    public Color getColor() {
-        return ((getColumnIndex() + getRowIndex()) % 2 == 0) ? Color.LIGHT : Color.DARK;
     }
 
     @Override

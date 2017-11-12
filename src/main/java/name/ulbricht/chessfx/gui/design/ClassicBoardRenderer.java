@@ -6,7 +6,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
-import name.ulbricht.chessfx.core.*;
+import name.ulbricht.chessfx.core.Piece;
+import name.ulbricht.chessfx.core.Player;
+import name.ulbricht.chessfx.core.Square;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,19 +22,28 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
     private static final Color COLOR_MOVE_TARGET = Color.rgb(0, 255, 0, 1.0);
     private static final Color COLOR_CAPTURE = Color.rgb(255, 0, 0, 1.0);
 
-    private final Map<Coordinate.Color, Image> squareImages = new HashMap<>();
+    private final Image lightSquareImage;
+    private final Image darkSquareImage;
     private final Map<Player, Map<Piece.Type, Image>> pieceImages = new HashMap<>();
 
     public ClassicBoardRenderer() {
-        for (Player player : Player.values())
-            this.pieceImages.put(player, new HashMap<>());
-    }
+        this.lightSquareImage = loadImage("classic-square-light.png");
+        this.darkSquareImage = loadImage("classic-square-dark.png");
 
+        for (Player player : Player.values()) {
+            Map<Piece.Type, Image> images = new HashMap<>();
+            this.pieceImages.put(player, images);
+            for (Piece.Type type : Piece.Type.values()) {
+                images.put(type, loadImage("classic-" + player.name().toLowerCase() + "-" + type.name().toLowerCase() + ".png"));
+            }
+        }
+    }
 
 
     @Override
     public void drawSquare(GraphicsContext gc, double size, Square square) {
-        Image squareImage = this.squareImages.computeIfAbsent(square.getCoordinate().getColor(), this::loadSquareImage);
+        Image squareImage = ((square.getCoordinate().getColumnIndex() + square.getCoordinate().getRowIndex()) % 2) == 0 ?
+                this.lightSquareImage : this.darkSquareImage;
         gc.drawImage(squareImage, 0, 0, size, size);
 
         // focused & selected
@@ -44,7 +55,7 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
 
         if (!square.isEmpty()) {
             Piece piece = square.getPiece();
-            Image image = this.pieceImages.get(piece.getPlayer()).computeIfAbsent(piece.getType(), t -> loadPieceImage(t, piece.getPlayer()));
+            Image image = this.pieceImages.get(piece.getPlayer()).get(piece.getType());
 
             double imageWidth = image.getWidth();
             double imageHeight = image.getHeight();
@@ -70,13 +81,7 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
         gc.fillOval(0, 0, size, size);
     }
 
-    private Image loadSquareImage(Coordinate.Color color) {
-        String resourceName = "classic-square-" + color.name().toLowerCase() + ".png";
-        return new Image(this.getClass().getResource(resourceName).toString());
-    }
-
-    private Image loadPieceImage(Piece.Type type, Player player) {
-        String resourceName = "classic-" + player.name().toLowerCase() + "-" + type.name().toLowerCase() + ".png";
+    private Image loadImage(String resourceName) {
         return new Image(this.getClass().getResource(resourceName).toString());
     }
 }

@@ -39,8 +39,7 @@ public final class CoordinateIndexTest {
                         fields[2], // column name
                         Integer.parseInt(fields[3]), // row index
                         fields[4], // row name
-                        fields[5], // field name
-                        Coordinate.Color.valueOf(fields[6]) // color
+                        fields[5] // field name
                 });
             }
 
@@ -54,16 +53,14 @@ public final class CoordinateIndexTest {
     private final int rowIndex;
     private final String rowName;
     private final String fieldName;
-    private final Coordinate.Color color;
 
-    public CoordinateIndexTest(int fieldIndex, int columnIndex, String columnName, int rowIndex, String rowName, String fieldName, Coordinate.Color color) {
+    public CoordinateIndexTest(int fieldIndex, int columnIndex, String columnName, int rowIndex, String rowName, String fieldName) {
         this.fieldIndex = fieldIndex;
         this.columnIndex = columnIndex;
         this.columnName = columnName;
         this.rowIndex = rowIndex;
         this.rowName = rowName;
         this.fieldName = fieldName;
-        this.color = color;
     }
 
     @Test
@@ -87,8 +84,5 @@ public final class CoordinateIndexTest {
 
         // check fieldName
         assertEquals("fieldName", this.fieldName, coordinate.toString());
-
-        // check color
-        assertEquals("color", this.color, coordinate.getColor());
     }
 }
