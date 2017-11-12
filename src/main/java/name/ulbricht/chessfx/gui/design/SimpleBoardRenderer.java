@@ -6,10 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-import name.ulbricht.chessfx.core.Board;
-import name.ulbricht.chessfx.core.Coordinate;
-import name.ulbricht.chessfx.core.Piece;
-import name.ulbricht.chessfx.core.Player;
+import name.ulbricht.chessfx.core.*;
 
 final class SimpleBoardRenderer extends AbstractBoardRenderer {
 
@@ -25,7 +22,7 @@ final class SimpleBoardRenderer extends AbstractBoardRenderer {
     }
 
     @Override
-    public void drawSquare(GraphicsContext gc, double size, Board.Square square) {
+    public void drawSquare(GraphicsContext gc, double size, Square square) {
         // background
         Color backgroundColor;
         if (square.getCoordinate().getColor() == Coordinate.Color.LIGHT) backgroundColor = Color.LIGHTGRAY;

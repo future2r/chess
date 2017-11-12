@@ -1,6 +1,7 @@
 package name.ulbricht.chessfx.core;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -81,36 +82,41 @@ public final class Coordinate implements Comparable<Coordinate> {
         return getColumnIndex() == 0;
     }
 
-    public Coordinate moveLeft() {
-        if (!isLeftColumn()) return Coordinate.valueOf(this.index - 1);
-        throw new IllegalStateException("Cannot move left from " + toString());
+    public Optional<Coordinate> moveLeft() {
+        return moveTo(-1, 0);
     }
 
     public boolean isRightColumn() {
         return getColumnIndex() == (COLUMNS - 1);
     }
 
-    public Coordinate moveRight() {
-        if (!isRightColumn()) return Coordinate.valueOf(this.index + 1);
-        throw new IllegalStateException("Cannot move right from " + toString());
+    public Optional<Coordinate> moveRight() {
+        return moveTo(1, 0);
     }
 
     public boolean isTopRow() {
         return getRowIndex() == (ROWS - 1);
     }
 
-    public Coordinate moveUp() {
-        if (!isTopRow()) return Coordinate.valueOf(this.index + COLUMNS);
-        throw new IllegalStateException("Cannot move up from " + toString());
+    public Optional<Coordinate> moveUp() {
+        return moveTo(0, 1);
     }
 
     public boolean isBottomRow() {
         return getRowIndex() == 0;
     }
 
-    public Coordinate moveDown() {
-        if (!isBottomRow()) return Coordinate.valueOf(this.index - COLUMNS);
-        throw new IllegalStateException("Cannot move down from " + toString());
+    public Optional<Coordinate> moveDown() {
+        return moveTo(0, -1);
+    }
+
+    public Optional<Coordinate> moveTo(int columnOffset, int rowOffset) {
+        int newColumn = getColumnIndex() + columnOffset;
+        int newRow = getRowIndex() + rowOffset;
+
+        if (newColumn >= 0 && newColumn < COLUMNS && newRow >= 0 && newRow < ROWS)
+            return Optional.of(Coordinate.valueOf(newColumn, newRow));
+        else return Optional.empty();
     }
 
     public static String toColumnName(int columnIndex) {

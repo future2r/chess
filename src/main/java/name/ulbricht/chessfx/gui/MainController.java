@@ -17,10 +17,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
-import name.ulbricht.chessfx.core.Board;
-import name.ulbricht.chessfx.core.Coordinate;
-import name.ulbricht.chessfx.core.Game;
-import name.ulbricht.chessfx.core.Move;
+import name.ulbricht.chessfx.core.*;
 import name.ulbricht.chessfx.gui.design.BoardDesign;
 
 import java.io.IOException;
@@ -128,7 +125,7 @@ public final class MainController implements Initializable {
     private void mousePressedOnBoard(MouseEvent e) {
         if (!this.canvas.isFocused()) this.canvas.requestFocus();
 
-        Board.Square square = this.canvas.getSquareAt(e.getX(), e.getY());
+        Square square = this.canvas.getSquareAt(e.getX(), e.getY());
         if (square != null) {
             this.canvas.focusSquareAt(square.getCoordinate());
             this.canvas.selectSquareAt(square.getCoordinate());
@@ -136,7 +133,7 @@ public final class MainController implements Initializable {
     }
 
     private void mouseMovedOnBoard(MouseEvent e) {
-        Board.Square square = this.canvas.getSquareAt(e.getX(), e.getY());
+        Square square = this.canvas.getSquareAt(e.getX(), e.getY());
         if (square != null) {
             this.canvasTooltip.setText(createSquareText(square));
             Tooltip.install(this.canvas, this.canvasTooltip);
@@ -147,43 +144,43 @@ public final class MainController implements Initializable {
     }
 
     private void keyPressedOnBoard(KeyEvent e) {
-        Board.Square focused = this.canvas.getFocusedSquare();
-        Board.Square selected = this.canvas.getSelectedSquare();
+        Square focused = this.canvas.getFocusedSquare();
+        Square selected = this.canvas.getSelectedSquare();
 
         switch (e.getCode()) {
             case LEFT:
                 if (focused != null) {
                     Coordinate coordinate = focused.getCoordinate();
-                    if (!coordinate.isLeftColumn()) this.canvas.focusSquareAt(coordinate.moveLeft());
-                    else
-                        this.canvas.focusSquareAt(Coordinate.valueOf(Coordinate.COLUMNS - 1, coordinate.getRowIndex()));
+                    coordinate.moveLeft().ifPresentOrElse(
+                            this.canvas::focusSquareAt,
+                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(Coordinate.COLUMNS - 1, coordinate.getRowIndex())));
                 } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
                 e.consume();
                 break;
             case RIGHT:
                 if (focused != null) {
                     Coordinate coordinate = focused.getCoordinate();
-                    if (!coordinate.isRightColumn()) this.canvas.focusSquareAt(coordinate.moveRight());
-                    else
-                        this.canvas.focusSquareAt(Coordinate.valueOf(0, coordinate.getRowIndex()));
+                    coordinate.moveRight().ifPresentOrElse(
+                            this.canvas::focusSquareAt,
+                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(0, coordinate.getRowIndex())));
                 } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
                 e.consume();
                 break;
             case UP:
                 if (focused != null) {
                     Coordinate coordinate = focused.getCoordinate();
-                    if (!coordinate.isTopRow()) this.canvas.focusSquareAt(coordinate.moveUp());
-                    else
-                        this.canvas.focusSquareAt(Coordinate.valueOf(coordinate.getColumnIndex(), 0));
+                    coordinate.moveUp().ifPresentOrElse(
+                            this.canvas::focusSquareAt,
+                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(coordinate.getColumnIndex(), 0)));
                 } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
                 e.consume();
                 break;
             case DOWN:
                 if (focused != null) {
                     Coordinate coordinate = focused.getCoordinate();
-                    if (!coordinate.isBottomRow()) this.canvas.focusSquareAt(coordinate.moveDown());
-                    else
-                        this.canvas.focusSquareAt(Coordinate.valueOf(coordinate.getColumnIndex(), Coordinate.ROWS - 1));
+                    coordinate.moveDown().ifPresentOrElse(
+                            this.canvas::focusSquareAt,
+                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(coordinate.getColumnIndex(), Coordinate.ROWS - 1)));
                 } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
                 e.consume();
                 break;
@@ -198,7 +195,7 @@ public final class MainController implements Initializable {
         }
     }
 
-    private String createSquareText(Board.Square square) {
+    private String createSquareText(Square square) {
         if (square.isEmpty())
             return String.format(Messages.getString("squareText.emptyPattern"), square.getCoordinate());
         else
@@ -207,7 +204,7 @@ public final class MainController implements Initializable {
 
     private void updateSelectedSquareLabel() {
         String text = null;
-        Board.Square square = this.canvas.getSelectedSquare();
+        Square square = this.canvas.getSelectedSquare();
         if (square != null) {
             text = createSquareText(square);
         }
@@ -217,14 +214,14 @@ public final class MainController implements Initializable {
     private void updateLegalMoves() {
         TreeItem<MoveItem> rootItem = new TreeItem<>(MoveItem.root());
 
-        for (Map.Entry<Board.Square, List<Move>> entry : this.game.getLegalMoves().entrySet()) {
+        for (Map.Entry<Square, List<Move>> entry : this.game.getLegalMoves().entrySet()) {
 
-            Board.Square from = entry.getKey();
+            Square from = entry.getKey();
             TreeItem<MoveItem> sourceItem = new TreeItem<>(MoveItem.source(from));
             rootItem.getChildren().add(sourceItem);
 
             List<Move> moves = entry.getValue();
-            for (Move move : moves){
+            for (Move move : moves) {
                 TreeItem<MoveItem> moveItem = new TreeItem<>(MoveItem.move(move));
                 sourceItem.getChildren().add(moveItem);
             }

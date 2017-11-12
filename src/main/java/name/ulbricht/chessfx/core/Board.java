@@ -1,45 +1,8 @@
 package name.ulbricht.chessfx.core;
 
-import java.util.Objects;
 import java.util.stream.Stream;
 
 public final class Board {
-
-    public static final class Square implements Comparable<Square> {
-
-        private final Coordinate coordinate;
-        private Piece piece;
-
-        public Square(Coordinate coordinate) {
-            this.coordinate = Objects.requireNonNull(coordinate, "coordinate cannot be null");
-        }
-
-        public Coordinate getCoordinate() {
-            return this.coordinate;
-        }
-
-        public void setPiece(Piece piece) {
-            this.piece = piece;
-        }
-
-        public Piece getPiece() {
-            return this.piece;
-        }
-
-        public boolean isEmpty() {
-            return this.piece == null;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%s: %s", this.coordinate, this.piece != null ? this.piece : "");
-        }
-
-        @Override
-        public int compareTo(Square other) {
-            return this.coordinate.compareTo(other.coordinate);
-        }
-    }
 
     private final Square[] squares;
 
@@ -74,12 +37,12 @@ public final class Board {
         for (int i = 0; i < Coordinate.COLUMNS; i++) {
 
             setPiece(whiteCoordinate, new Piece(baseLinePieces[i], Player.WHITE));
-            setPiece(whiteCoordinate.moveUp(), new Piece(Piece.Type.PAWN, Player.WHITE));
-            if (!whiteCoordinate.isRightColumn()) whiteCoordinate = whiteCoordinate.moveRight();
+            setPiece(whiteCoordinate.moveUp().get(), new Piece(Piece.Type.PAWN, Player.WHITE));
+            if (!whiteCoordinate.isRightColumn()) whiteCoordinate = whiteCoordinate.moveRight().get();
 
             setPiece(blackCoordinate, new Piece(baseLinePieces[i], Player.BLACK));
-            setPiece(blackCoordinate.moveDown(), new Piece(Piece.Type.PAWN, Player.BLACK));
-            if (!blackCoordinate.isRightColumn()) blackCoordinate = blackCoordinate.moveRight();
+            setPiece(blackCoordinate.moveDown().get(), new Piece(Piece.Type.PAWN, Player.BLACK));
+            if (!blackCoordinate.isRightColumn()) blackCoordinate = blackCoordinate.moveRight().get();
         }
     }
 

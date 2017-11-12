@@ -8,6 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.core.Coordinate;
+import name.ulbricht.chessfx.core.Square;
 import name.ulbricht.chessfx.gui.design.BoardRenderer;
 import name.ulbricht.chessfx.gui.design.BoardRendererContext;
 
@@ -40,26 +41,22 @@ final class BoardCanvas extends Canvas implements BoardRendererContext {
         }
     }
 
-    private final Board board;
-    private final ReadOnlyObjectWrapper<Board.Square> selectedSquareProperty = new ReadOnlyObjectWrapper<>();
-    private final ReadOnlyObjectWrapper<Board.Square> focusedSquareProperty = new ReadOnlyObjectWrapper<>();
+    private final ObjectProperty<Board> boardProperty = new SimpleObjectProperty<>();
+    private final ReadOnlyObjectWrapper<Square> selectedSquareProperty = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<Square> focusedSquareProperty = new ReadOnlyObjectWrapper<>();
     private final ObjectProperty<BoardRenderer> rendererProperty = new SimpleObjectProperty<>();
 
     BoardCanvas(Board board) {
-        this.board = board;
+        this.boardProperty.set(board);
 
         widthProperty().addListener(e -> draw());
         heightProperty().addListener(e -> draw());
-
         focusedProperty().addListener(e -> draw());
 
+        boardProperty.addListener(e -> draw());
         selectedSquareProperty().addListener(e -> draw());
         focusedSquareProperty().addListener(e -> draw());
         rendererProperty().addListener(e -> draw());
-    }
-
-    public Board getBoard() {
-        return this.board;
     }
 
     @Override
@@ -67,32 +64,44 @@ final class BoardCanvas extends Canvas implements BoardRendererContext {
         return this.isFocused();
     }
 
-    ReadOnlyObjectProperty<Board.Square> selectedSquareProperty() {
+    ObjectProperty<Board> boardProperty(){
+        return this.boardProperty;
+    }
+
+    public Board getBoard(){
+        return boardProperty().get();
+    }
+
+    void setBoard(Board board){
+        this.boardProperty().set(board);
+    }
+
+    ReadOnlyObjectProperty<Square> selectedSquareProperty() {
         return this.selectedSquareProperty.getReadOnlyProperty();
     }
 
-    public Board.Square getSelectedSquare() {
+    public Square getSelectedSquare() {
         return selectedSquareProperty().get();
     }
 
     void selectSquareAt(Coordinate coordinate) {
-        this.selectedSquareProperty.set(this.board.getSquare(coordinate));
+        this.selectedSquareProperty.set(boardProperty().get().getSquare(coordinate));
     }
 
     void clearSquareSelection() {
         this.selectedSquareProperty.set(null);
     }
 
-    ReadOnlyObjectProperty<Board.Square> focusedSquareProperty() {
+    ReadOnlyObjectProperty<Square> focusedSquareProperty() {
         return this.focusedSquareProperty.getReadOnlyProperty();
     }
 
-    public Board.Square getFocusedSquare() {
+    public Square getFocusedSquare() {
         return focusedSquareProperty().get();
     }
 
     void focusSquareAt(Coordinate coordinate) {
-        this.focusedSquareProperty.set(this.board.getSquare(coordinate));
+        this.focusedSquareProperty.set(boardProperty().get().getSquare(coordinate));
     }
 
     void clearSquareFocus() {
@@ -111,14 +120,14 @@ final class BoardCanvas extends Canvas implements BoardRendererContext {
         rendererProperty().set(renderer);
     }
 
-    Board.Square getSquareAt(double x, double y) {
+    Square getSquareAt(double x, double y) {
         if (rendererProperty().get() != null) {
             Dimensions dim = new Dimensions(getWidth(), getHeight(), rendererProperty().get());
             int columnIndex = (int) Math.floor((x - dim.xOffset - dim.borderSize) / dim.squareSize);
             int rowIndex = (int) Math.floor(Coordinate.ROWS - (y - dim.yOffset - dim.borderSize) / dim.squareSize);
             if (columnIndex >= 0 && columnIndex < Coordinate.COLUMNS && rowIndex >= 0 && rowIndex < Coordinate.ROWS) {
                 Coordinate coordinate = Coordinate.valueOf(columnIndex, rowIndex);
-                return this.board.getSquare(coordinate);
+                return boardProperty().get().getSquare(coordinate);
             }
         }
         return null;
@@ -210,7 +219,7 @@ final class BoardCanvas extends Canvas implements BoardRendererContext {
 
             gc.save();
             gc.translate(squareXOffset, squareYOffset);
-            rendererProperty().get().drawSquare(gc, dim.squareSize, board.getSquare(coordinate));
+            rendererProperty().get().drawSquare(gc, dim.squareSize, boardProperty().get().getSquare(coordinate));
             gc.restore();
         }
     }

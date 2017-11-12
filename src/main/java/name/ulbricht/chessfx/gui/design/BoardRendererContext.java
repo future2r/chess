@@ -1,6 +1,7 @@
 package name.ulbricht.chessfx.gui.design;
 
 import name.ulbricht.chessfx.core.Board;
+import name.ulbricht.chessfx.core.Square;
 
 public interface BoardRendererContext {
 
@@ -8,7 +9,7 @@ public interface BoardRendererContext {
 
     boolean isBoardFocused();
 
-    Board.Square getFocusedSquare();
+    Square getFocusedSquare();
 
-    Board.Square getSelectedSquare();
+    Square getSelectedSquare();
 }

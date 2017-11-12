@@ -2,8 +2,8 @@ package name.ulbricht.chessfx.gui;
 
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
-import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.core.Move;
+import name.ulbricht.chessfx.core.Square;
 
 public final class MoveItem {
 
@@ -15,7 +15,7 @@ public final class MoveItem {
         return new MoveItem(Type.ROOT, null, null);
     }
 
-    static MoveItem source(Board.Square square) {
+    static MoveItem source(Square square) {
         return new MoveItem(Type.SOURCE, square, null);
     }
 
@@ -28,7 +28,7 @@ public final class MoveItem {
     private final ReadOnlyStringWrapper capturesProperty = new ReadOnlyStringWrapper();
     private Move move;
 
-    private MoveItem(Type type, Board.Square source, Move move) {
+    private MoveItem(Type type, Square source, Move move) {
         this.type = type;
         switch (this.type) {
             case ROOT:
@@ -38,6 +38,7 @@ public final class MoveItem {
                 nameProperty.set(source.toString());
                 break;
             case MOVE:
+                this.move = move;
                 nameProperty.set(move.getTo().getCoordinate().toString());
                 capturesProperty.set(move.getCaptures() != null ? move.getCaptures().toString() : null);
                 break;

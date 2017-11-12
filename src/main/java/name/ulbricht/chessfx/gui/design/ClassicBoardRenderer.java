@@ -6,10 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
-import name.ulbricht.chessfx.core.Board;
-import name.ulbricht.chessfx.core.Coordinate;
-import name.ulbricht.chessfx.core.Piece;
-import name.ulbricht.chessfx.core.Player;
+import name.ulbricht.chessfx.core.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +31,7 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
 
 
     @Override
-    public void drawSquare(GraphicsContext gc, double size, Board.Square square) {
+    public void drawSquare(GraphicsContext gc, double size, Square square) {
         Image squareImage = this.squareImages.computeIfAbsent(square.getCoordinate().getColor(), this::loadSquareImage);
         gc.drawImage(squareImage, 0, 0, size, size);
 
