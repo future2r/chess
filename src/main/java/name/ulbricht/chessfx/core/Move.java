@@ -15,7 +15,7 @@ public final class Move {
     public Move(Square from, Square to, Square captures) {
         this.from = Objects.requireNonNull(from, "from cannot be null");
         this.to = Objects.requireNonNull(to, "to cannot be null");
-        if (captures == null && !this.to.isEmpty()) this.captures = captures;
+        if (captures == null && !this.to.isEmpty()) this.captures = this.to;
         else this.captures = null;
     }
 
@@ -29,5 +29,17 @@ public final class Move {
 
     public Square getCaptures() {
         return this.captures;
+    }
+
+    void perform() {
+        if (this.captures != null) {
+            this.captures.setPiece(null);
+        }
+
+        Piece piece = this.from.getPiece();
+        this.from.setPiece(null);
+
+        this.to.setPiece(piece);
+        piece.incrementMoveCount();
     }
 }

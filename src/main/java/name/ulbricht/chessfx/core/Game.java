@@ -1,6 +1,9 @@
 package name.ulbricht.chessfx.core;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public final class Game {
 
@@ -34,5 +37,11 @@ public final class Game {
     private void findLegalMoves() {
         this.legalMoves.clear();
         this.legalMoves.putAll(Rules.findLegalMoves(this.board, this.currentPlayer));
+    }
+
+    public void performMove(Move move) {
+        move.perform();
+        this.currentPlayer = this.currentPlayer == Player.WHITE ? Player.BLACK : Player.WHITE;
+        findLegalMoves();
     }
 }

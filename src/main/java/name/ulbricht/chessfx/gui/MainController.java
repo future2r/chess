@@ -17,7 +17,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
-import name.ulbricht.chessfx.core.*;
+import name.ulbricht.chessfx.core.Coordinate;
+import name.ulbricht.chessfx.core.Game;
+import name.ulbricht.chessfx.core.Move;
+import name.ulbricht.chessfx.core.Square;
 import name.ulbricht.chessfx.gui.design.BoardDesign;
 
 import java.io.IOException;
@@ -79,7 +82,7 @@ public final class MainController implements Initializable {
 
         createDesignMenuItems();
 
-        this.currentPlayerValueLabel.setText(this.game.getCurrentPlayer().getDisplayName());
+        updateCurrentPlayer();
 
         this.legalMovesTreeTableView.getSelectionModel().selectedItemProperty().addListener(a -> moveSelected());
 
@@ -211,6 +214,10 @@ public final class MainController implements Initializable {
         this.selectedSquareLabel.setText(text);
     }
 
+    private void updateCurrentPlayer(){
+        this.currentPlayerValueLabel.setText(this.game.getCurrentPlayer().getDisplayName());
+    }
+
     private void updateLegalMoves() {
         TreeItem<MoveItem> rootItem = new TreeItem<>(MoveItem.root());
 
@@ -251,7 +258,17 @@ public final class MainController implements Initializable {
 
     @FXML
     private void performMove() {
-
+        TreeItem<MoveItem> item = this.legalMovesTreeTableView.getSelectionModel().getSelectedItem();
+        if (item != null) {
+            MoveItem moveItem = item.getValue();
+            if (moveItem.getType() == MoveItem.Type.MOVE) {
+                Move move = moveItem.getMove();
+                this.game.performMove(move);
+                this.canvas.draw();
+                updateCurrentPlayer();
+                updateLegalMoves();
+            }
+        }
     }
 
     private Scene getScene() {

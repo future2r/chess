@@ -122,7 +122,11 @@ final class Rules {
                 if (to.isPresent()) {
                     Square toSquare = board.getSquare(to.get());
                     Piece piece = toSquare.getPiece();
-                    if (piece == null || piece.getPlayer() != player) moves.add(new Move(fromSquare, toSquare));
+                    if (piece == null) moves.add(new Move(fromSquare, toSquare));
+                    else if (piece.getPlayer() != player){
+                        moves.add(new Move(fromSquare, toSquare));
+                        break;
+                    }
                     else break;
                 }
                 step++;

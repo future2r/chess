@@ -133,7 +133,7 @@ final class BoardCanvas extends Canvas implements BoardRendererContext {
         return null;
     }
 
-    private void draw() {
+    void draw() {
         double width = getWidth();
         double height = getHeight();
 
