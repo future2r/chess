@@ -1,7 +1,5 @@
 package name.ulbricht.chessfx.gui;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,8 +23,6 @@ import name.ulbricht.chessfx.gui.design.BoardDesign;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -49,13 +45,9 @@ public final class MainController implements Initializable {
     @FXML
     private Pane boardPane;
     @FXML
-    private Label selectedSquareLabel;
+    private Label selectedSquareValueLabel;
     @FXML
     private Label currentPlayerValueLabel;
-    @FXML
-    private TreeTableView<MoveItem> legalMovesTreeTableView;
-    @FXML
-    private Button performMoveButton;
 
     private Game game;
     private BoardCanvas canvas;
@@ -66,7 +58,7 @@ public final class MainController implements Initializable {
         this.game = new Game();
         this.game.start();
 
-        this.canvas = new BoardCanvas(game.getBoard());
+        this.canvas = new BoardCanvas(game);
         this.boardPane.getChildren().addAll(this.canvas);
         this.canvas.widthProperty().bind(this.boardPane.widthProperty());
         this.canvas.heightProperty().bind(this.boardPane.heightProperty());
@@ -82,18 +74,7 @@ public final class MainController implements Initializable {
         this.canvas.setOnKeyPressed(this::keyPressedOnBoard);
 
         createDesignMenuItems();
-
         updateCurrentPlayer();
-
-        this.legalMovesTreeTableView.getSelectionModel().selectedItemProperty().addListener(a -> moveSelectionChanged());
-
-        ReadOnlyObjectProperty<TreeItem<MoveItem>> selectedMoveProperty = this.legalMovesTreeTableView.getSelectionModel().selectedItemProperty();
-        performMoveButton.disableProperty().bind(
-                Bindings.isNull(selectedMoveProperty)
-                        .or(Bindings.createBooleanBinding(() -> (selectedMoveProperty.get() != null)
-                                && (selectedMoveProperty.get().getValue().getType() != MoveItem.Type.MOVE), selectedMoveProperty)));
-
-        updateLegalMoves();
     }
 
     private void createDesignMenuItems() {
@@ -217,30 +198,11 @@ public final class MainController implements Initializable {
         if (square != null) {
             text = createSquareText(square);
         }
-        this.selectedSquareLabel.setText(text);
+        this.selectedSquareValueLabel.setText(text);
     }
 
     private void updateCurrentPlayer() {
         this.currentPlayerValueLabel.setText(this.game.getCurrentPlayer().getDisplayName());
-    }
-
-    private void updateLegalMoves() {
-        TreeItem<MoveItem> rootItem = new TreeItem<>(MoveItem.root());
-
-        for (Map.Entry<Coordinate, List<Move>> entry : this.game.getLegalMoves().entrySet()) {
-
-            Coordinate from = entry.getKey();
-            TreeItem<MoveItem> sourceItem = new TreeItem<>(MoveItem.from(this.game.getBoard(), from));
-            rootItem.getChildren().add(sourceItem);
-
-            List<Move> moves = entry.getValue();
-            for (Move move : moves) {
-                TreeItem<MoveItem> moveItem = new TreeItem<>(MoveItem.move(this.game.getBoard(), move));
-                sourceItem.getChildren().add(moveItem);
-            }
-        }
-
-        this.legalMovesTreeTableView.setRoot(rootItem);
     }
 
     private void selectSquare(Coordinate coordinate) {
@@ -252,39 +214,7 @@ public final class MainController implements Initializable {
         if (move.isPresent()) {
             performMove(move.get());
         } else {
-            this.legalMovesTreeTableView.getSelectionModel().clearSelection();
-
-            Optional<TreeItem<MoveItem>> item = this.legalMovesTreeTableView.getRoot().getChildren().stream()
-                    .filter(i -> i.getValue().getType() == MoveItem.Type.FROM)
-                    .filter(i -> i.getValue().getFrom().equals(coordinate))
-                    .findFirst();
-
-            if (item.isPresent()) {
-                this.legalMovesTreeTableView.getSelectionModel().select(item.get());
-            } else {
-                this.canvas.selectSquareAt(coordinate);
-            }
-        }
-    }
-
-    private void moveSelectionChanged() {
-        this.canvas.getDisplayedMoves().clear();
-
-        TreeItem<MoveItem> selectedItem = this.legalMovesTreeTableView.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
-            MoveItem moveItem = selectedItem.getValue();
-            switch (moveItem.getType()) {
-                case FROM:
-                    this.canvas.focusSquareAt(moveItem.getFrom());
-                    this.canvas.selectSquareAt(moveItem.getFrom());
-                    this.canvas.getDisplayedMoves().addAll(this.game.getLegalMoves().get(moveItem.getFrom()));
-                    break;
-                case MOVE:
-                    this.canvas.focusSquareAt(moveItem.getFrom());
-                    this.canvas.selectSquareAt(moveItem.getFrom());
-                    this.canvas.getDisplayedMoves().add(moveItem.getMove());
-                    break;
-            }
+            this.canvas.selectSquareAt(coordinate);
         }
     }
 
@@ -298,8 +228,6 @@ public final class MainController implements Initializable {
             this.game.start();
 
             updateCurrentPlayer();
-            updateLegalMoves();
-
             this.canvas.clearSquareFocus();
             this.canvas.clearSquareSelection();
         }
@@ -321,26 +249,12 @@ public final class MainController implements Initializable {
     }
 
     @FXML
-    private void performSelectedMove() {
-        TreeItem<MoveItem> selectedItem = this.legalMovesTreeTableView.getSelectionModel().getSelectedItem();
-        if (selectedItem != null) {
-            MoveItem moveItem = selectedItem.getValue();
-            if (moveItem.getType() == MoveItem.Type.MOVE) {
-                Move move = moveItem.getMove();
-                performMove(move);
-            }
-        }
-    }
-
-    @FXML
     private void performMove(Move move) {
         this.game.performMove(move);
 
         updateCurrentPlayer();
-        updateLegalMoves();
-
+        this.canvas.clearSquareSelection();
         this.canvas.focusSquareAt(move.getTo());
-        this.canvas.selectSquareAt(move.getTo());
     }
 
     private Scene getScene() {
