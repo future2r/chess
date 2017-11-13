@@ -83,7 +83,7 @@
                                 <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                             </GridPane.margin>
                         </TreeTableView>
-                  <Button fx:id="performMoveButton" mnemonicParsing="false" onAction="#performMove" text="%main.performMoveButton.text" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                  <Button fx:id="performMoveButton" mnemonicParsing="false" onAction="#performSelectedMove" text="%main.performMoveButton.text" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets bottom="4.0" top="4.0" />
                      </GridPane.margin>

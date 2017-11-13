@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public final class MainController implements Initializable {
@@ -130,8 +131,9 @@ public final class MainController implements Initializable {
 
         Square square = this.canvas.getSquareAt(e.getX(), e.getY());
         if (square != null) {
-            this.canvas.focusSquareAt(square.getCoordinate());
-            this.canvas.selectSquareAt(square.getCoordinate());
+            Coordinate from = square.getCoordinate();
+
+            selectSquare(from);
         }
     }
 
@@ -140,9 +142,11 @@ public final class MainController implements Initializable {
         if (square != null) {
             this.canvasTooltip.setText(createSquareText(square));
             Tooltip.install(this.canvas, this.canvasTooltip);
+            this.canvas.focusSquareAt(square.getCoordinate());
         } else {
             this.canvasTooltip.setText("");
             Tooltip.uninstall(this.canvas, this.canvasTooltip);
+            this.canvas.clearSquareFocus();
         }
     }
 
@@ -188,7 +192,9 @@ public final class MainController implements Initializable {
                 e.consume();
                 break;
             case ENTER:
-                if (focused != null) this.canvas.selectSquareAt(focused.getCoordinate());
+                if (focused != null) {
+                    selectSquare(focused.getCoordinate());
+                }
                 break;
             case ESCAPE:
                 if (selected != null) this.canvas.clearSquareFocus();
@@ -237,6 +243,30 @@ public final class MainController implements Initializable {
         this.legalMovesTreeTableView.setRoot(rootItem);
     }
 
+    private void selectSquare(Coordinate coordinate) {
+        // check if we can execute a move
+        Optional<Move> move = this.canvas.getDisplayedMoves().stream()
+                .filter(m -> coordinate.equals(m.getTo()) || (m.getCaptured().isPresent() && coordinate.equals(m.getCaptured().get())))
+                .findFirst();
+
+        if (move.isPresent()) {
+            performMove(move.get());
+        } else {
+            this.legalMovesTreeTableView.getSelectionModel().clearSelection();
+
+            Optional<TreeItem<MoveItem>> item = this.legalMovesTreeTableView.getRoot().getChildren().stream()
+                    .filter(i -> i.getValue().getType() == MoveItem.Type.FROM)
+                    .filter(i -> i.getValue().getFrom().equals(coordinate))
+                    .findFirst();
+
+            if (item.isPresent()) {
+                this.legalMovesTreeTableView.getSelectionModel().select(item.get());
+            } else {
+                this.canvas.selectSquareAt(coordinate);
+            }
+        }
+    }
+
     private void moveSelectionChanged() {
         this.canvas.getDisplayedMoves().clear();
 
@@ -274,18 +304,26 @@ public final class MainController implements Initializable {
     }
 
     @FXML
-    private void performMove() {
+    private void performSelectedMove() {
         TreeItem<MoveItem> selectedItem = this.legalMovesTreeTableView.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
             MoveItem moveItem = selectedItem.getValue();
             if (moveItem.getType() == MoveItem.Type.MOVE) {
                 Move move = moveItem.getMove();
-                this.game.performMove(move);
-                this.canvas.draw();
-                updateCurrentPlayer();
-                updateLegalMoves();
+                performMove(move);
             }
         }
+    }
+
+    @FXML
+    private void performMove(Move move) {
+        this.game.performMove(move);
+
+        updateCurrentPlayer();
+        updateLegalMoves();
+
+        this.canvas.focusSquareAt(move.getTo());
+        this.canvas.selectSquareAt(move.getTo());
     }
 
     private Scene getScene() {
