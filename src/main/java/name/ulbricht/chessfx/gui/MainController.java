@@ -178,8 +178,8 @@ public final class MainController implements Initializable {
                 }
                 break;
             case ESCAPE:
-                if (selected != null) this.canvas.clearSquareFocus();
-                else if (focused != null) this.canvas.clearSquareSelection();
+                if (selected != null) this.canvas.clearSquareSelection();
+                else if (focused != null) this.canvas.clearSquareFocus();
                 e.consume();
                 break;
         }
