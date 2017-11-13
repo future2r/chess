@@ -75,14 +75,14 @@ final class Rules {
         if (to.isPresent()) {
             Square toSquare = board.getSquare(to.get());
             if (toSquare.isEmpty()) moves.add(new Move(from, to.get(), null));
-        }
 
-        // two steps forward (if not yet moved)
-        if (fromSquare.getPiece().getMoveCount() == 0) {
-            to = from.moveTo(0, 2 * direction);
-            if (to.isPresent()) {
-                Square toSquare = board.getSquare(to.get());
-                if (toSquare.isEmpty()) moves.add(new Move(from, to.get(), null));
+            // two steps forward (if not yet moved)
+            if (fromSquare.getPiece().getMoveCount() == 0 && toSquare.isEmpty()) {
+                to = from.moveTo(0, 2 * direction);
+                if (to.isPresent()) {
+                    toSquare = board.getSquare(to.get());
+                    if (toSquare.isEmpty()) moves.add(new Move(from, to.get(), null));
+                }
             }
         }
 
