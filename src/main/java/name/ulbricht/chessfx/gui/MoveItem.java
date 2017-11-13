@@ -2,8 +2,9 @@ package name.ulbricht.chessfx.gui;
 
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import name.ulbricht.chessfx.core.Board;
+import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.core.Move;
-import name.ulbricht.chessfx.core.Square;
 
 public final class MoveItem {
 
@@ -12,41 +13,41 @@ public final class MoveItem {
     }
 
     static MoveItem root() {
-        return new MoveItem(Type.ROOT, null, null);
+        return new MoveItem(Type.ROOT, null, null, null);
     }
 
-    static MoveItem from(Square square) {
-        return new MoveItem(Type.FROM, square, null);
+    static MoveItem from(Board board, Coordinate from) {
+        return new MoveItem(Type.FROM, board, from, null);
     }
 
-    static MoveItem move(Move move) {
-        return new MoveItem(Type.MOVE, null, move);
+    static MoveItem move(Board board, Move move) {
+        return new MoveItem(Type.MOVE, board, null, move);
     }
 
     private final Type type;
-    private final Square fromSquare;
+    private final Coordinate from;
     private final Move move;
     private final ReadOnlyStringWrapper nameProperty = new ReadOnlyStringWrapper();
-    private final ReadOnlyStringWrapper capturedSquareProperty = new ReadOnlyStringWrapper();
+    private final ReadOnlyStringWrapper capturedProperty = new ReadOnlyStringWrapper();
 
-    private MoveItem(Type type, Square fromSquare, Move move) {
+    private MoveItem(Type type, Board board, Coordinate from, Move move) {
         this.type = type;
         switch (this.type) {
             case ROOT:
-                this.fromSquare = null;
+                this.from = null;
                 this.move = null;
                 this.nameProperty.set("root");
                 break;
             case FROM:
-                this.fromSquare = fromSquare;
+                this.from = from;
                 this.move = null;
-                this.nameProperty.set(fromSquare.toString());
+                this.nameProperty.set(board.getSquare(this.from).toString());
                 break;
             case MOVE:
-                this.fromSquare = move.getFromSquare();
+                this.from = move.getFrom();
                 this.move = move;
-                this.nameProperty.set(move.getToSquare().getCoordinate().toString());
-                this.capturedSquareProperty.set(move.getCapturedSquare() != null ? move.getCapturedSquare().toString() : null);
+                this.nameProperty.set(move.getTo().toString());
+                this.move.getCaptured().ifPresent(c -> this.capturedProperty.set(board.getSquare(c).toString()));
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected type " + this.type);
@@ -58,8 +59,8 @@ public final class MoveItem {
         return type;
     }
 
-    Square getFromSquare() {
-        return this.fromSquare;
+    Coordinate getFrom() {
+        return this.from;
     }
 
     public ReadOnlyStringProperty nameProperty() {
@@ -70,12 +71,12 @@ public final class MoveItem {
         return nameProperty.get();
     }
 
-    public ReadOnlyStringProperty capturedSquareProperty() {
-        return this.capturedSquareProperty.getReadOnlyProperty();
+    public ReadOnlyStringProperty capturedProperty() {
+        return this.capturedProperty.getReadOnlyProperty();
     }
 
-    public String getCapturedSquare() {
-        return capturedSquareProperty.get();
+    public String getCaptured() {
+        return capturedProperty.get();
     }
 
     Move getMove() {

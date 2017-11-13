@@ -66,11 +66,9 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
             gc.drawImage(image, (size - scaledImageWidth) / 2, (size - scaledImageHeight) / 2, scaledImageWidth, scaledImageHeight);
         }
 
-        // move target
-        if (getContext().isDisplayedToSquare(square)) drawInnerHighlight(gc, size, COLOR_TO);
-
-        // captured
+        // captured or move target
         if (getContext().isDisplayedCapturedSquare(square)) drawInnerHighlight(gc, size, COLOR_CAPTURED);
+        else if (getContext().isDisplayedToSquare(square)) drawInnerHighlight(gc, size, COLOR_TO);
     }
 
     private void drawOuterHighlight(GraphicsContext gc, double squareSize, Color color) {

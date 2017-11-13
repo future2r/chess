@@ -9,30 +9,25 @@ public class MoveTest {
 
     @Test
     public void testMove() {
-        Square fromSquare = new Square(Coordinate.valueOf("d4"));
-        fromSquare.setPiece(new Piece(Piece.Type.QUEEN, Player.WHITE));
+        Coordinate from = Coordinate.valueOf("d4");
+        Coordinate to = Coordinate.valueOf("d5");
 
-        Square toSquare = new Square(Coordinate.valueOf("d5"));
+        Move move = new Move(from, to, null);
 
-        Move move = new Move(fromSquare, toSquare);
-
-        assertEquals(fromSquare, move.getFromSquare());
-        assertEquals(toSquare, move.getToSquare());
-        assertNull(move.getCapturedSquare());
+        assertEquals(from, move.getFrom());
+        assertEquals(to, move.getTo());
+        assertNull(move.getCaptured());
     }
 
     @Test
     public void testCaptureMove() {
-        Square fromSquare = new Square(Coordinate.valueOf("d4"));
-        fromSquare.setPiece(new Piece(Piece.Type.QUEEN, Player.WHITE));
+        Coordinate from = Coordinate.valueOf("d4");
+        Coordinate to = Coordinate.valueOf("d5");
 
-        Square toSquare = new Square(Coordinate.valueOf("d5"));
-        toSquare.setPiece(new Piece(Piece.Type.PAWN, Player.BLACK));
+        Move move = new Move(from, to, to);
 
-        Move move = new Move(fromSquare, toSquare);
-
-        assertEquals(fromSquare, move.getFromSquare());
-        assertEquals(toSquare, move.getToSquare());
-        assertEquals(toSquare, move.getCapturedSquare());
+        assertEquals(from, move.getFrom());
+        assertEquals(to, move.getTo());
+        assertEquals(to, move.getCaptured());
     }
 }

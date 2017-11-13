@@ -221,15 +221,15 @@ public final class MainController implements Initializable {
     private void updateLegalMoves() {
         TreeItem<MoveItem> rootItem = new TreeItem<>(MoveItem.root());
 
-        for (Map.Entry<Square, List<Move>> entry : this.game.getLegalMoves().entrySet()) {
+        for (Map.Entry<Coordinate, List<Move>> entry : this.game.getLegalMoves().entrySet()) {
 
-            Square from = entry.getKey();
-            TreeItem<MoveItem> sourceItem = new TreeItem<>(MoveItem.from(from));
+            Coordinate from = entry.getKey();
+            TreeItem<MoveItem> sourceItem = new TreeItem<>(MoveItem.from(this.game.getBoard(), from));
             rootItem.getChildren().add(sourceItem);
 
             List<Move> moves = entry.getValue();
             for (Move move : moves) {
-                TreeItem<MoveItem> moveItem = new TreeItem<>(MoveItem.move(move));
+                TreeItem<MoveItem> moveItem = new TreeItem<>(MoveItem.move(this.game.getBoard(), move));
                 sourceItem.getChildren().add(moveItem);
             }
         }
@@ -245,13 +245,13 @@ public final class MainController implements Initializable {
             MoveItem moveItem = selectedItem.getValue();
             switch (moveItem.getType()) {
                 case FROM:
-                    this.canvas.focusSquareAt(moveItem.getFromSquare().getCoordinate());
-                    this.canvas.selectSquareAt(moveItem.getFromSquare().getCoordinate());
-                    this.canvas.getDisplayedMoves().addAll(this.game.getLegalMoves().get(moveItem.getFromSquare()));
+                    this.canvas.focusSquareAt(moveItem.getFrom());
+                    this.canvas.selectSquareAt(moveItem.getFrom());
+                    this.canvas.getDisplayedMoves().addAll(this.game.getLegalMoves().get(moveItem.getFrom()));
                     break;
                 case MOVE:
-                    this.canvas.focusSquareAt(moveItem.getFromSquare().getCoordinate());
-                    this.canvas.selectSquareAt(moveItem.getFromSquare().getCoordinate());
+                    this.canvas.focusSquareAt(moveItem.getFrom());
+                    this.canvas.selectSquareAt(moveItem.getFrom());
                     this.canvas.getDisplayedMoves().add(moveItem.getMove());
                     break;
             }

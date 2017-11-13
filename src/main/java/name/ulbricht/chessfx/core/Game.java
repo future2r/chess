@@ -9,7 +9,7 @@ public final class Game {
 
     private final Board board;
     private Player currentPlayer;
-    private final Map<Square, List<Move>> legalMoves = new TreeMap<>();
+    private final Map<Coordinate, List<Move>> legalMoves = new TreeMap<>();
 
     public Game() {
         this.board = new Board();
@@ -30,7 +30,7 @@ public final class Game {
         findLegalMoves();
     }
 
-    public Map<Square, List<Move>> getLegalMoves() {
+    public Map<Coordinate, List<Move>> getLegalMoves() {
         return Collections.unmodifiableMap(this.legalMoves);
     }
 
@@ -40,7 +40,7 @@ public final class Game {
     }
 
     public void performMove(Move move) {
-        move.perform();
+        move.perform(this.board);
         this.currentPlayer = this.currentPlayer == Player.WHITE ? Player.BLACK : Player.WHITE;
         findLegalMoves();
     }

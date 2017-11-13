@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 final class Rules {
 
-    static Map<Square, List<Move>> findLegalMoves(Board board, Player player) {
-        Map<Square, List<Move>> legalMoves = new TreeMap<>();
+    static Map<Coordinate, List<Move>> findLegalMoves(Board board, Player player) {
+        Map<Coordinate, List<Move>> legalMoves = new TreeMap<>();
 
         List<Square> legalSquares = board.squares()
                 .filter(square -> !square.isEmpty())
@@ -16,7 +16,7 @@ final class Rules {
         for (Square fromSquare : legalSquares) {
             List<Move> moves = findLegalMoves(board, player, fromSquare);
             if (!moves.isEmpty()) {
-                legalMoves.put(fromSquare, moves);
+                legalMoves.put(fromSquare.getCoordinate(), moves);
             }
         }
         return legalMoves;
@@ -74,7 +74,7 @@ final class Rules {
         Optional<Coordinate> to = from.moveTo(0, direction);
         if (to.isPresent()) {
             Square toSquare = board.getSquare(to.get());
-            if (toSquare.isEmpty()) moves.add(new Move(fromSquare, toSquare));
+            if (toSquare.isEmpty()) moves.add(new Move(from, to.get(), null));
         }
 
         // two steps forward (if not yet moved)
@@ -82,7 +82,7 @@ final class Rules {
             to = from.moveTo(0, 2 * direction);
             if (to.isPresent()) {
                 Square toSquare = board.getSquare(to.get());
-                if (toSquare.isEmpty()) moves.add(new Move(fromSquare, toSquare));
+                if (toSquare.isEmpty()) moves.add(new Move(from, to.get(), null));
             }
         }
 
@@ -101,7 +101,7 @@ final class Rules {
             if (to.isPresent()) {
                 Square toSquare = board.getSquare(to.get());
                 if (toSquare.isEmpty() || toSquare.getPiece().getPlayer() != player)
-                    moves.add(new Move(fromSquare, toSquare));
+                    moves.add(new Move(from, to.get(), toSquare.isEmpty() ? null : to.get()));
             }
         }
 
@@ -122,12 +122,11 @@ final class Rules {
                 if (to.isPresent()) {
                     Square toSquare = board.getSquare(to.get());
                     Piece piece = toSquare.getPiece();
-                    if (piece == null) moves.add(new Move(fromSquare, toSquare));
-                    else if (piece.getPlayer() != player){
-                        moves.add(new Move(fromSquare, toSquare));
+                    if (piece == null) moves.add(new Move(from, to.get(), null));
+                    else if (piece.getPlayer() != player) {
+                        moves.add(new Move(from, to.get(), to.get()));
                         break;
-                    }
-                    else break;
+                    } else break;
                 }
                 step++;
             } while (step <= maxSteps && to.isPresent());

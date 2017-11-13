@@ -74,17 +74,14 @@ final class SimpleBoardRenderer extends AbstractBoardRenderer {
             gc.fillText(piece.getType().getShortName(), size / 2, size / 2);
         }
 
-        // move target
-        if (getContext().isDisplayedToSquare(square)) {
-            gc.setFill(COLOR_TO);
+        // captured or move target
+        if (getContext().isDisplayedCapturedSquare(square)) {
+            gc.setFill(COLOR_CAPTURED);
             double circleInset = 0.25 * size;
             double circleSize = size - (2 * circleInset);
             gc.fillOval(circleInset, circleInset, circleSize, circleSize);
-        }
-
-        // captured
-        if (getContext().isDisplayedCapturedSquare(square)) {
-            gc.setFill(COLOR_CAPTURED);
+        } else if (getContext().isDisplayedToSquare(square)) {
+            gc.setFill(COLOR_TO);
             double circleInset = 0.25 * size;
             double circleSize = size - (2 * circleInset);
             gc.fillOval(circleInset, circleInset, circleSize, circleSize);

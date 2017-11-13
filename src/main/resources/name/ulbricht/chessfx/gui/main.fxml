@@ -75,7 +75,7 @@
                                 </TreeTableColumn>
                                 <TreeTableColumn prefWidth="150.0" text="%main.legalMovesTreeTableView.columnCaptures.text">
                                     <cellValueFactory>
-                                        <TreeItemPropertyValueFactory property="capturedSquare" />
+                                        <TreeItemPropertyValueFactory property="captured" />
                                     </cellValueFactory>
                                 </TreeTableColumn>
                             </columns>

@@ -70,13 +70,14 @@ final class BoardCanvas extends Canvas {
         @Override
         public boolean isDisplayedToSquare(Square square) {
             return BoardCanvas.this.displayedMovesProperty().get().stream()
-                    .anyMatch(m -> square.equals(m.getToSquare()));
+                    .anyMatch(m -> square.getCoordinate().equals(m.getTo()));
         }
 
         @Override
         public boolean isDisplayedCapturedSquare(Square square) {
             return BoardCanvas.this.displayedMovesProperty().get().stream()
-                    .anyMatch(m -> square.equals(m.getCapturedSquare()));
+                    .filter(m -> m.getCaptured().isPresent())
+                    .anyMatch(m -> square.getCoordinate().equals(m.getCaptured().get()));
         }
     }
 

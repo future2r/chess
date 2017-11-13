@@ -1,45 +1,49 @@
 package name.ulbricht.chessfx.core;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public final class Move {
 
-    private final Square fromSquare;
-    private final Square toSquare;
-    private final Square capturedSquare;
+    private final Coordinate from;
+    private final Coordinate to;
+    private final Coordinate captured;
 
-    public Move(Square fromSquare, Square toSquare) {
-        this(fromSquare, toSquare, null);
+    public Move(Coordinate from, Coordinate to, Coordinate captured) {
+        this.from = Objects.requireNonNull(from, "from cannot be null");
+        this.to = Objects.requireNonNull(to, "to cannot be null");
+        this.captured = captured;
     }
 
-    public Move(Square fromSquare, Square toSquare, Square capturedSquare) {
-        this.fromSquare = Objects.requireNonNull(fromSquare, "fromSquare cannot be null");
-        this.toSquare = Objects.requireNonNull(toSquare, "toSquare cannot be null");
-        if (capturedSquare == null && !this.toSquare.isEmpty()) this.capturedSquare = this.toSquare;
-        else this.capturedSquare = null;
+    public Coordinate getFrom() {
+        return this.from;
     }
 
-    public Square getFromSquare() {
-        return this.fromSquare;
+    public Coordinate getTo() {
+        return this.to;
     }
 
-    public Square getToSquare() {
-        return this.toSquare;
+    public Optional<Coordinate> getCaptured() {
+        return Optional.ofNullable(this.captured);
     }
 
-    public Square getCapturedSquare() {
-        return this.capturedSquare;
-    }
-
-    void perform() {
-        if (this.capturedSquare != null) {
-            this.capturedSquare.setPiece(null);
+    void perform(Board board) {
+        // remove the captured piece
+        if (this.captured != null) {
+            Square capturedSquare = board.getSquare(this.captured);
+            capturedSquare.setPiece(null);
         }
 
-        Piece piece = this.fromSquare.getPiece();
-        this.fromSquare.setPiece(null);
+        // get and remove the piece from the from square
+        Square fromSquare = board.getSquare(this.from);
+        Piece piece = fromSquare.getPiece();
+        fromSquare.setPiece(null);
 
-        this.toSquare.setPiece(piece);
+        // set the piece to the to square
+        Square toSquare = board.getSquare(this.to);
+        toSquare.setPiece(piece);
+
+        // increment the move count of the moved piece
         piece.incrementMoveCount();
     }
 }
