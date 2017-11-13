@@ -289,6 +289,23 @@ public final class MainController implements Initializable {
     }
 
     @FXML
+    private void newGame() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(getWindow());
+        alert.setTitle(Messages.getString("alert.newGame.title"));
+        alert.setContentText(Messages.getString("alert.newGame.contentText"));
+        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            this.game.start();
+
+            updateCurrentPlayer();
+            updateLegalMoves();
+
+            this.canvas.clearSquareFocus();
+            this.canvas.clearSquareSelection();
+        }
+    }
+
+    @FXML
     private void exitApplication() {
         getStage().close();
     }
@@ -298,8 +315,8 @@ public final class MainController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.getButtonTypes().add(ButtonType.OK);
         alert.initOwner(getWindow());
-        alert.setTitle(Messages.getString("about.title"));
-        alert.setContentText(Messages.getString("about.contentText"));
+        alert.setTitle(Messages.getString("alert.about.title"));
+        alert.setContentText(Messages.getString("alert.about.contentText"));
         alert.showAndWait();
     }
 

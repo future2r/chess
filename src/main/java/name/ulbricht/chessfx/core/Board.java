@@ -23,6 +23,9 @@ public final class Board implements Cloneable {
 
     public void setup() {
 
+        // clear all squares
+        squares().forEach(s -> s.clear());
+
         Piece.Type[] baseLinePieces = new Piece.Type[]{
                 Piece.Type.ROOK,
                 Piece.Type.KNIGHT,

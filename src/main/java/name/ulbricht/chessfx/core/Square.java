@@ -23,6 +23,10 @@ public final class Square implements Cloneable, Comparable<Square> {
         return this.piece;
     }
 
+    public void clear() {
+        this.piece = null;
+    }
+
     public boolean isEmpty() {
         return this.piece == null;
     }

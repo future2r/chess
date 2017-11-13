@@ -31,13 +31,13 @@ public final class Move {
         // remove the captured piece
         if (this.captured != null) {
             Square capturedSquare = board.getSquare(this.captured);
-            capturedSquare.setPiece(null);
+            capturedSquare.clear();
         }
 
         // get and remove the piece from the from square
         Square fromSquare = board.getSquare(this.from);
         Piece piece = fromSquare.getPiece();
-        fromSquare.setPiece(null);
+        fromSquare.clear();
 
         // set the piece to the to square
         Square toSquare = board.getSquare(this.to);
