@@ -220,11 +220,8 @@ public final class MainController implements Initializable {
 
     @FXML
     private void newGame() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.initOwner(getWindow());
-        alert.setTitle(Messages.getString("alert.newGame.title"));
-        alert.setContentText(Messages.getString("alert.newGame.contentText"));
-        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+        if (GUIUtils.showQuestionAlert(this.root, "alert.newGame.title", "alert.newGame.contentText")
+                .orElse(ButtonType.CANCEL) == ButtonType.YES) {
             this.game.start();
 
             updateCurrentPlayer();
@@ -240,12 +237,7 @@ public final class MainController implements Initializable {
 
     @FXML
     private void showAbout() {
-        Alert alert = new Alert(Alert.AlertType.NONE);
-        alert.getButtonTypes().add(ButtonType.OK);
-        alert.initOwner(getWindow());
-        alert.setTitle(Messages.getString("alert.about.title"));
-        alert.setContentText(Messages.getString("alert.about.contentText"));
-        alert.showAndWait();
+        GUIUtils.showInfoAlert(this.root, "alert.about.title", "alert.about.contentText");
     }
 
     @FXML
