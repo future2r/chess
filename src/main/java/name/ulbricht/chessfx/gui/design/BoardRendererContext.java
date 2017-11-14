@@ -1,7 +1,7 @@
 package name.ulbricht.chessfx.gui.design;
 
 import name.ulbricht.chessfx.core.Board;
-import name.ulbricht.chessfx.core.Square;
+import name.ulbricht.chessfx.core.Coordinate;
 
 public interface BoardRendererContext {
 
@@ -9,11 +9,11 @@ public interface BoardRendererContext {
 
     boolean isBoardFocused();
 
-    Square getFocusedSquare();
+    Coordinate getFocusedSquare();
 
-    Square getSelectedSquare();
+    Coordinate getSelectedSquare();
 
-    boolean isDisplayedToSquare(Square square);
+    boolean isDisplayedToSquare(Coordinate coordinate);
 
-    boolean isDisplayedCapturedSquare(Square square);
+    boolean isDisplayedCapturedSquare(Coordinate coordinate);
 }

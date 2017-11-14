@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(Parameterized.class)
 public final class BoardSetupTest {
@@ -77,6 +78,7 @@ public final class BoardSetupTest {
 
     @Test
     public void testSetup() {
-        assertEquals("Unexpected piece", piece, board.getSquare(this.coordinate).getPiece());
+        if (piece == null) assertFalse(board.getPiece(this.coordinate).isPresent());
+        else assertEquals("Unexpected piece", piece, board.getPiece(this.coordinate).get());
     }
 }

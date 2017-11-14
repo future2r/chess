@@ -1,30 +1,44 @@
 package name.ulbricht.chessfx.core;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Stream;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class Board implements Cloneable {
 
-    private Square[] squares;
+    private Piece[] pieces;
 
     public Board() {
         // create all required squares
-        this.squares = Coordinate.values().map(Square::new).toArray(Square[]::new);
+        this.pieces = new Piece[Coordinate.COLUMNS * Coordinate.ROWS];
     }
 
-    Stream<Square> squares() {
-        return Stream.of(this.squares);
+    Map<Coordinate, Piece> pieces() {
+        return Coordinate.values()
+                .filter(c -> this.pieces[c.getIndex()] != null)
+                .collect(Collectors.toMap(c -> c, c -> this.pieces[c.getIndex()]));
     }
 
-    public Square getSquare(Coordinate coordinate) {
-        return squares[coordinate.getIndex()];
+    public void setPiece(Coordinate coordinate, Piece piece) {
+        this.pieces[coordinate.getIndex()] = piece;
+    }
+
+    public Optional<Piece> getPiece(Coordinate coordinate) {
+        return Optional.ofNullable(this.pieces[coordinate.getIndex()]);
+    }
+
+    public Optional<Piece> removePiece(Coordinate coordinate) {
+        Optional<Piece> oldPiece = getPiece(coordinate);
+        setPiece(coordinate, null);
+        return oldPiece;
     }
 
     public void setup() {
 
         // clear all squares
-        squares().forEach(s -> s.clear());
+        Arrays.fill(this.pieces, null);
 
         Piece.Type[] baseLinePieces = new Piece.Type[]{
                 Piece.Type.ROOK,
@@ -51,18 +65,9 @@ public final class Board implements Cloneable {
         }
     }
 
-
-    public void setPiece(Coordinate coordinate, Piece piece) {
-        getSquare(coordinate).setPiece(piece);
-    }
-
-    public Piece getPiece(Coordinate coordinate) {
-        return getSquare(coordinate).getPiece();
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(Arrays.deepHashCode(this.squares));
+        return Objects.hash(Arrays.deepHashCode(this.pieces));
     }
 
     @Override
@@ -71,14 +76,18 @@ public final class Board implements Cloneable {
         if (obj == null || this.getClass() != obj.getClass()) return false;
 
         Board other = (Board) obj;
-        return Arrays.deepEquals(this.squares, other.squares);
+        return Arrays.deepEquals(this.pieces, other.pieces);
     }
 
     @Override
     public Board clone() {
         try {
             Board clone = (Board) super.clone();
-            clone.squares = Stream.of(this.squares).map(s -> s.clone()).toArray(Square[]::new);
+            clone.pieces = new Piece[this.pieces.length];
+            for (int i = 0; i < clone.pieces.length; i++) {
+                Piece piece = this.pieces[i];
+                if (piece != null) clone.pieces[i] = piece.clone();
+            }
             return clone;
         } catch (CloneNotSupportedException ex) {
             throw new InternalError(ex);

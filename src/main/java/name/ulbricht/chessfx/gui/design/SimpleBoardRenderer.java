@@ -6,9 +6,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.core.Piece;
 import name.ulbricht.chessfx.core.Player;
-import name.ulbricht.chessfx.core.Square;
+
+import java.util.Optional;
 
 final class SimpleBoardRenderer extends AbstractBoardRenderer {
 
@@ -24,32 +26,32 @@ final class SimpleBoardRenderer extends AbstractBoardRenderer {
     }
 
     @Override
-    public void drawSquare(GraphicsContext gc, double size, Square square) {
+    public void drawSquare(GraphicsContext gc, double size, Coordinate coordinate) {
         // background
         Color backgroundColor;
-        if (((square.getCoordinate().getColumnIndex() + square.getCoordinate().getRowIndex()) % 2) == 0)
+        if (((coordinate.getColumnIndex() + coordinate.getRowIndex()) % 2) == 0)
             backgroundColor = Color.LIGHTGRAY;
         else backgroundColor = Color.DARKGRAY;
         gc.setFill(backgroundColor);
         gc.fillRect(0, 0, size + 1, size + 1);
 
         // focused & selected
-        if (square.equals(getContext().getSelectedSquare())) {
+        if (coordinate.equals(getContext().getSelectedSquare())) {
             gc.setFill(COLOR_SELECTED);
             gc.fillRect(0, 0, size + 1, size + 1);
-        } else if (getContext().isBoardFocused() && square.equals(getContext().getFocusedSquare())) {
+        } else if (getContext().isBoardFocused() && coordinate.equals(getContext().getFocusedSquare())) {
             gc.setFill(COLOR_FOCUSED);
             gc.fillRect(0, 0, size + 1, size + 1);
         }
 
         // piece
-        if (!square.isEmpty()) {
-            Piece piece = square.getPiece();
+        Optional<Piece> piece = getContext().getBoard().getPiece(coordinate);
+        if (piece.isPresent()) {
 
             // colors
             Color pieceBackgroundColor;
             Color pieceForegroundColor;
-            if (piece.getPlayer() == Player.WHITE) {
+            if (piece.get().getPlayer() == Player.WHITE) {
                 pieceBackgroundColor = Color.WHITE;
                 pieceForegroundColor = Color.BLACK;
 
@@ -71,16 +73,16 @@ final class SimpleBoardRenderer extends AbstractBoardRenderer {
             gc.setTextAlign(TextAlignment.CENTER);
             gc.setTextBaseline(VPos.CENTER);
             gc.setFont(Font.font("SansSerif", FontWeight.BOLD, size * 0.3));
-            gc.fillText(piece.getType().getShortName(), size / 2, size / 2);
+            gc.fillText(piece.get().getType().getShortName(), size / 2, size / 2);
         }
 
         // captured or move target
-        if (getContext().isDisplayedCapturedSquare(square)) {
+        if (getContext().isDisplayedCapturedSquare(coordinate)) {
             gc.setFill(COLOR_CAPTURED);
             double circleInset = 0.25 * size;
             double circleSize = size - (2 * circleInset);
             gc.fillOval(circleInset, circleInset, circleSize, circleSize);
-        } else if (getContext().isDisplayedToSquare(square)) {
+        } else if (getContext().isDisplayedToSquare(coordinate)) {
             gc.setFill(COLOR_TO);
             double circleInset = 0.25 * size;
             double circleSize = size - (2 * circleInset);

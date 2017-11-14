@@ -1,7 +1,7 @@
 package name.ulbricht.chessfx.gui.design;
 
 import javafx.scene.canvas.GraphicsContext;
-import name.ulbricht.chessfx.core.Square;
+import name.ulbricht.chessfx.core.Coordinate;
 
 public interface BoardRenderer {
 
@@ -21,7 +21,7 @@ public interface BoardRenderer {
 
     void drawBackground(GraphicsContext gc, double width, double height);
 
-    void drawSquare(GraphicsContext gc, double size, Square square);
+    void drawSquare(GraphicsContext gc, double size, Coordinate coordinate);
 
     void drawBorder(GraphicsContext gc, double width, double height, Border border, int index);
 

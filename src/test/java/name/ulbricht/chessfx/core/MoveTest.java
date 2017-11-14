@@ -3,6 +3,7 @@ package name.ulbricht.chessfx.core;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 public class MoveTest {
@@ -16,7 +17,7 @@ public class MoveTest {
 
         assertEquals(from, move.getFrom());
         assertEquals(to, move.getTo());
-        assertNull(move.getCaptured());
+        assertFalse(move.getCaptured().isPresent());
     }
 
     @Test
@@ -28,6 +29,6 @@ public class MoveTest {
 
         assertEquals(from, move.getFrom());
         assertEquals(to, move.getTo());
-        assertEquals(to, move.getCaptured());
+        assertEquals(to, move.getCaptured().get());
     }
 }

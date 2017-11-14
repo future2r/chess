@@ -1,7 +1,6 @@
 package name.ulbricht.chessfx.core;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 final class Rules {
 
@@ -23,15 +22,15 @@ final class Rules {
     private Map<Coordinate, List<Move>> findLegalMoves() {
         Map<Coordinate, List<Move>> legalMoves = new TreeMap<>();
 
-        List<Square> legalSquares = this.board.squares()
-                .filter(square -> !square.isEmpty())
-                .filter(square -> square.getPiece().getPlayer() == this.player)
-                .collect(Collectors.toList());
+        for (Map.Entry<Coordinate, Piece> entry : this.board.pieces().entrySet()) {
+            Coordinate coordinate = entry.getKey();
+            Piece piece = entry.getValue();
 
-        for (Square fromSquare : legalSquares) {
-            List<Move> moves = findLegalMoves(fromSquare);
-            if (!moves.isEmpty()) {
-                legalMoves.put(fromSquare.getCoordinate(), moves);
+            if (piece.getPlayer() == this.player) {
+                List<Move> moves = findLegalMoves(coordinate);
+                if (!moves.isEmpty()) {
+                    legalMoves.put(coordinate, moves);
+                }
             }
         }
         return legalMoves;
@@ -57,46 +56,45 @@ final class Rules {
         }
     }
 
-    private List<Move> findLegalMoves(Square fromSquare) {
-        switch (fromSquare.getPiece().getType()) {
-            case PAWN:
-                return findPawnMoves(fromSquare);
-            case ROOK:
-                return findDirectionalMoves(fromSquare, Integer.MAX_VALUE,
-                        Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT);
-            case KNIGHT:
-                return findKnightMoves(fromSquare);
-            case BISHOP:
-                return findDirectionalMoves(fromSquare, Integer.MAX_VALUE,
-                        Direction.UP_LEFT, Direction.UP_RIGHT, Direction.DOWN_RIGHT, Direction.DOWN_LEFT);
-            case QUEEN:
-                return findDirectionalMoves(fromSquare, Integer.MAX_VALUE, Direction.values());
-            case KING:
-                return findDirectionalMoves(fromSquare, 1, Direction.values());
-            default:
-                throw new IllegalArgumentException("Unexpected piece type " + fromSquare.getPiece().getType());
+    private List<Move> findLegalMoves(Coordinate from) {
+        Optional<Piece> piece = this.board.getPiece(from);
+        if (piece.isPresent()) {
+            switch (piece.get().getType()) {
+                case PAWN:
+                    return findPawnMoves(from);
+                case ROOK:
+                    return findDirectionalMoves(from, Integer.MAX_VALUE,
+                            Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT);
+                case KNIGHT:
+                    return findKnightMoves(from);
+                case BISHOP:
+                    return findDirectionalMoves(from, Integer.MAX_VALUE,
+                            Direction.UP_LEFT, Direction.UP_RIGHT, Direction.DOWN_RIGHT, Direction.DOWN_LEFT);
+                case QUEEN:
+                    return findDirectionalMoves(from, Integer.MAX_VALUE, Direction.values());
+                case KING:
+                    return findDirectionalMoves(from, 1, Direction.values());
+            }
         }
+        return Collections.emptyList();
     }
 
-    private List<Move> findPawnMoves(Square fromSquare) {
-        checkValidPiece(fromSquare, Piece.Type.PAWN);
-
+    private List<Move> findPawnMoves(Coordinate from) {
+        checkValidPiece(from, Piece.Type.PAWN);
         List<Move> moves = new ArrayList<>();
-        Coordinate from = fromSquare.getCoordinate();
         int direction = this.player == Player.WHITE ? 1 : -1;
 
         // one step forward
         Optional<Coordinate> to = from.moveTo(0, direction);
         if (to.isPresent()) {
-            Square toSquare = this.board.getSquare(to.get());
-            if (toSquare.isEmpty()) moves.add(new Move(from, to.get(), null));
+            if (!this.board.getPiece(to.get()).isPresent()) moves.add(new Move(from, to.get(), null));
 
             // two steps forward (if not yet moved)
-            if (fromSquare.getPiece().getMoveCount() == 0 && toSquare.isEmpty()) {
+            Piece me = this.board.getPiece(from).orElseThrow(() -> new IllegalStateException("piece expected"));
+            if (me.getMoveCount() == 0 && !this.board.getPiece(to.get()).isPresent()) {
                 to = from.moveTo(0, 2 * direction);
                 if (to.isPresent()) {
-                    toSquare = this.board.getSquare(to.get());
-                    if (toSquare.isEmpty()) moves.add(new Move(from, to.get(), null));
+                    if (!this.board.getPiece(to.get()).isPresent()) moves.add(new Move(from, to.get(), null));
                 }
             }
         }
@@ -104,30 +102,25 @@ final class Rules {
         return moves;
     }
 
-    private List<Move> findKnightMoves(Square fromSquare) {
-        checkValidPiece(fromSquare, Piece.Type.KNIGHT);
-
+    private List<Move> findKnightMoves(Coordinate from) {
+        checkValidPiece(from, Piece.Type.KNIGHT);
         List<Move> moves = new ArrayList<>();
-        Coordinate from = fromSquare.getCoordinate();
 
         int[][] jumps = new int[][]{{-1, 2}, {1, 2}, {-2, 1}, {-2, -1}, {2, 1}, {2, -1}, {-1, -2}, {1, -2}};
         for (int[] jump : jumps) {
             Optional<Coordinate> to = from.moveTo(jump[0], jump[1]);
             if (to.isPresent()) {
-                Square toSquare = this.board.getSquare(to.get());
-                if (toSquare.isEmpty() || toSquare.getPiece().getPlayer() != this.player)
-                    moves.add(new Move(from, to.get(), toSquare.isEmpty() ? null : to.get()));
+                Optional<Piece> piece = this.board.getPiece(to.get());
+                if (!piece.isPresent()) moves.add(new Move(from, to.get(), null));
+                else if (piece.get().isOpponent(this.player)) moves.add(new Move(from, to.get(), to.get()));
             }
         }
-
         return moves;
     }
 
-    private List<Move> findDirectionalMoves(Square fromSquare, int maxSteps, Direction... directions) {
-        checkValidPiece(fromSquare, Piece.Type.ROOK, Piece.Type.BISHOP, Piece.Type.QUEEN, Piece.Type.KING);
-
+    private List<Move> findDirectionalMoves(Coordinate from, int maxSteps, Direction... directions) {
+        checkValidPiece(from, Piece.Type.ROOK, Piece.Type.BISHOP, Piece.Type.QUEEN, Piece.Type.KING);
         List<Move> moves = new ArrayList<>();
-        Coordinate from = fromSquare.getCoordinate();
 
         for (Direction direction : directions) {
             Optional<Coordinate> to;
@@ -135,10 +128,9 @@ final class Rules {
             do {
                 to = from.moveTo(step * direction.getColumnOffset(), step * direction.getRowOffset());
                 if (to.isPresent()) {
-                    Square toSquare = this.board.getSquare(to.get());
-                    Piece piece = toSquare.getPiece();
-                    if (piece == null) moves.add(new Move(from, to.get(), null));
-                    else if (piece.getPlayer() != this.player) {
+                    Optional<Piece> piece = this.board.getPiece(to.get());
+                    if (!piece.isPresent()) moves.add(new Move(from, to.get(), null));
+                    else if (piece.get().isOpponent(this.player)) {
                         moves.add(new Move(from, to.get(), to.get()));
                         break;
                     } else break;
@@ -150,11 +142,9 @@ final class Rules {
         return moves;
     }
 
-    private void checkValidPiece(Square square, Piece.Type... pieceTypes) {
-        if (square.isEmpty()) throw new IllegalArgumentException("square cannot be empty");
-        Piece piece = square.getPiece();
-
-        if (piece.getPlayer() != this.player) throw new IllegalArgumentException("player mismatch");
+    private void checkValidPiece(Coordinate coordinate, Piece.Type... pieceTypes) {
+        Piece piece = this.board.getPiece(coordinate).orElseThrow(() -> new IllegalArgumentException("square cannot be empty"));
+        if (piece.isOpponent(this.player)) throw new IllegalArgumentException("player mismatch");
 
         if (!Arrays.asList(pieceTypes).contains(piece.getType()))
             throw new IllegalArgumentException("Cannot handle piece type " + piece.getType());

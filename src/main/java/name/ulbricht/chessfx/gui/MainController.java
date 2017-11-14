@@ -18,7 +18,7 @@ import javafx.util.Duration;
 import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.core.Game;
 import name.ulbricht.chessfx.core.Move;
-import name.ulbricht.chessfx.core.Square;
+import name.ulbricht.chessfx.core.Piece;
 import name.ulbricht.chessfx.gui.design.BoardDesign;
 
 import java.io.IOException;
@@ -110,20 +110,16 @@ public final class MainController implements Initializable {
     private void mousePressedOnBoard(MouseEvent e) {
         if (!this.canvas.isFocused()) this.canvas.requestFocus();
 
-        Square square = this.canvas.getSquareAt(e.getX(), e.getY());
-        if (square != null) {
-            Coordinate from = square.getCoordinate();
-
-            selectSquare(from);
-        }
+        Coordinate square = this.canvas.getSquareAt(e.getX(), e.getY());
+        if (square != null) selectSquare(square);
     }
 
     private void mouseMovedOnBoard(MouseEvent e) {
-        Square square = this.canvas.getSquareAt(e.getX(), e.getY());
+        Coordinate square = this.canvas.getSquareAt(e.getX(), e.getY());
         if (square != null) {
             this.canvasTooltip.setText(createSquareText(square));
             Tooltip.install(this.canvas, this.canvasTooltip);
-            this.canvas.focusSquareAt(square.getCoordinate());
+            this.canvas.focusSquareAt(square);
         } else {
             this.canvasTooltip.setText("");
             Tooltip.uninstall(this.canvas, this.canvasTooltip);
@@ -132,49 +128,45 @@ public final class MainController implements Initializable {
     }
 
     private void keyPressedOnBoard(KeyEvent e) {
-        Square focused = this.canvas.getFocusedSquare();
-        Square selected = this.canvas.getSelectedSquare();
+        Coordinate focused = this.canvas.getFocusedSquare();
+        Coordinate selected = this.canvas.getSelectedSquare();
 
         switch (e.getCode()) {
             case LEFT:
                 if (focused != null) {
-                    Coordinate coordinate = focused.getCoordinate();
-                    coordinate.moveLeft().ifPresentOrElse(
+                    focused.moveLeft().ifPresentOrElse(
                             this.canvas::focusSquareAt,
-                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(Coordinate.COLUMNS - 1, coordinate.getRowIndex())));
+                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(Coordinate.COLUMNS - 1, focused.getRowIndex())));
                 } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
                 e.consume();
                 break;
             case RIGHT:
                 if (focused != null) {
-                    Coordinate coordinate = focused.getCoordinate();
-                    coordinate.moveRight().ifPresentOrElse(
+                    focused.moveRight().ifPresentOrElse(
                             this.canvas::focusSquareAt,
-                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(0, coordinate.getRowIndex())));
+                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(0, focused.getRowIndex())));
                 } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
                 e.consume();
                 break;
             case UP:
                 if (focused != null) {
-                    Coordinate coordinate = focused.getCoordinate();
-                    coordinate.moveUp().ifPresentOrElse(
+                    focused.moveUp().ifPresentOrElse(
                             this.canvas::focusSquareAt,
-                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(coordinate.getColumnIndex(), 0)));
+                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(focused.getColumnIndex(), 0)));
                 } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
                 e.consume();
                 break;
             case DOWN:
                 if (focused != null) {
-                    Coordinate coordinate = focused.getCoordinate();
-                    coordinate.moveDown().ifPresentOrElse(
+                    focused.moveDown().ifPresentOrElse(
                             this.canvas::focusSquareAt,
-                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(coordinate.getColumnIndex(), Coordinate.ROWS - 1)));
+                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(focused.getColumnIndex(), Coordinate.ROWS - 1)));
                 } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
                 e.consume();
                 break;
             case ENTER:
                 if (focused != null) {
-                    selectSquare(focused.getCoordinate());
+                    selectSquare(focused);
                 }
                 break;
             case ESCAPE:
@@ -185,18 +177,19 @@ public final class MainController implements Initializable {
         }
     }
 
-    private String createSquareText(Square square) {
-        if (square.isEmpty())
-            return String.format(Messages.getString("squareText.emptyPattern"), square.getCoordinate());
+    private String createSquareText(Coordinate coordinate) {
+        Optional<Piece> piece = this.game.getBoard().getPiece(coordinate);
+        if (!piece.isPresent())
+            return String.format(Messages.getString("squareText.emptyPattern"), coordinate);
         else
-            return String.format(Messages.getString("squareText.pattern"), square.getCoordinate(), square.getPiece());
+            return String.format(Messages.getString("squareText.pattern"), coordinate, piece.get());
     }
 
     private void updateSelectedSquareLabel() {
         String text = null;
-        Square square = this.canvas.getSelectedSquare();
-        if (square != null) {
-            text = createSquareText(square);
+        Coordinate coordinate = this.canvas.getSelectedSquare();
+        if (coordinate != null) {
+            text = createSquareText(coordinate);
         }
         this.selectedSquareValueLabel.setText(text);
     }

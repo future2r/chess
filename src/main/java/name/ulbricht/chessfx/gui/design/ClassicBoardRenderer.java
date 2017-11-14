@@ -6,12 +6,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
+import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.core.Piece;
 import name.ulbricht.chessfx.core.Player;
-import name.ulbricht.chessfx.core.Square;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 final class ClassicBoardRenderer extends AbstractBoardRenderer {
 
@@ -41,21 +42,21 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
 
 
     @Override
-    public void drawSquare(GraphicsContext gc, double size, Square square) {
-        Image squareImage = ((square.getCoordinate().getColumnIndex() + square.getCoordinate().getRowIndex()) % 2) == 0 ?
+    public void drawSquare(GraphicsContext gc, double size, Coordinate coordinate) {
+        Image squareImage = ((coordinate.getColumnIndex() + coordinate.getRowIndex()) % 2) == 0 ?
                 this.lightSquareImage : this.darkSquareImage;
         gc.drawImage(squareImage, 0, 0, size, size);
 
         // focused & selected
-        if (square.equals(getContext().getSelectedSquare())) {
+        if (coordinate.equals(getContext().getSelectedSquare())) {
             drawOuterHighlight(gc, size, COLOR_SELECTED);
-        } else if (getContext().isBoardFocused() && square.equals(getContext().getFocusedSquare())) {
+        } else if (getContext().isBoardFocused() && coordinate.equals(getContext().getFocusedSquare())) {
             drawOuterHighlight(gc, size, COLOR_FOCUSED);
         }
 
-        if (!square.isEmpty()) {
-            Piece piece = square.getPiece();
-            Image image = this.pieceImages.get(piece.getPlayer()).get(piece.getType());
+        Optional<Piece> piece = getContext().getBoard().getPiece(coordinate);
+        if (piece.isPresent()) {
+            Image image = this.pieceImages.get(piece.get().getPlayer()).get(piece.get().getType());
 
             double imageWidth = image.getWidth();
             double imageHeight = image.getHeight();
@@ -67,8 +68,8 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
         }
 
         // captured or move target
-        if (getContext().isDisplayedCapturedSquare(square)) drawInnerHighlight(gc, size, COLOR_CAPTURED);
-        else if (getContext().isDisplayedToSquare(square)) drawInnerHighlight(gc, size, COLOR_TO);
+        if (getContext().isDisplayedCapturedSquare(coordinate)) drawInnerHighlight(gc, size, COLOR_CAPTURED);
+        else if (getContext().isDisplayedToSquare(coordinate)) drawInnerHighlight(gc, size, COLOR_TO);
     }
 
     private void drawOuterHighlight(GraphicsContext gc, double squareSize, Color color) {

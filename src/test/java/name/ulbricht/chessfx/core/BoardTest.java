@@ -12,13 +12,6 @@ import static org.junit.Assert.assertNull;
 public class BoardTest {
 
     @Test
-    public void testSquares() {
-        Board board = new Board();
-
-        Coordinate.values().forEach(c -> assertEquals("square coordinate does not match " + c, c, board.getSquare(c).getCoordinate()));
-    }
-
-    @Test
     public void testSetGetPiece() {
 
         Board board = new Board();
@@ -31,9 +24,9 @@ public class BoardTest {
             for (Coordinate getCoordinate : coordinates) {
 
                 if (setCoordinate.equals(getCoordinate)) {
-                    assertEquals("piece expected", piece, board.getPiece(getCoordinate));
+                    assertEquals("piece expected", piece, board.getPiece(getCoordinate).get());
                 } else {
-                    assertNull("no piece expected", board.getPiece(getCoordinate));
+                    assertFalse("no piece expected", board.getPiece(getCoordinate).isPresent());
                 }
             }
 

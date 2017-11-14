@@ -30,18 +30,14 @@ public final class Move {
     void perform(Board board) {
         // remove the captured piece
         if (this.captured != null) {
-            Square capturedSquare = board.getSquare(this.captured);
-            capturedSquare.clear();
+            board.removePiece(this.captured);
         }
 
-        // get and remove the piece from the from square
-        Square fromSquare = board.getSquare(this.from);
-        Piece piece = fromSquare.getPiece();
-        fromSquare.clear();
+        // get and remove the piece from the source
+        Piece piece = board.removePiece(this.from).orElseThrow(() -> new IllegalStateException("piece expected"));
 
         // set the piece to the to square
-        Square toSquare = board.getSquare(this.to);
-        toSquare.setPiece(piece);
+        board.setPiece(this.to, piece);
 
         // increment the move count of the moved piece
         piece.incrementMoveCount();

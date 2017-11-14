@@ -38,12 +38,12 @@ public final class Piece implements Cloneable {
         return this.player;
     }
 
-    public int getMoveCount() {
-        return this.moveCount;
+    public boolean isOpponent(Player player) {
+        return this.player != player;
     }
 
-    public void setMoveCount(int moveCount) {
-        this.moveCount = moveCount;
+    public int getMoveCount() {
+        return this.moveCount;
     }
 
     public void incrementMoveCount() {

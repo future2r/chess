@@ -56,33 +56,33 @@ final class BoardCanvas extends Canvas {
         }
 
         @Override
-        public Square getFocusedSquare() {
+        public Coordinate getFocusedSquare() {
             return BoardCanvas.this.focusedSquareProperty().get();
         }
 
         @Override
-        public Square getSelectedSquare() {
+        public Coordinate getSelectedSquare() {
             return BoardCanvas.this.selectedSquareProperty().get();
         }
 
         @Override
-        public boolean isDisplayedToSquare(Square square) {
+        public boolean isDisplayedToSquare(Coordinate coordinate) {
             return BoardCanvas.this.displayedMovesProperty().get().stream()
-                    .anyMatch(m -> square.getCoordinate().equals(m.getTo()));
+                    .anyMatch(m -> coordinate.equals(m.getTo()));
         }
 
         @Override
-        public boolean isDisplayedCapturedSquare(Square square) {
+        public boolean isDisplayedCapturedSquare(Coordinate coordinate) {
             return BoardCanvas.this.displayedMovesProperty().get().stream()
                     .filter(m -> m.getCaptured().isPresent())
-                    .anyMatch(m -> square.getCoordinate().equals(m.getCaptured().get()));
+                    .anyMatch(m -> coordinate.equals(m.getCaptured().get()));
         }
     }
 
     private final BoardRendererContext rendererContext = new RendererContextImpl();
     private final ReadOnlyObjectWrapper<Game> gameProperty = new ReadOnlyObjectWrapper<>();
-    private final ReadOnlyObjectWrapper<Square> selectedSquareProperty = new ReadOnlyObjectWrapper<>();
-    private final ReadOnlyObjectWrapper<Square> focusedSquareProperty = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<Coordinate> selectedSquareProperty = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<Coordinate> focusedSquareProperty = new ReadOnlyObjectWrapper<>();
     private final ReadOnlyObjectWrapper<ObservableList<Move>> displayedMovesProperty = new ReadOnlyObjectWrapper(FXCollections.observableArrayList());
     private final ObjectProperty<BoardRenderer> rendererProperty = new SimpleObjectProperty<>();
 
@@ -113,32 +113,32 @@ final class BoardCanvas extends Canvas {
         return gameProperty().get();
     }
 
-    ReadOnlyObjectProperty<Square> selectedSquareProperty() {
+    ReadOnlyObjectProperty<Coordinate> selectedSquareProperty() {
         return this.selectedSquareProperty.getReadOnlyProperty();
     }
 
-    public Square getSelectedSquare() {
+    public Coordinate getSelectedSquare() {
         return selectedSquareProperty().get();
     }
 
     void selectSquareAt(Coordinate coordinate) {
-        this.selectedSquareProperty.set(gameProperty().get().getBoard().getSquare(coordinate));
+        this.selectedSquareProperty.set(coordinate);
     }
 
     void clearSquareSelection() {
         this.selectedSquareProperty.set(null);
     }
 
-    ReadOnlyObjectProperty<Square> focusedSquareProperty() {
+    ReadOnlyObjectProperty<Coordinate> focusedSquareProperty() {
         return this.focusedSquareProperty.getReadOnlyProperty();
     }
 
-    public Square getFocusedSquare() {
+    public Coordinate getFocusedSquare() {
         return focusedSquareProperty().get();
     }
 
     void focusSquareAt(Coordinate coordinate) {
-        this.focusedSquareProperty.set(gameProperty().get().getBoard().getSquare(coordinate));
+        this.focusedSquareProperty.set(coordinate);
     }
 
     void clearSquareFocus() {
@@ -165,14 +165,13 @@ final class BoardCanvas extends Canvas {
         rendererProperty().set(renderer);
     }
 
-    Square getSquareAt(double x, double y) {
+    Coordinate getSquareAt(double x, double y) {
         if (rendererProperty().get() != null) {
             Dimensions dim = new Dimensions(getWidth(), getHeight(), rendererProperty().get());
             int columnIndex = (int) Math.floor((x - dim.xOffset - dim.borderSize) / dim.squareSize);
             int rowIndex = (int) Math.floor(Coordinate.ROWS - (y - dim.yOffset - dim.borderSize) / dim.squareSize);
             if (columnIndex >= 0 && columnIndex < Coordinate.COLUMNS && rowIndex >= 0 && rowIndex < Coordinate.ROWS) {
-                Coordinate coordinate = Coordinate.valueOf(columnIndex, rowIndex);
-                return gameProperty().get().getBoard().getSquare(coordinate);
+                return Coordinate.valueOf(columnIndex, rowIndex);
             }
         }
         return null;
@@ -264,16 +263,16 @@ final class BoardCanvas extends Canvas {
 
             gc.save();
             gc.translate(squareXOffset, squareYOffset);
-            rendererProperty().get().drawSquare(gc, dim.squareSize, gameProperty().get().getBoard().getSquare(coordinate));
+            rendererProperty().get().drawSquare(gc, dim.squareSize, coordinate);
             gc.restore();
         }
     }
 
     private void updateDisplayedMoves() {
         displayedMovesProperty().get().clear();
-        Square selectedSquare = selectedSquareProperty().get();
-        if (selectedSquare != null) {
-            List<Move> legalMoves = gameProperty().get().getLegalMoves().get(selectedSquare.getCoordinate());
+        Coordinate selected = selectedSquareProperty().get();
+        if (selected != null) {
+            List<Move> legalMoves = gameProperty().get().getLegalMoves().get(selected);
             if (legalMoves != null) displayedMovesProperty().get().addAll(legalMoves);
         }
     }
