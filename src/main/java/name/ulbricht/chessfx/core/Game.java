@@ -36,7 +36,9 @@ public final class Game {
 
     private void findLegalMoves() {
         this.legalMoves.clear();
-        this.legalMoves.putAll(Rules.findLegalMoves(this.board, this.currentPlayer));
+
+        Rules rules = new Rules(this.board, this.currentPlayer);
+        this.legalMoves.putAll(rules.getLegalMoves());
     }
 
     public void performMove(Move move) {
