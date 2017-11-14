@@ -6,49 +6,81 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Represents the board where the pieces are placed and moved.
+ */
 public final class Board implements Cloneable {
 
     private Piece[] pieces;
 
+    /**
+     * Creates a new empty board.
+     */
     public Board() {
         // create all required squares
         this.pieces = new Piece[Coordinate.COLUMNS * Coordinate.ROWS];
     }
 
+    /**
+     * Returns a map with all pieces on the board. The keys are the coordinates and the values are the pieces. Empty
+     * square will not be returned.
+     *
+     * @return a map with coordinates and pieces
+     */
     Map<Coordinate, Piece> pieces() {
         return Coordinate.values()
                 .filter(c -> this.pieces[c.getIndex()] != null)
                 .collect(Collectors.toMap(c -> c, c -> this.pieces[c.getIndex()]));
     }
 
-    public void setPiece(Coordinate coordinate, Piece piece) {
+    /**
+     * Sets a piece to the square defined by the given coordinate. If the piece is {@code null} then the square will be
+     * cleared. Any current piece will be replaced and returned.
+     *
+     * @param coordinate the coordinate
+     * @param piece      the field or {@code null}
+     * @return an optional replaced piece
+     * @see #getPiece(Coordinate)
+     * @see #removePiece(Coordinate)
+     */
+    public Optional<Piece> setPiece(Coordinate coordinate, Piece piece) {
+        Optional<Piece> replacedPiece = getPiece(Objects.requireNonNull(coordinate, "coordinate cannot be null"));
         this.pieces[coordinate.getIndex()] = piece;
+        return replacedPiece;
     }
 
+    /**
+     * Returns the piece at the given coordinate. If the square is empty the returned value will be empty.
+     *
+     * @param coordinate the coordinate
+     * @return an optional piece
+     * @see #setPiece(Coordinate, Piece)
+     */
     public Optional<Piece> getPiece(Coordinate coordinate) {
-        return Optional.ofNullable(this.pieces[coordinate.getIndex()]);
+        return Optional.ofNullable(this.pieces[Objects.requireNonNull(coordinate, "coordinate cannot be null").getIndex()]);
     }
 
+    /**
+     * Removes the current piece from the square and returns a potentially replaced piece
+     *
+     * @param coordinate the coordinate
+     * @return an optional replaced piece
+     */
     public Optional<Piece> removePiece(Coordinate coordinate) {
-        Optional<Piece> oldPiece = getPiece(coordinate);
-        setPiece(coordinate, null);
-        return oldPiece;
+        return setPiece(coordinate, null);
     }
 
+    /**
+     * Initializes the board with the initial positions of the pieces.
+     */
     public void setup() {
 
         // clear all squares
         Arrays.fill(this.pieces, null);
 
         Piece.Type[] baseLinePieces = new Piece.Type[]{
-                Piece.Type.ROOK,
-                Piece.Type.KNIGHT,
-                Piece.Type.BISHOP,
-                Piece.Type.QUEEN,
-                Piece.Type.KING,
-                Piece.Type.BISHOP,
-                Piece.Type.KNIGHT,
-                Piece.Type.ROOK};
+                Piece.Type.ROOK, Piece.Type.KNIGHT, Piece.Type.BISHOP, Piece.Type.QUEEN,
+                Piece.Type.KING, Piece.Type.BISHOP, Piece.Type.KNIGHT, Piece.Type.ROOK};
 
         Coordinate whiteCoordinate = Coordinate.valueOf("a1");
         Coordinate blackCoordinate = Coordinate.valueOf("a8");
@@ -56,12 +88,12 @@ public final class Board implements Cloneable {
         for (int i = 0; i < Coordinate.COLUMNS; i++) {
 
             setPiece(whiteCoordinate, new Piece(baseLinePieces[i], Player.WHITE));
-            setPiece(whiteCoordinate.moveUp().get(), new Piece(Piece.Type.PAWN, Player.WHITE));
-            if (!whiteCoordinate.isRightColumn()) whiteCoordinate = whiteCoordinate.moveRight().get();
+            whiteCoordinate.moveUp().ifPresent(c -> setPiece(c, new Piece(Piece.Type.PAWN, Player.WHITE)));
+            whiteCoordinate = whiteCoordinate.moveRight().orElse(null);
 
             setPiece(blackCoordinate, new Piece(baseLinePieces[i], Player.BLACK));
-            setPiece(blackCoordinate.moveDown().get(), new Piece(Piece.Type.PAWN, Player.BLACK));
-            if (!blackCoordinate.isRightColumn()) blackCoordinate = blackCoordinate.moveRight().get();
+            blackCoordinate.moveDown().ifPresent(c -> setPiece(c, new Piece(Piece.Type.PAWN, Player.BLACK)));
+            blackCoordinate = blackCoordinate.moveRight().orElse(null);
         }
     }
 

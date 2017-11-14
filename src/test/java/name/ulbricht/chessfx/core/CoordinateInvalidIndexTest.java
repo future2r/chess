@@ -15,8 +15,8 @@ public final class CoordinateInvalidIndexTest {
         for (int index : indices) {
             try {
                 Coordinate.valueOf(index);
-                fail("IllegalArgumentException expected");
-            } catch (IllegalArgumentException ex) {
+                fail("IndexOutOfBoundsException expected");
+            } catch (IndexOutOfBoundsException ex) {
                 assertEquals("Illegal value for index " + index, ex.getMessage());
             }
         }

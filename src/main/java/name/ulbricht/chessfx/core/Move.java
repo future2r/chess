@@ -1,45 +1,21 @@
 package name.ulbricht.chessfx.core;
 
-import java.util.Objects;
 import java.util.Optional;
 
-public final class Move {
+/**
+ * Represents a move on a board.
+ */
+public interface Move {
 
-    private final Coordinate from;
-    private final Coordinate to;
-    private final Coordinate captured;
+    Coordinate getFrom();
 
-    public Move(Coordinate from, Coordinate to, Coordinate captured) {
-        this.from = Objects.requireNonNull(from, "from cannot be null");
-        this.to = Objects.requireNonNull(to, "to cannot be null");
-        this.captured = captured;
-    }
+    Coordinate getTo();
 
-    public Coordinate getFrom() {
-        return this.from;
-    }
+    Optional<Coordinate> getCaptures();
 
-    public Coordinate getTo() {
-        return this.to;
-    }
+    void perform(Board board);
 
-    public Optional<Coordinate> getCaptured() {
-        return Optional.ofNullable(this.captured);
-    }
-
-    void perform(Board board) {
-        // remove the captured piece
-        if (this.captured != null) {
-            board.removePiece(this.captured);
-        }
-
-        // get and remove the piece from the source
-        Piece piece = board.removePiece(this.from).orElseThrow(() -> new IllegalStateException("piece expected"));
-
-        // set the piece to the to square
-        board.setPiece(this.to, piece);
-
-        // increment the move count of the moved piece
-        piece.incrementMoveCount();
+    static Move simple(Board board, Coordinate from, Coordinate to) {
+        return SimpleMove.create(board, from, to);
     }
 }

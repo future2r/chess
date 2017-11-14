@@ -2,33 +2,41 @@ package name.ulbricht.chessfx.core;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class MoveTest {
 
     @Test
-    public void testMove() {
+    public void testSimpleNoCpature() {
+        Board board = new Board();
+
         Coordinate from = Coordinate.valueOf("d4");
+        board.setPiece(from, new Piece(Piece.Type.PAWN, Player.WHITE));
+
         Coordinate to = Coordinate.valueOf("d5");
 
-        Move move = new Move(from, to, null);
+        Move move = Move.simple(board, from, to);
 
         assertEquals(from, move.getFrom());
         assertEquals(to, move.getTo());
-        assertFalse(move.getCaptured().isPresent());
+        assertFalse(move.getCaptures().isPresent());
     }
 
     @Test
-    public void testCaptureMove() {
-        Coordinate from = Coordinate.valueOf("d4");
-        Coordinate to = Coordinate.valueOf("d5");
+    public void testSimpleCaptures() {
+        Board board = new Board();
 
-        Move move = new Move(from, to, to);
+        Coordinate from = Coordinate.valueOf("d4");
+        board.setPiece(from, new Piece(Piece.Type.QUEEN, Player.WHITE));
+
+        Coordinate to = Coordinate.valueOf("d5");
+        board.setPiece(to, new Piece(Piece.Type.PAWN, Player.BLACK));
+
+        Move move = Move.simple(board, from, to);
 
         assertEquals(from, move.getFrom());
         assertEquals(to, move.getTo());
-        assertEquals(to, move.getCaptured().get());
+        assertTrue(move.getCaptures().isPresent());
+        assertEquals(to, move.getCaptures().get());
     }
 }

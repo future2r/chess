@@ -201,7 +201,7 @@ public final class MainController implements Initializable {
     private void selectSquare(Coordinate coordinate) {
         // check if we can execute a move
         Optional<Move> move = this.canvas.getDisplayedMoves().stream()
-                .filter(m -> coordinate.equals(m.getTo()) || (m.getCaptured().isPresent() && coordinate.equals(m.getCaptured().get())))
+                .filter(m -> coordinate.equals(m.getTo()) || (m.getCaptures().isPresent() && coordinate.equals(m.getCaptures().get())))
                 .findFirst();
 
         if (move.isPresent()) {

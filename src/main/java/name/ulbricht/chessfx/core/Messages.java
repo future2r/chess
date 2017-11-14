@@ -5,9 +5,11 @@ import java.util.ResourceBundle;
 
 final class Messages {
 
+    private static final String BUNDLE_NAME = "name/ulbricht/chessfx/core/messages";
+
     static String getString(String key) {
         try {
-            return ResourceBundle.getBundle("name/ulbricht/chessfx/core/messages").getString(key);
+            return ResourceBundle.getBundle(BUNDLE_NAME).getString(key);
         } catch (MissingResourceException ex) {
             return "!" + key + "!";
         }

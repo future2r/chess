@@ -87,14 +87,15 @@ final class Rules {
         // one step forward
         Optional<Coordinate> to = from.moveTo(0, direction);
         if (to.isPresent()) {
-            if (!this.board.getPiece(to.get()).isPresent()) moves.add(new Move(from, to.get(), null));
+            if (!this.board.getPiece(to.get()).isPresent()) moves.add(Move.simple(this.board, from, to.get()));
 
             // two steps forward (if not yet moved)
             Piece me = this.board.getPiece(from).orElseThrow(() -> new IllegalStateException("piece expected"));
             if (me.getMoveCount() == 0 && !this.board.getPiece(to.get()).isPresent()) {
                 to = from.moveTo(0, 2 * direction);
                 if (to.isPresent()) {
-                    if (!this.board.getPiece(to.get()).isPresent()) moves.add(new Move(from, to.get(), null));
+                    if (!this.board.getPiece(to.get()).isPresent())
+                        moves.add(Move.simple(this.board, from, to.get()));
                 }
             }
         }
@@ -111,8 +112,9 @@ final class Rules {
             Optional<Coordinate> to = from.moveTo(jump[0], jump[1]);
             if (to.isPresent()) {
                 Optional<Piece> piece = this.board.getPiece(to.get());
-                if (!piece.isPresent()) moves.add(new Move(from, to.get(), null));
-                else if (piece.get().isOpponent(this.player)) moves.add(new Move(from, to.get(), to.get()));
+                if (!piece.isPresent()) moves.add(Move.simple(this.board, from, to.get()));
+                else if (piece.get().getPlayer().isOpponent(this.player))
+                    moves.add(Move.simple(this.board, from, to.get()));
             }
         }
         return moves;
@@ -129,9 +131,9 @@ final class Rules {
                 to = from.moveTo(step * direction.getColumnOffset(), step * direction.getRowOffset());
                 if (to.isPresent()) {
                     Optional<Piece> piece = this.board.getPiece(to.get());
-                    if (!piece.isPresent()) moves.add(new Move(from, to.get(), null));
-                    else if (piece.get().isOpponent(this.player)) {
-                        moves.add(new Move(from, to.get(), to.get()));
+                    if (!piece.isPresent()) moves.add(Move.simple(this.board, from, to.get()));
+                    else if (piece.get().getPlayer().isOpponent(this.player)) {
+                        moves.add(Move.simple(this.board, from, to.get()));
                         break;
                     } else break;
                 }
@@ -144,7 +146,7 @@ final class Rules {
 
     private void checkValidPiece(Coordinate coordinate, Piece.Type... pieceTypes) {
         Piece piece = this.board.getPiece(coordinate).orElseThrow(() -> new IllegalArgumentException("square cannot be empty"));
-        if (piece.isOpponent(this.player)) throw new IllegalArgumentException("player mismatch");
+        if (piece.getPlayer().isOpponent(this.player)) throw new IllegalArgumentException("player mismatch");
 
         if (!Arrays.asList(pieceTypes).contains(piece.getType()))
             throw new IllegalArgumentException("Cannot handle piece type " + piece.getType());

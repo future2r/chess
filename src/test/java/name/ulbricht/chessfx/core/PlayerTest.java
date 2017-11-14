@@ -27,9 +27,6 @@ public final class PlayerTest {
 
     @Test
     public void testNames() {
-        // toString() should return something different
-        assertNotEquals("name() and toString() should be different", this.player.name(), this.player.toString());
-
         // the short name should be just one characters
         assertFalse("short name not found", this.player.getShortName().startsWith("!"));
         assertEquals("short name should be one character only", 1, this.player.getShortName().length());
@@ -37,8 +34,5 @@ public final class PlayerTest {
         // the display name should be longer
         assertFalse("display name not found", this.player.getDisplayName().startsWith("!"));
         assertTrue("display name should be longer than one character", this.player.getDisplayName().length() > 1);
-
-        // the display name is what is returned from toString()
-        assertEquals("toString() should return the display name", this.player.getDisplayName(), this.player.toString());
     }
 }

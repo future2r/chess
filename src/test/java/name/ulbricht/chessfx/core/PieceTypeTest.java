@@ -27,9 +27,6 @@ public final class PieceTypeTest {
 
     @Test
     public void testNames() {
-        // toString() should return something different
-        assertNotEquals("name() and toString() should be different", this.type.name(), this.type.toString());
-
         // the short name should be just one characters
         assertFalse("short name not found", this.type.getShortName().startsWith("!"));
         if (this.type != Piece.Type.PAWN) {
@@ -41,8 +38,5 @@ public final class PieceTypeTest {
         // the display name should be longer
         assertFalse("display name not found", this.type.getDisplayName().startsWith("!"));
         assertTrue("display name should be longer than one character", this.type.getDisplayName().length() > 1);
-
-        // the display name is what is returned from toString()
-        assertEquals("toString() should return the display name", this.type.getDisplayName(), this.type.toString());
     }
 }

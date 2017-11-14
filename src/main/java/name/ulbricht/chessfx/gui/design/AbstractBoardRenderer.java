@@ -17,7 +17,7 @@ abstract class AbstractBoardRenderer implements BoardRenderer {
         this.context = context;
     }
 
-    protected BoardRendererContext getContext() {
+    BoardRendererContext getContext() {
         return this.context;
     }
 

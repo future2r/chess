@@ -9,7 +9,10 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import name.ulbricht.chessfx.core.*;
+import name.ulbricht.chessfx.core.Board;
+import name.ulbricht.chessfx.core.Coordinate;
+import name.ulbricht.chessfx.core.Game;
+import name.ulbricht.chessfx.core.Move;
 import name.ulbricht.chessfx.gui.design.BoardRenderer;
 import name.ulbricht.chessfx.gui.design.BoardRendererContext;
 
@@ -74,8 +77,7 @@ final class BoardCanvas extends Canvas {
         @Override
         public boolean isDisplayedCapturedSquare(Coordinate coordinate) {
             return BoardCanvas.this.displayedMovesProperty().get().stream()
-                    .filter(m -> m.getCaptured().isPresent())
-                    .anyMatch(m -> coordinate.equals(m.getCaptured().get()));
+                    .anyMatch(m -> m.getCaptures().isPresent() && m.getCaptures().equals(coordinate));
         }
     }
 
@@ -177,7 +179,7 @@ final class BoardCanvas extends Canvas {
         return null;
     }
 
-    void draw() {
+    private void draw() {
         double width = getWidth();
         double height = getHeight();
 
