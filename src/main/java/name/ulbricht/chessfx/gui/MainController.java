@@ -4,7 +4,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -14,7 +13,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.util.Duration;
 import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.core.Game;
 import name.ulbricht.chessfx.core.Move;
@@ -51,7 +49,6 @@ public final class MainController implements Initializable {
 
     private Game game;
     private BoardCanvas canvas;
-    private Tooltip canvasTooltip;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -63,13 +60,7 @@ public final class MainController implements Initializable {
         this.canvas.widthProperty().bind(this.boardPane.widthProperty());
         this.canvas.heightProperty().bind(this.boardPane.heightProperty());
 
-        this.canvasTooltip = new Tooltip();
-        this.canvasTooltip.setShowDelay(Duration.ZERO);
-        this.canvasTooltip.setOnShowing(e -> boardTooltipShowing());
-
-        this.canvas.setFocusTraversable(true);
         this.canvas.setOnMousePressed(this::mousePressedOnBoard);
-        this.canvas.setOnMouseMoved(this::mouseMovedOnBoard);
         this.canvas.selectedSquareProperty().addListener(e -> updateSelectedSquareLabel());
         this.canvas.setOnKeyPressed(this::keyPressedOnBoard);
 
@@ -101,30 +92,11 @@ public final class MainController implements Initializable {
         this.canvas.setRenderer(design.createRenderer(this.canvas.getRendererContext()));
     }
 
-    private void boardTooltipShowing() {
-        Point2D pos = this.canvas.localToScreen(0, 0);
-        this.canvasTooltip.setX(pos.getX());
-        this.canvasTooltip.setY(pos.getY());
-    }
-
     private void mousePressedOnBoard(MouseEvent e) {
         if (!this.canvas.isFocused()) this.canvas.requestFocus();
 
         Coordinate square = this.canvas.getSquareAt(e.getX(), e.getY());
         if (square != null) selectSquare(square);
-    }
-
-    private void mouseMovedOnBoard(MouseEvent e) {
-        Coordinate square = this.canvas.getSquareAt(e.getX(), e.getY());
-        if (square != null) {
-            this.canvasTooltip.setText(createSquareText(square));
-            Tooltip.install(this.canvas, this.canvasTooltip);
-            this.canvas.focusSquareAt(square);
-        } else {
-            this.canvasTooltip.setText("");
-            Tooltip.uninstall(this.canvas, this.canvasTooltip);
-            this.canvas.clearSquareFocus();
-        }
     }
 
     private void keyPressedOnBoard(KeyEvent e) {
@@ -177,21 +149,14 @@ public final class MainController implements Initializable {
         }
     }
 
-    private String createSquareText(Coordinate coordinate) {
-        Optional<Piece> piece = this.game.getBoard().getPiece(coordinate);
-        if (!piece.isPresent())
-            return String.format(Messages.getString("squareText.emptyPattern"), coordinate);
-        else
-            return String.format(Messages.getString("squareText.pattern"), coordinate, piece.get());
-    }
-
     private void updateSelectedSquareLabel() {
-        String text = null;
         Coordinate coordinate = this.canvas.getSelectedSquare();
         if (coordinate != null) {
-            text = createSquareText(coordinate);
-        }
-        this.selectedSquareValueLabel.setText(text);
+            this.game.getBoard().getPiece(coordinate).ifPresentOrElse(
+                    p -> this.selectedSquareValueLabel.setText(coordinate.toString() + ' ' + p.getType().getDisplayName() + ' ' + p.getPlayer().getDisplayName()),
+                    () -> this.selectedSquareValueLabel.setText(coordinate.toString()));
+        } else
+            this.selectedSquareValueLabel.setText("");
     }
 
     private void updateCurrentPlayer() {

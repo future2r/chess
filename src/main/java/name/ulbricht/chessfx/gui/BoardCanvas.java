@@ -7,8 +7,12 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
+import javafx.util.Duration;
 import name.ulbricht.chessfx.core.Board;
 import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.core.Game;
@@ -50,7 +54,7 @@ final class BoardCanvas extends Canvas {
 
         @Override
         public Board getBoard() {
-            return BoardCanvas.this.gameProperty().get().getBoard();
+            return BoardCanvas.this.game.getBoard();
         }
 
         @Override
@@ -81,21 +85,31 @@ final class BoardCanvas extends Canvas {
         }
     }
 
+    private Tooltip tooltip;
+
+    private Game game;
+
     private final BoardRendererContext rendererContext = new RendererContextImpl();
-    private final ReadOnlyObjectWrapper<Game> gameProperty = new ReadOnlyObjectWrapper<>();
     private final ReadOnlyObjectWrapper<Coordinate> selectedSquareProperty = new ReadOnlyObjectWrapper<>();
     private final ReadOnlyObjectWrapper<Coordinate> focusedSquareProperty = new ReadOnlyObjectWrapper<>();
     private final ReadOnlyObjectWrapper<ObservableList<Move>> displayedMovesProperty = new ReadOnlyObjectWrapper(FXCollections.observableArrayList());
     private final ObjectProperty<BoardRenderer> rendererProperty = new SimpleObjectProperty<>();
 
     BoardCanvas(Game game) {
-        this.gameProperty.set(game);
+        this.game = game;
+
+        setFocusTraversable(true);
+
+        this.tooltip = new Tooltip();
+        this.tooltip.setShowDelay(Duration.ZERO);
+        this.tooltip.setOnShowing(e -> tooltipShowing());
+
+        setOnMouseMoved(this::mouseMoved);
 
         widthProperty().addListener(e -> draw());
         heightProperty().addListener(e -> draw());
         focusedProperty().addListener(e -> draw());
 
-        gameProperty().addListener(e -> draw());
         selectedSquareProperty().addListener(e -> draw());
         selectedSquareProperty().addListener(e -> updateDisplayedMoves());
         focusedSquareProperty().addListener(e -> draw());
@@ -103,16 +117,29 @@ final class BoardCanvas extends Canvas {
         rendererProperty().addListener(e -> draw());
     }
 
+    private void tooltipShowing() {
+        Point2D pos = localToScreen(0, 0);
+        this.tooltip.setX(pos.getX());
+        this.tooltip.setY(pos.getY());
+    }
+
+    private void mouseMoved(MouseEvent e) {
+        Coordinate coordinate = getSquareAt(e.getX(), e.getY());
+        if (coordinate != null) {
+            this.game.getBoard().getPiece(coordinate).ifPresentOrElse(
+                    p -> tooltip.setText(coordinate.toString() + ' ' + p.getType().getDisplayName() + ' ' + p.getPlayer().getDisplayName()),
+                    () -> tooltip.setText(coordinate.toString()));
+            Tooltip.install(this, tooltip);
+            focusSquareAt(coordinate);
+        } else {
+            this.tooltip.setText("");
+            Tooltip.uninstall(this, tooltip);
+            clearSquareFocus();
+        }
+    }
+
     BoardRendererContext getRendererContext() {
         return this.rendererContext;
-    }
-
-    ReadOnlyObjectProperty<Game> gameProperty() {
-        return this.gameProperty.getReadOnlyProperty();
-    }
-
-    public Game getGame() {
-        return gameProperty().get();
     }
 
     ReadOnlyObjectProperty<Coordinate> selectedSquareProperty() {
@@ -274,7 +301,7 @@ final class BoardCanvas extends Canvas {
         displayedMovesProperty().get().clear();
         Coordinate selected = selectedSquareProperty().get();
         if (selected != null) {
-            List<Move> legalMoves = gameProperty().get().getLegalMoves().get(selected);
+            List<Move> legalMoves = this.game.getLegalMoves().get(selected);
             if (legalMoves != null) displayedMovesProperty().get().addAll(legalMoves);
         }
     }
