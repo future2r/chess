@@ -81,7 +81,7 @@ final class BoardCanvas extends Canvas {
         @Override
         public boolean isDisplayedCapturedSquare(Coordinate coordinate) {
             return BoardCanvas.this.displayedMovesProperty().get().stream()
-                    .anyMatch(m -> m.getCaptures().isPresent() && m.getCaptures().equals(coordinate));
+                    .anyMatch(m -> m.getCaptures().isPresent() && m.getCaptures().get().equals(coordinate));
         }
     }
 

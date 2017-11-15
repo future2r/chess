@@ -31,4 +31,19 @@ abstract class AbstractMove implements Move {
     public Optional<Coordinate> getCaptures() {
         return Optional.ofNullable(captures);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("from ");
+        sb.append(this.from);
+        sb.append(" to ");
+        sb.append(this.to);
+        if (this.captures != null) {
+            sb.append(" captures ");
+            sb.append(this.captures);
+        }
+
+        return sb.toString();
+    }
 }
