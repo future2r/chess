@@ -75,7 +75,6 @@ public final class Board implements Cloneable {
      * Initializes the board with the initial positions of the pieces.
      */
     public void setup() {
-
         // clear all squares
         Arrays.fill(this.pieces, null);
 
@@ -83,18 +82,19 @@ public final class Board implements Cloneable {
                 Piece.Type.ROOK, Piece.Type.KNIGHT, Piece.Type.BISHOP, Piece.Type.QUEEN,
                 Piece.Type.KING, Piece.Type.BISHOP, Piece.Type.KNIGHT, Piece.Type.ROOK};
 
-        Coordinate whiteCoordinate = Coordinate.valueOf("a1");
-        Coordinate blackCoordinate = Coordinate.valueOf("a8");
-
+        Optional<Coordinate> whiteCoordinate = Optional.of(Coordinate.valueOf("a1"));
+        Optional<Coordinate> blackCoordinate = Optional.of(Coordinate.valueOf("a8"));
         for (int i = 0; i < Coordinate.COLUMNS; i++) {
-
-            setPiece(whiteCoordinate, new Piece(baseLinePieces[i], Player.WHITE));
-            whiteCoordinate.moveUp().ifPresent(c -> setPiece(c, new Piece(Piece.Type.PAWN, Player.WHITE)));
-            whiteCoordinate = whiteCoordinate.moveRight().orElse(null);
-
-            setPiece(blackCoordinate, new Piece(baseLinePieces[i], Player.BLACK));
-            blackCoordinate.moveDown().ifPresent(c -> setPiece(c, new Piece(Piece.Type.PAWN, Player.BLACK)));
-            blackCoordinate = blackCoordinate.moveRight().orElse(null);
+            if (whiteCoordinate.isPresent()) {
+                setPiece(whiteCoordinate.get(), new Piece(baseLinePieces[i], Player.WHITE));
+                whiteCoordinate.get().moveUp().ifPresent(c -> setPiece(c, new Piece(Piece.Type.PAWN, Player.WHITE)));
+                whiteCoordinate = whiteCoordinate.get().moveRight();
+            }
+            if (blackCoordinate.isPresent()) {
+                setPiece(blackCoordinate.get(), new Piece(baseLinePieces[i], Player.BLACK));
+                blackCoordinate.get().moveDown().ifPresent(c -> setPiece(c, new Piece(Piece.Type.PAWN, Player.BLACK)));
+                blackCoordinate = blackCoordinate.get().moveRight();
+            }
         }
     }
 
