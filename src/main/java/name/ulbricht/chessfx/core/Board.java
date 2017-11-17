@@ -46,6 +46,7 @@ public final class Board implements Cloneable {
     public Optional<Piece> setPiece(Coordinate coordinate, Piece piece) {
         Optional<Piece> replacedPiece = getPiece(Objects.requireNonNull(coordinate, "coordinate cannot be null"));
         this.pieces[coordinate.getIndex()] = piece;
+
         return replacedPiece;
     }
 

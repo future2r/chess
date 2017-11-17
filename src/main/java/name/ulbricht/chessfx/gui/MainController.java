@@ -1,5 +1,6 @@
 package name.ulbricht.chessfx.gui;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -7,21 +8,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import name.ulbricht.chessfx.core.Coordinate;
-import name.ulbricht.chessfx.core.Game;
-import name.ulbricht.chessfx.core.Move;
-import name.ulbricht.chessfx.core.Piece;
+import name.ulbricht.chessfx.core.Player;
 import name.ulbricht.chessfx.gui.design.BoardDesign;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public final class MainController implements Initializable {
@@ -47,25 +43,23 @@ public final class MainController implements Initializable {
     @FXML
     private Label currentPlayerValueLabel;
 
-    private Game game;
     private BoardCanvas canvas;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.game = new Game();
-        this.game.start();
 
-        this.canvas = new BoardCanvas(game);
+        this.canvas = new BoardCanvas();
         this.boardPane.getChildren().addAll(this.canvas);
         this.canvas.widthProperty().bind(this.boardPane.widthProperty());
         this.canvas.heightProperty().bind(this.boardPane.heightProperty());
 
-        this.canvas.setOnMousePressed(this::mousePressedOnBoard);
-        this.canvas.selectedSquareProperty().addListener(e -> updateSelectedSquareLabel());
-        this.canvas.setOnKeyPressed(this::keyPressedOnBoard);
+        this.canvas.selectedSquareProperty().addListener((observable, oldValue, newValue) -> updateSelectedSquareLabel(newValue));
+        this.canvas.currentPlayerProperty().addListener((observable, oldValue, newValue) -> updateCurrentPlayer(newValue));
 
         createDesignMenuItems();
-        updateCurrentPlayer();
+        updateCurrentPlayer(this.canvas.currentPlayerProperty().get());
+
+        Platform.runLater(() -> this.canvas.requestFocus());
     }
 
     private void createDesignMenuItems() {
@@ -89,102 +83,27 @@ public final class MainController implements Initializable {
     private void changeDesign(ActionEvent e) {
         RadioMenuItem menuItem = (RadioMenuItem) e.getSource();
         BoardDesign design = (BoardDesign) menuItem.getUserData();
-        this.canvas.setRenderer(design.createRenderer(this.canvas.getRendererContext()));
+        this.canvas.setDesign(design);
     }
 
-    private void mousePressedOnBoard(MouseEvent e) {
-        if (!this.canvas.isFocused()) this.canvas.requestFocus();
-
-        Coordinate square = this.canvas.getSquareAt(e.getX(), e.getY());
-        if (square != null) selectSquare(square);
-    }
-
-    private void keyPressedOnBoard(KeyEvent e) {
-        Coordinate focused = this.canvas.getFocusedSquare();
-        Coordinate selected = this.canvas.getSelectedSquare();
-
-        switch (e.getCode()) {
-            case LEFT:
-                if (focused != null) {
-                    focused.moveLeft().ifPresentOrElse(
-                            this.canvas::focusSquareAt,
-                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(Coordinate.COLUMNS - 1, focused.getRowIndex())));
-                } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
-                e.consume();
-                break;
-            case RIGHT:
-                if (focused != null) {
-                    focused.moveRight().ifPresentOrElse(
-                            this.canvas::focusSquareAt,
-                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(0, focused.getRowIndex())));
-                } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
-                e.consume();
-                break;
-            case UP:
-                if (focused != null) {
-                    focused.moveUp().ifPresentOrElse(
-                            this.canvas::focusSquareAt,
-                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(focused.getColumnIndex(), 0)));
-                } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
-                e.consume();
-                break;
-            case DOWN:
-                if (focused != null) {
-                    focused.moveDown().ifPresentOrElse(
-                            this.canvas::focusSquareAt,
-                            () -> this.canvas.focusSquareAt(Coordinate.valueOf(focused.getColumnIndex(), Coordinate.ROWS - 1)));
-                } else this.canvas.focusSquareAt(Coordinate.valueOf("a1"));
-                e.consume();
-                break;
-            case ENTER:
-                if (focused != null) {
-                    selectSquare(focused);
-                }
-                break;
-            case ESCAPE:
-                if (selected != null) this.canvas.clearSquareSelection();
-                else if (focused != null) this.canvas.clearSquareFocus();
-                e.consume();
-                break;
-        }
-    }
-
-    private void updateSelectedSquareLabel() {
-        Coordinate coordinate = this.canvas.getSelectedSquare();
-        if (coordinate != null) {
-            this.game.getBoard().getPiece(coordinate).ifPresentOrElse(
-                    p -> this.selectedSquareValueLabel.setText(coordinate.toString() + ' ' + p.getType().getDisplayName() + ' ' + p.getPlayer().getDisplayName()),
-                    () -> this.selectedSquareValueLabel.setText(coordinate.toString()));
+    private void updateSelectedSquareLabel(Coordinate selected) {
+        if (selected != null) {
+            this.canvas.getGame().getBoard().getPiece(selected).ifPresentOrElse(
+                    p -> this.selectedSquareValueLabel.setText(selected.toString() + ' ' + p.getType().getDisplayName() + ' ' + p.getPlayer().getDisplayName()),
+                    () -> this.selectedSquareValueLabel.setText(selected.toString()));
         } else
             this.selectedSquareValueLabel.setText("");
     }
 
-    private void updateCurrentPlayer() {
-        this.currentPlayerValueLabel.setText(this.game.getCurrentPlayer().getDisplayName());
-    }
-
-    private void selectSquare(Coordinate coordinate) {
-        // check if we can execute a move
-        Optional<Move> move = this.canvas.getDisplayedMoves().stream()
-                .filter(m -> coordinate.equals(m.getTo()) || (m.getCaptures().isPresent() && coordinate.equals(m.getCaptures().get())))
-                .findFirst();
-
-        if (move.isPresent()) {
-            performMove(move.get());
-        } else {
-            this.canvas.selectSquareAt(coordinate);
-        }
+    private void updateCurrentPlayer(Player player) {
+        this.currentPlayerValueLabel.setText(player.getDisplayName());
     }
 
     @FXML
     private void newGame() {
         if (GUIUtils.showQuestionAlert(this.root, "alert.newGame.title", "alert.newGame.contentText")
                 .orElse(ButtonType.CANCEL) == ButtonType.YES) {
-            this.game.start();
-
-            updateCurrentPlayer();
-            this.canvas.clearSquareFocus();
-            this.canvas.clearSquareSelection();
+            this.canvas.newGame();
         }
     }
 
@@ -196,15 +115,6 @@ public final class MainController implements Initializable {
     @FXML
     private void showAbout() {
         GUIUtils.showInfoAlert(this.root, "alert.about.title", "alert.about.contentText");
-    }
-
-    @FXML
-    private void performMove(Move move) {
-        this.game.performMove(move);
-
-        updateCurrentPlayer();
-        this.canvas.clearSquareSelection();
-        this.canvas.focusSquareAt(move.getTo());
     }
 
     private Scene getScene() {
