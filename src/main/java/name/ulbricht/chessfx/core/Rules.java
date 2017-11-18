@@ -100,6 +100,17 @@ final class Rules {
             }
         }
 
+        // check capture
+        int[][] captures = new int[][]{{-1, direction}, {1, direction}};
+        for (int[] capture : captures) {
+            to = from.moveTo(capture[0], capture[1]);
+            if (to.isPresent()) {
+                Optional<Piece> p = this.board.getPiece(to.get());
+                if (p.isPresent() && p.get().getPlayer().isOpponent(this.player))
+                    moves.add(Move.simple(this.board, from, to.get()));
+            }
+        }
+
         return moves;
     }
 
