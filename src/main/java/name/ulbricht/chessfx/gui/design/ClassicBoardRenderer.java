@@ -20,17 +20,12 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
 
     private static final Color COLOR_FOCUSED = Color.rgb(255, 255, 0, 0.5);
     private static final Color COLOR_SELECTED = Color.rgb(255, 255, 0, 1.0);
-    private static final Color COLOR_TO = Color.rgb(0, 255, 0, 1.0);
-    private static final Color COLOR_CAPTURED = Color.rgb(255, 0, 0, 1.0);
+    private static final Color COLOR_TO = Color.rgb(0, 255, 0, 0.7);
+    private static final Color COLOR_CAPTURED = Color.rgb(255, 0, 0, 0.7);
 
-    private final Image lightSquareImage;
-    private final Image darkSquareImage;
     private final Map<Player, Map<Piece.Type, Image>> pieceImages = new HashMap<>();
 
     public ClassicBoardRenderer() {
-        this.lightSquareImage = loadImage("classic-square-light.png");
-        this.darkSquareImage = loadImage("classic-square-dark.png");
-
         for (Player player : Player.values()) {
             Map<Piece.Type, Image> images = new HashMap<>();
             this.pieceImages.put(player, images);
@@ -40,18 +35,23 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
         }
     }
 
-
     @Override
     public void drawSquare(GraphicsContext gc, double size, Coordinate coordinate) {
-        Image squareImage = ((coordinate.getColumnIndex() + coordinate.getRowIndex()) % 2) == 0 ?
-                this.lightSquareImage : this.darkSquareImage;
-        gc.drawImage(squareImage, 0, 0, size, size);
+        // background
+        Color backgroundColor;
+        if (((coordinate.getColumnIndex() + coordinate.getRowIndex()) % 2) == 0)
+            backgroundColor = Color.rgb(0xFF, 0xCC, 0x99);
+        else backgroundColor = Color.rgb(0xCC, 0x99, 0x66);
+        gc.setFill(backgroundColor);
+        gc.fillRect(0, 0, size + 1, size + 1);
 
         // focused & selected
         if (coordinate.equals(getContext().getSelectedSquare())) {
-            drawOuterHighlight(gc, size, COLOR_SELECTED);
+            gc.setFill(COLOR_SELECTED);
+            gc.fillRect(0, 0, size + 1, size + 1);
         } else if (getContext().isBoardFocused() && coordinate.equals(getContext().getFocusedSquare())) {
-            drawOuterHighlight(gc, size, COLOR_FOCUSED);
+            gc.setFill(COLOR_FOCUSED);
+            gc.fillRect(0, 0, size + 1, size + 1);
         }
 
         Optional<Piece> piece = getContext().getBoard().getPiece(coordinate);
@@ -68,34 +68,17 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
         }
 
         // captured or move target
-        if (getContext().isDisplayedCapturedSquare(coordinate)) drawInnerHighlight(gc, size, COLOR_CAPTURED);
-        else if (getContext().isDisplayedToSquare(coordinate)) drawInnerHighlight(gc, size, COLOR_TO);
-    }
-
-    private void drawOuterHighlight(GraphicsContext gc, double squareSize, Color color) {
-        Stop[] stops = new Stop[]{
-                new Stop(0.0, Color.TRANSPARENT),
-                new Stop(0.6, Color.TRANSPARENT),
-                new Stop(0.8, color),
-                new Stop(1.0, Color.TRANSPARENT)
-        };
-        RadialGradient radialGradient =
-                new RadialGradient(0, 0, squareSize / 2, squareSize / 2,
-                        squareSize / 2, false, CycleMethod.NO_CYCLE, stops);
-        gc.setFill(radialGradient);
-        gc.fillOval(0, 0, squareSize, squareSize);
-    }
-
-    private void drawInnerHighlight(GraphicsContext gc, double squareSize, Color color) {
-        Stop[] stops = new Stop[]{
-                new Stop(0.0, color),
-                new Stop(1.0, Color.TRANSPARENT)
-        };
-        RadialGradient radialGradient =
-                new RadialGradient(0, 0, squareSize / 2, squareSize / 2,
-                        squareSize / 4, false, CycleMethod.NO_CYCLE, stops);
-        gc.setFill(radialGradient);
-        gc.fillOval(0, 0, squareSize, squareSize);
+        if (getContext().isDisplayedCapturedSquare(coordinate)) {
+            gc.setFill(COLOR_CAPTURED);
+            double circleInset = 0.25 * size;
+            double circleSize = size - (2 * circleInset);
+            gc.fillOval(circleInset, circleInset, circleSize, circleSize);
+        } else if (getContext().isDisplayedToSquare(coordinate)) {
+            gc.setFill(COLOR_TO);
+            double circleInset = 0.25 * size;
+            double circleSize = size - (2 * circleInset);
+            gc.fillOval(circleInset, circleInset, circleSize, circleSize);
+        }
     }
 
     private Image loadImage(String resourceName) {

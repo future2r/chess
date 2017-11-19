@@ -10,8 +10,8 @@ public final class BoardDesign {
     private static List<BoardDesign> designs = new ArrayList<>();
 
     static {
+        designs.add(new BoardDesign(DefaultBoardRenderer.ID, DefaultBoardRenderer.class));
         designs.add(new BoardDesign(ClassicBoardRenderer.ID, ClassicBoardRenderer.class));
-        designs.add(new BoardDesign(SimpleBoardRenderer.ID, SimpleBoardRenderer.class));
     }
 
     public static List<BoardDesign> getDesigns() {
