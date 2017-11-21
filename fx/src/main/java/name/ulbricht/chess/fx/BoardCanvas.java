@@ -331,7 +331,7 @@ final class BoardCanvas extends Canvas {
         gc.restore();
 
         // draw the squares
-        for (Coordinate coordinate : Coordinate.values().collect(Collectors.toList())) {
+        for (Coordinate coordinate : Coordinate.values()) {
 
             double squareXOffset = dim.borderSize + dim.xOffset + (coordinate.getColumnIndex() * dim.squareSize);
             double squareYOffset = dim.borderSize + (dim.yOffset + ((Coordinate.ROWS - 1) * dim.squareSize))

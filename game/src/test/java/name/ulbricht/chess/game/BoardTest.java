@@ -15,7 +15,7 @@ public class BoardTest {
 
         Board board = new Board();
         Piece piece = new Piece(PieceType.PAWN, Player.WHITE);
-        List<Coordinate> coordinates = Coordinate.values().collect(Collectors.toList());
+        Coordinate[] coordinates = Coordinate.values();
 
         for (Coordinate setCoordinate : coordinates) {
             board.setPiece(setCoordinate, piece);

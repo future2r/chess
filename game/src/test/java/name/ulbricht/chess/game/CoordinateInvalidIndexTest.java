@@ -17,7 +17,7 @@ public final class CoordinateInvalidIndexTest {
                 Coordinate.valueOf(index);
                 fail("IndexOutOfBoundsException expected");
             } catch (IndexOutOfBoundsException ex) {
-                assertEquals("Illegal value for index " + index, ex.getMessage());
+                assertEquals(Integer.toString(index), ex.getMessage());
             }
         }
     }
@@ -28,7 +28,7 @@ public final class CoordinateInvalidIndexTest {
             Coordinate.valueOf(null);
             fail("NullPointerException expected");
         } catch (NullPointerException ex) {
-            assertEquals("name cannot be null", ex.getMessage());
+            assertEquals("Name is null", ex.getMessage());
         }
     }
 
@@ -42,7 +42,7 @@ public final class CoordinateInvalidIndexTest {
                 Coordinate.valueOf(name);
                 fail("IllegalArgumentException expected");
             } catch (IllegalArgumentException ex) {
-                assertEquals("Illegal coordinate name " + name, ex.getMessage());
+                assertEquals("No enum constant name.ulbricht.chess.game.Coordinate." + name, ex.getMessage());
             }
         }
     }

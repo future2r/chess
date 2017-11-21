@@ -53,10 +53,7 @@ public final class CoordinateIndexTest {
         Coordinate coordinate = Coordinate.valueOf(fieldName);
 
         // check field index
-        assertEquals(fieldIndex, coordinate.getIndex(), "fieldIndex");
-
-        // check cache
-        assertTrue(coordinate == Coordinate.valueOf(coordinate.getIndex()), "cache");
+        assertEquals(fieldIndex, coordinate.ordinal(), "fieldIndex");
 
         // check column
         assertEquals(columnIndex, coordinate.getColumnIndex(), "columnIndex");

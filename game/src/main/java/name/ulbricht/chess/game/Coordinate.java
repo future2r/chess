@@ -1,18 +1,23 @@
 package name.ulbricht.chess.game;
 
-import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
- * Represents a coordinate on a board. These coordinates are based on a unique zero-based index representing each
- * coordinate. All other properties of a coordinate are derived from that index. The index 0 represents the lower left
- * corner of the board. The coordinate objects are cached. Two objects representing the same index will be identical.
+ * Represents a coordinate on a board. These coordinates are based on a unique zero-based index (the ordinal value)
+ * representing each coordinate. All other properties of a coordinate are derived from that index. The index 0
+ * represents the lower left corner of the board. The coordinate objects are cached. Two objects representing the same
+ * index will be identical.
  */
-public final class Coordinate implements Comparable<Coordinate> {
+public enum Coordinate {
+
+    a1, b1, c1, d1, e1, f1, g1, h1,
+    a2, b2, c2, d2, e2, f2, g2, h2,
+    a3, b3, c3, d3, e3, f3, g3, h3,
+    a4, b4, c4, d4, e4, f4, g4, h4,
+    a5, b5, c5, d5, e5, f5, g5, h5,
+    a6, b6, c6, d6, e6, f6, g6, h6,
+    a7, b7, c7, d7, e7, f7, g7, h7,
+    a8, b8, c8, d8, e8, f8, g8, h8;
 
     /**
      * Number of columns for this kind of coordinates.
@@ -24,29 +29,6 @@ public final class Coordinate implements Comparable<Coordinate> {
      */
     public static final int ROWS = 8;
 
-    private static final Coordinate[] cachedCoordinates;
-
-    static {
-        cachedCoordinates = IntStream.range(0, COLUMNS * ROWS)
-                .mapToObj(Coordinate::new)
-                .toArray(Coordinate[]::new);
-    }
-
-    private final int index;
-
-    private Coordinate(int index) {
-        this.index = checkIndex(index);
-    }
-
-    /**
-     * Returns the zero-based index that is represented by this coordinate.
-     *
-     * @return the index of this coordinate
-     */
-    public int getIndex() {
-        return this.index;
-    }
-
     /**
      * Returns the zero-based column index tof this coordinate.
      *
@@ -54,7 +36,7 @@ public final class Coordinate implements Comparable<Coordinate> {
      * @see #getColumnName()
      */
     public int getColumnIndex() {
-        return this.index % ROWS;
+        return ordinal() % ROWS;
     }
 
     /**
@@ -76,7 +58,7 @@ public final class Coordinate implements Comparable<Coordinate> {
      * @see #getRowName()
      */
     public int getRowIndex() {
-        return this.index / COLUMNS;
+        return ordinal() / COLUMNS;
     }
 
     /**
@@ -88,39 +70,6 @@ public final class Coordinate implements Comparable<Coordinate> {
      */
     public String getRowName() {
         return toRowName(getRowIndex());
-    }
-
-    @Override
-    public int hashCode() {
-        return index;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || this.getClass() != obj.getClass()) return false;
-        Coordinate other = (Coordinate) obj;
-
-        return this.index == other.index;
-    }
-
-    /**
-     * Returns the name for this coordinate. Usually this will be the name of the column followed by the name of the
-     * row. This name uses the same syntax that can be used to parse coordinate names into coordinate objects.
-     *
-     * @return the name of the coordinate
-     * @see #getColumnName()
-     * @see #getRowName()
-     * @see #valueOf(String)
-     */
-    @Override
-    public String toString() {
-        return getColumnName() + getRowName();
-    }
-
-    @Override
-    public int compareTo(Coordinate other) {
-        return Integer.compare(this.index, other.index);
     }
 
     /**
@@ -211,14 +160,14 @@ public final class Coordinate implements Comparable<Coordinate> {
     }
 
     /**
-     * Returns a cached coordinate object for the given index.
+     * Returns thecoordinate object for the given index.
      *
      * @param index the index
      * @return a coordinate object
      * @throws IndexOutOfBoundsException if the index exceeds the lower or upper limit.
      */
     public static Coordinate valueOf(int index) throws IndexOutOfBoundsException {
-        return cachedCoordinates[checkIndex(index)];
+        return values()[index];
     }
 
     /**
@@ -231,50 +180,6 @@ public final class Coordinate implements Comparable<Coordinate> {
      */
     public static Coordinate valueOf(int columnIndex, int rowIndex) throws IndexOutOfBoundsException {
         return valueOf(checkRowIndex(rowIndex) * COLUMNS + checkColumnIndex(columnIndex));
-    }
-
-    /**
-     * Returns a cached coordinate object for the given coordinate name. The name must be a valid column name followed
-     * by a valid row name.
-     *
-     * @param name a coordinate name
-     * @return a coordinate object
-     * @throws IllegalArgumentException  if the given name cannot be parsed
-     * @throws IndexOutOfBoundsException if the given name results in invalid value column index or row index
-     * @see #toColumnName(int)
-     * @see #toRowName(int)
-     */
-    public static Coordinate valueOf(String name) throws IllegalArgumentException, IndexOutOfBoundsException {
-        Objects.requireNonNull(name, "name cannot be null");
-
-        Pattern pattern = Pattern.compile("([a-h])([1-8])");
-        Matcher matcher = pattern.matcher(name);
-        if (matcher.matches()) {
-            char columnName = matcher.group(1).charAt(0);
-            char rowName = matcher.group(2).charAt(0);
-
-            int columnIndex = columnName - 97;
-            int rowIndex = rowName - 49;
-
-            return valueOf(rowIndex * COLUMNS + columnIndex);
-        }
-        throw new IllegalArgumentException("Illegal coordinate name " + name);
-    }
-
-    /**
-     * Returns a stream of all cached coordinate objects. This stream can be used to easily iterate over all the
-     * coordinates.
-     *
-     * @return a stream of coordinate objects
-     */
-    public static Stream<Coordinate> values() {
-        return Stream.of(cachedCoordinates);
-    }
-
-    private static int checkIndex(int index) {
-        if (index < 0 || index >= (COLUMNS * ROWS))
-            throw new IndexOutOfBoundsException("Illegal value for index " + index);
-        return index;
     }
 
     private static int checkColumnIndex(int index) {

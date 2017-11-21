@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Represents the board where the pieces are placed and moved.
@@ -28,9 +29,9 @@ public final class Board implements Cloneable {
      * @return a map with coordinates and pieces
      */
     Map<Coordinate, Piece> pieces() {
-        return Coordinate.values()
-                .filter(c -> this.pieces[c.getIndex()] != null)
-                .collect(Collectors.toMap(c -> c, c -> this.pieces[c.getIndex()]));
+        return Stream.of(Coordinate.values())
+                .filter(c -> this.pieces[c.ordinal()] != null)
+                .collect(Collectors.toMap(c -> c, c -> this.pieces[c.ordinal()]));
     }
 
     /**
@@ -45,7 +46,7 @@ public final class Board implements Cloneable {
      */
     public Optional<Piece> setPiece(Coordinate coordinate, Piece piece) {
         Optional<Piece> replacedPiece = getPiece(Objects.requireNonNull(coordinate, "coordinate cannot be null"));
-        this.pieces[coordinate.getIndex()] = piece;
+        this.pieces[coordinate.ordinal()] = piece;
 
         return replacedPiece;
     }
@@ -58,7 +59,7 @@ public final class Board implements Cloneable {
      * @see #setPiece(Coordinate, Piece)
      */
     public Optional<Piece> getPiece(Coordinate coordinate) {
-        return Optional.ofNullable(this.pieces[Objects.requireNonNull(coordinate, "coordinate cannot be null").getIndex()]);
+        return Optional.ofNullable(this.pieces[Objects.requireNonNull(coordinate, "coordinate cannot be null").ordinal()]);
     }
 
     /**
