@@ -5,8 +5,9 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>name.ulbricht</groupId>
-    <artifactId>chessfx</artifactId>
+    <packaging>pom</packaging>
+    <groupId>name.ulbricht.chess</groupId>
+    <artifactId>parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
@@ -15,6 +16,12 @@
         <maven.compiler.release>9</maven.compiler.release>
         <antlr4.version>4.7</antlr4.version>
     </properties>
+
+    <modules>
+        <module>game</module>
+        <module>pgn</module>
+        <module>fx</module>
+    </modules>
 
     <dependencyManagement>
         <dependencies>
@@ -31,48 +38,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.antlr</groupId>
-                    <artifactId>antlr4-maven-plugin</artifactId>
-                    <version>${antlr4.version}</version>
-                    <configuration>
-                        <listener>true</listener>
-                        <visitor>false</visitor>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>antlr</id>
-                            <goals>
-                                <goal>antlr4</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
-        <plugins>
-            <plugin>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
 
 </project>
