@@ -10,9 +10,9 @@ final class PGNGameInfoListener extends PGNBaseListener implements PGNDatabaseLi
 
     private final List<PGNGameInfo> gameInfos = new ArrayList<>();
 
-    private PGNGameInfo gameInfo;
-    private String tagName;
-    private String tagValue;
+    private PGNGameInfo currentGameInfo;
+    private String currentTagName;
+    private String currentTagValue;
 
     @Override
     public List<PGNGameInfo> getData() {
@@ -21,47 +21,47 @@ final class PGNGameInfoListener extends PGNBaseListener implements PGNDatabaseLi
 
     @Override
     public void enterPgn_game(PGNParser.Pgn_gameContext ctx) {
-        this.gameInfo = new PGNGameInfoImpl();
+        this.currentGameInfo = new PGNGameInfoImpl();
     }
 
     @Override
     public void exitPgn_game(PGNParser.Pgn_gameContext ctx) {
-        this.gameInfos.add(this.gameInfo);
+        this.gameInfos.add(this.currentGameInfo);
     }
 
     @Override
     public void enterTag_name(PGNParser.Tag_nameContext ctx) {
-        this.tagName = ctx.SYMBOL().getText();
+        this.currentTagName = ctx.SYMBOL().getText();
     }
 
     @Override
     public void enterTag_value(PGNParser.Tag_valueContext ctx) {
-        this.tagValue = PGNUtils.dequote(ctx.STRING().getText());
+        this.currentTagValue = PGNUtils.dequote(ctx.STRING().getText());
     }
 
     @Override
     public void exitTag_pair(PGNParser.Tag_pairContext ctx) {
-        switch (this.tagName) {
+        switch (this.currentTagName) {
             case PGN.EVENT_TAG:
-                this.gameInfo.setEvent(this.tagValue);
+                this.currentGameInfo.setEvent(this.currentTagValue);
                 break;
             case PGN.SITE_TAG:
-                this.gameInfo.setSite(this.tagValue);
+                this.currentGameInfo.setSite(this.currentTagValue);
                 break;
             case PGN.DATE_TAG:
-                this.gameInfo.setDate(this.tagValue);
+                this.currentGameInfo.setDate(this.currentTagValue);
                 break;
             case PGN.ROUND_TAG:
-                this.gameInfo.setRound(this.tagValue);
+                this.currentGameInfo.setRound(this.currentTagValue);
                 break;
             case PGN.WHITE_TAG:
-                this.gameInfo.setWhite(this.tagValue);
+                this.currentGameInfo.setWhite(this.currentTagValue);
                 break;
             case PGN.BLACK_TAG:
-                this.gameInfo.setBlack(this.tagValue);
+                this.currentGameInfo.setBlack(this.currentTagValue);
                 break;
             case PGN.RESULT_TAG:
-                this.gameInfo.setResult(PGNUtils.toResult(this.tagValue));
+                this.currentGameInfo.setResult(PGNUtils.toResult(this.currentTagValue));
         }
     }
 }

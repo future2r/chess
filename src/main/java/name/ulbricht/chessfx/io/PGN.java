@@ -29,8 +29,14 @@ public final class PGN {
         return read(file, new PGNGameInfoListener());
     }
 
-    public static PGNGame readGame(Path file, int gameIndex) throws IOException {
-        return read(file, new PGNGameListener(gameIndex));
+    public static PGNGame readGame(Path file, int index) throws IOException {
+        List<PGNGame> games = readGames(file, index, index);
+        if (games.isEmpty()) throw new IOException("No game found for index: " + index);
+        return games.get(0);
+    }
+
+    public static List<PGNGame> readGames(Path file, int fromIndex, int toIndex) throws IOException {
+        return read(file, new PGNGameListener(fromIndex, toIndex));
     }
 
     private static <T> T read(Path file, PGNDatabaseListener<T> listener) throws IOException {

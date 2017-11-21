@@ -3,58 +3,76 @@ package name.ulbricht.chessfx.io;
 import name.ulbricht.chessfx.io.antlr.PGNBaseListener;
 import name.ulbricht.chessfx.io.antlr.PGNParser;
 
-final class PGNGameListener extends PGNBaseListener implements PGNDatabaseListener<PGNGame> {
+import java.util.ArrayList;
+import java.util.List;
 
-    private PGNGame game;
-    private int gameIndex;
+final class PGNGameListener extends PGNBaseListener implements PGNDatabaseListener<List<PGNGame>> {
 
-    private int currentGameIndex = -1;
-    private String tagName;
-    private String tagValue;
+    private final List<PGNGame> games = new ArrayList<>();
+    private int fromIndex;
+    private int toIndex;
 
-    PGNGameListener(int gameIndex) {
-        this.gameIndex = gameIndex;
+    private int currentIndex = -1;
+    private PGNGame currentGame;
+    private String currentTagName;
+    private String currentTagValue;
+
+    PGNGameListener(int fromIndex, int toIndex) {
+        if (fromIndex < 0) throw new IllegalArgumentException("fromIndex cannot be < 0");
+        if (toIndex < 0) throw new IllegalArgumentException("toIndex cannot be < 0");
+        if (toIndex > toIndex) throw new IllegalArgumentException("toIndex cannot be > toIndex");
+
+        this.fromIndex = fromIndex;
+        this.toIndex = toIndex;
     }
 
     @Override
-    public PGNGame getData() {
-        return this.game;
+    public List<PGNGame> getData() {
+        return this.games;
     }
 
     @Override
     public void enterPgn_game(PGNParser.Pgn_gameContext ctx) {
-        this.currentGameIndex++;
-        if (this.currentGameIndex == this.gameIndex) {
-            this.game = new PGNGame();
+        this.currentIndex++;
+        if (this.currentIndex >= this.fromIndex && this.currentIndex <= this.toIndex) {
+            this.currentGame = new PGNGame();
+        }
+    }
+
+    @Override
+    public void exitPgn_game(PGNParser.Pgn_gameContext ctx) {
+        if (this.currentGame != null) {
+            this.games.add(this.currentGame);
+            this.currentGame = null;
         }
     }
 
     @Override
     public void enterTag_name(PGNParser.Tag_nameContext ctx) {
-        if (this.currentGameIndex == this.gameIndex) {
-            this.tagName = ctx.SYMBOL().getText();
+        if (this.currentGame != null) {
+            this.currentTagName = ctx.SYMBOL().getText();
         }
     }
 
     @Override
     public void enterTag_value(PGNParser.Tag_valueContext ctx) {
-        if (this.currentGameIndex == this.gameIndex) {
-            this.tagValue = PGNUtils.dequote(ctx.STRING().getText());
+        if (this.currentGame != null) {
+            this.currentTagValue = PGNUtils.dequote(ctx.STRING().getText());
         }
     }
 
     @Override
     public void exitTag_pair(PGNParser.Tag_pairContext ctx) {
-        if (this.currentGameIndex == this.gameIndex) {
-            this.game.setTag(this.tagName, this.tagValue);
+        if (this.currentGame != null) {
+            this.currentGame.setTag(this.currentTagName, this.currentTagValue);
         }
     }
 
     @Override
     public void enterSan_move(PGNParser.San_moveContext ctx) {
-        if (this.currentGameIndex == this.gameIndex) {
+        if (this.currentGame != null) {
             SANMove move = SANMove.of(ctx.SYMBOL().getText());
-            this.game.getMoves().add(move);
+            this.currentGame.getMoves().add(move);
         }
     }
 }
