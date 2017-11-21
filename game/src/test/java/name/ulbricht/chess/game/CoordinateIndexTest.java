@@ -1,54 +1,16 @@
 package name.ulbricht.chess.game;
 
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.CsvFileSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class CoordinateIndexTest {
 
-    private static Stream<Arguments> createArguments() throws IOException {
-        try (InputStream is = CoordinateIndexTest.class.getResourceAsStream("coordinates.txt");
-             Reader r = new InputStreamReader(is);
-             BufferedReader br = new BufferedReader(r)) {
-
-            Collection<Arguments> parameters = new ArrayList<>();
-
-            String line;
-            boolean firstLine = true;
-            while ((line = br.readLine()) != null) {
-
-                // skip the first line
-                if (firstLine) {
-                    firstLine = false;
-                    continue;
-                }
-
-                String[] fields = line.split("\t");
-                parameters.add(Arguments.of(
-                        Integer.parseInt(fields[0]), // field index
-                        Integer.parseInt(fields[1]), // column index
-                        fields[2], // column name
-                        Integer.parseInt(fields[3]), // row index
-                        fields[4], // row name
-                        fields[5] // field name
-                ));
-            }
-
-            return parameters.stream();
-        }
-    }
-
     @ParameterizedTest(name = "{index}: [{arguments}]")
-    @MethodSource("createArguments")
+    @CsvFileSource(resources = "coordinates.txt", delimiter = '\t' /* numLinesToSkip=1 (skip header comes in 5.1)*/)
     public void testCoordinate(int fieldIndex, int columnIndex, String columnName, int rowIndex, String rowName, String fieldName) {
+
         // parse from name
         Coordinate coordinate = Coordinate.valueOf(fieldName);
 

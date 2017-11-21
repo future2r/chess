@@ -1,4 +1,3 @@
-Index	Column Index	Column Name	Row Index	Row Name	Field Name
 0	0	a	0	1	a1
 1	1	b	0	1	b1
 2	2	c	0	1	c1
