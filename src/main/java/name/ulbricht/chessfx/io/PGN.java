@@ -11,32 +11,37 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a PGN file to store games.
- */
-public final class PGNDatabase {
+public final class PGN {
+
+    public static final String EVENT_TAG = "Event";
+    public static final String SITE_TAG = "Site";
+    public static final String DATE_TAG = "Date";
+    public static final String ROUND_TAG = "Round";
+    public static final String WHITE_TAG = "White";
+    public static final String BLACK_TAG = "Black";
+    public static final String RESULT_TAG = "Result";
 
     private static final Charset encoding = StandardCharsets.ISO_8859_1;
 
-    public static PGNDatabase read(Path file) throws IOException {
+    public static List<PGNGameInfo> readGameInfos(Path file) throws IOException {
+        return read(file, new PGNGameInfoListener());
+    }
+
+    public static PGNGame readGame(Path file, int gameIndex) throws IOException {
+        return read(file, new PGNGameListener(gameIndex));
+    }
+
+    private static <T> T read(Path file, PGNDatabaseListener<T> listener) throws IOException {
         CharStream cs = CharStreams.fromPath(file, encoding);
         PGNLexer lexer = new PGNLexer(cs);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         PGNParser parser = new PGNParser(tokens);
 
         ParseTreeWalker walker = new ParseTreeWalker();
-        PGNListener listener = new PGNListener();
         walker.walk(listener, parser.parse());
 
-        return listener.getDatabase();
-    }
-
-    private final List<PGNGame> games = new ArrayList<>();
-
-    public List<PGNGame> getGames() {
-        return this.games;
+        return listener.getData();
     }
 }
