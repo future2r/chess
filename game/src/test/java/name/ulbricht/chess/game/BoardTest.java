@@ -1,13 +1,12 @@
 package name.ulbricht.chess.game;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class BoardTest {
 
@@ -24,9 +23,9 @@ public class BoardTest {
             for (Coordinate getCoordinate : coordinates) {
 
                 if (setCoordinate.equals(getCoordinate)) {
-                    assertEquals("piece expected", piece, board.getPiece(getCoordinate).get());
+                    assertEquals(piece, board.getPiece(getCoordinate).get(), "piece expected");
                 } else {
-                    assertFalse("no piece expected", board.getPiece(getCoordinate).isPresent());
+                    assertFalse(board.getPiece(getCoordinate).isPresent(), "no piece expected");
                 }
             }
 

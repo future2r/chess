@@ -1,64 +1,63 @@
 package name.ulbricht.chess.game;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-@RunWith(Parameterized.class)
 public final class BoardSetupTest {
 
-    @Parameterized.Parameters(name = "{index}: {0} {1}")
-    public static Collection<Object[]> createParameters() {
+    private static Stream<Arguments> createArguments() {
 
-        Map<String, Piece> exp = new HashMap<>();
+        Collection<Arguments> arguments = new ArrayList<>();
 
-        exp.put("a1", new Piece(PieceType.ROOK, Player.WHITE));
-        exp.put("b1", new Piece(PieceType.KNIGHT, Player.WHITE));
-        exp.put("c1", new Piece(PieceType.BISHOP, Player.WHITE));
-        exp.put("d1", new Piece(PieceType.QUEEN, Player.WHITE));
-        exp.put("e1", new Piece(PieceType.KING, Player.WHITE));
-        exp.put("f1", new Piece(PieceType.BISHOP, Player.WHITE));
-        exp.put("g1", new Piece(PieceType.KNIGHT, Player.WHITE));
-        exp.put("h1", new Piece(PieceType.ROOK, Player.WHITE));
+        arguments.add(Arguments.of(Coordinate.valueOf("a1"), new Piece(PieceType.ROOK, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("b1"), new Piece(PieceType.KNIGHT, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("c1"), new Piece(PieceType.BISHOP, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("d1"), new Piece(PieceType.QUEEN, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("e1"), new Piece(PieceType.KING, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("f1"), new Piece(PieceType.BISHOP, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("g1"), new Piece(PieceType.KNIGHT, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("h1"), new Piece(PieceType.ROOK, Player.WHITE)));
 
-        exp.put("a2", new Piece(PieceType.PAWN, Player.WHITE));
-        exp.put("b2", new Piece(PieceType.PAWN, Player.WHITE));
-        exp.put("c2", new Piece(PieceType.PAWN, Player.WHITE));
-        exp.put("d2", new Piece(PieceType.PAWN, Player.WHITE));
-        exp.put("e2", new Piece(PieceType.PAWN, Player.WHITE));
-        exp.put("f2", new Piece(PieceType.PAWN, Player.WHITE));
-        exp.put("g2", new Piece(PieceType.PAWN, Player.WHITE));
-        exp.put("h2", new Piece(PieceType.PAWN, Player.WHITE));
+        arguments.add(Arguments.of(Coordinate.valueOf("a2"), new Piece(PieceType.PAWN, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("b2"), new Piece(PieceType.PAWN, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("c2"), new Piece(PieceType.PAWN, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("d2"), new Piece(PieceType.PAWN, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("e2"), new Piece(PieceType.PAWN, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("f2"), new Piece(PieceType.PAWN, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("g2"), new Piece(PieceType.PAWN, Player.WHITE)));
+        arguments.add(Arguments.of(Coordinate.valueOf("h2"), new Piece(PieceType.PAWN, Player.WHITE)));
 
-        exp.put("a7", new Piece(PieceType.PAWN, Player.BLACK));
-        exp.put("b7", new Piece(PieceType.PAWN, Player.BLACK));
-        exp.put("c7", new Piece(PieceType.PAWN, Player.BLACK));
-        exp.put("d7", new Piece(PieceType.PAWN, Player.BLACK));
-        exp.put("e7", new Piece(PieceType.PAWN, Player.BLACK));
-        exp.put("f7", new Piece(PieceType.PAWN, Player.BLACK));
-        exp.put("g7", new Piece(PieceType.PAWN, Player.BLACK));
-        exp.put("h7", new Piece(PieceType.PAWN, Player.BLACK));
+        for (int i = Coordinate.valueOf("a3").getIndex(); i <= Coordinate.valueOf("h6").getIndex(); i++) {
+            arguments.add(Arguments.of(Coordinate.valueOf(i), null));
+        }
 
-        exp.put("a8", new Piece(PieceType.ROOK, Player.BLACK));
-        exp.put("b8", new Piece(PieceType.KNIGHT, Player.BLACK));
-        exp.put("c8", new Piece(PieceType.BISHOP, Player.BLACK));
-        exp.put("d8", new Piece(PieceType.QUEEN, Player.BLACK));
-        exp.put("e8", new Piece(PieceType.KING, Player.BLACK));
-        exp.put("f8", new Piece(PieceType.BISHOP, Player.BLACK));
-        exp.put("g8", new Piece(PieceType.KNIGHT, Player.BLACK));
-        exp.put("h8", new Piece(PieceType.ROOK, Player.BLACK));
+        arguments.add(Arguments.of(Coordinate.valueOf("a7"), new Piece(PieceType.PAWN, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("b7"), new Piece(PieceType.PAWN, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("c7"), new Piece(PieceType.PAWN, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("d7"), new Piece(PieceType.PAWN, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("e7"), new Piece(PieceType.PAWN, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("f7"), new Piece(PieceType.PAWN, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("g7"), new Piece(PieceType.PAWN, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("h7"), new Piece(PieceType.PAWN, Player.BLACK)));
 
-        return Coordinate.values()
-                .map(c -> new Object[]{c, exp.getOrDefault(c.toString(), null)})
-                .collect(Collectors.toList());
+        arguments.add(Arguments.of(Coordinate.valueOf("a8"), new Piece(PieceType.ROOK, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("b8"), new Piece(PieceType.KNIGHT, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("c8"), new Piece(PieceType.BISHOP, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("d8"), new Piece(PieceType.QUEEN, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("e8"), new Piece(PieceType.KING, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("f8"), new Piece(PieceType.BISHOP, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("g8"), new Piece(PieceType.KNIGHT, Player.BLACK)));
+        arguments.add(Arguments.of(Coordinate.valueOf("h8"), new Piece(PieceType.ROOK, Player.BLACK)));
+
+        return arguments.stream();
     }
 
     private static final Board board;
@@ -68,17 +67,10 @@ public final class BoardSetupTest {
         board.setup();
     }
 
-    private final Coordinate coordinate;
-    private final Piece piece;
-
-    public BoardSetupTest(Coordinate coordinate, Piece piece) {
-        this.coordinate = coordinate;
-        this.piece = piece;
-    }
-
-    @Test
-    public void testSetup() {
-        if (piece == null) assertFalse(board.getPiece(this.coordinate).isPresent());
-        else assertEquals("Unexpected piece", piece, board.getPiece(this.coordinate).get());
+    @ParameterizedTest(name = "{index}: [{arguments}]")
+    @MethodSource("createArguments")
+    public void testSetup(Coordinate coordinate, Piece piece) {
+        if (piece == null) assertFalse(board.getPiece(coordinate).isPresent());
+        else assertEquals(piece, board.getPiece(coordinate).get(), "Unexpected piece");
     }
 }

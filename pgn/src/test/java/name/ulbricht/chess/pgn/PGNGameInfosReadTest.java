@@ -1,44 +1,35 @@
 package name.ulbricht.chess.pgn;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(Parameterized.class)
 public final class PGNGameInfosReadTest {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> createParameters() {
-        return Arrays.asList(
-                new Object[]{"Kasparov.pgn", 2083},
-                new Object[]{"Wikipedia (de).pgn", 1},
-                new Object[]{"Wikipedia (en).pgn", 1}
+    private static Stream<Arguments> createArguments() {
+        return Stream.of(
+                Arguments.of("Kasparov.pgn", 2083),
+                Arguments.of("Wikipedia (de).pgn", 1),
+                Arguments.of("Wikipedia (en).pgn", 1)
         );
     }
 
-    private final Path fileName;
-    private final int gameCount;
+    @ParameterizedTest(name = "{index}: [{arguments}]")
+    @MethodSource("createArguments")
+    public void read(String fileName, int gameCount) throws IOException {
+        Path filePath = Paths.get(System.getProperty("user.dir")).getParent().resolve("files").resolve(fileName);
+        List<PGNGameInfo> gameInfos = PGN.readGameInfos(filePath);
 
-    public PGNGameInfosReadTest(String fileName, int gameCount) {
-        this.fileName = Paths.get(System.getProperty("user.dir")).getParent().resolve("files").resolve(fileName);
-        this.gameCount = gameCount;
-    }
-
-    @Test
-    public void read() throws IOException {
-        List<PGNGameInfo> gameInfos = PGN.readGameInfos(this.fileName);
-
-        assertEquals(this.gameCount, gameInfos.size());
+        assertEquals(gameCount, gameInfos.size());
 
         for (PGNGameInfo gameInfo : gameInfos) {
             assertNotNull(gameInfo.getEvent());

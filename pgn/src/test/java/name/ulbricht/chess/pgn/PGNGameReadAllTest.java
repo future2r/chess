@@ -1,40 +1,23 @@
 package name.ulbricht.chess.pgn;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(Parameterized.class)
 public final class PGNGameReadAllTest {
 
-    @Parameterized.Parameters(name = "{index}: {0}")
-    public static Collection<Object[]> createParameters() {
-        return Arrays.asList(
-                new Object[]{"Kasparov.pgn"},
-                new Object[]{"Wikipedia (de).pgn"},
-                new Object[]{"Wikipedia (en).pgn"}
-        );
-    }
-
-    private final Path fileName;
-
-    public PGNGameReadAllTest(String fileName) {
-        this.fileName = Paths.get(System.getProperty("user.dir")).getParent().resolve("files").resolve(fileName);
-    }
-
-    @Test
-    public void read() throws IOException {
-        List<PGNGameInfo> gameInfos = PGN.readGameInfos(this.fileName);
-        List<PGNGame> games = PGN.readGames(this.fileName, 0, gameInfos.size() - 1);
+    @ParameterizedTest(name = "{index}: {0}")
+    @ValueSource(strings = {"Kasparov.pgn", "Wikipedia (de).pgn", "Wikipedia (en).pgn"})
+    public void read(String fileName) throws IOException {
+        Path filePath = Paths.get(System.getProperty("user.dir")).getParent().resolve("files").resolve(fileName);
+        List<PGNGameInfo> gameInfos = PGN.readGameInfos(filePath);
+        List<PGNGame> games = PGN.readGames(filePath, 0, gameInfos.size() - 1);
 
         assertEquals(gameInfos.size(), games.size());
 
