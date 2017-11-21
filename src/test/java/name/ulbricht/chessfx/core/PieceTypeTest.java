@@ -16,27 +16,18 @@ public final class PieceTypeTest {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> createParameters() {
-        return Stream.of(Piece.Type.values()).map(v -> new Object[]{v}).collect(Collectors.toList());
+        return Stream.of(PieceType.values()).map(v -> new Object[]{v}).collect(Collectors.toList());
     }
 
-    private final Piece.Type type;
+    private final PieceType type;
 
-    public PieceTypeTest(Piece.Type type) {
+    public PieceTypeTest(PieceType type) {
         this.type = type;
     }
 
     @Test
     public void testNames() {
-        // the short name should be just one characters
-        assertFalse("short name not found", this.type.getShortName().startsWith("!"));
-        if (this.type != Piece.Type.PAWN) {
-            assertEquals("short name should be one character only", 1, this.type.getShortName().length());
-        } else {
-            assertEquals("short name should be empty", "", this.type.getShortName());
-        }
-
-        // the display name should be longer
+        // the display name should be there
         assertFalse("display name not found", this.type.getDisplayName().startsWith("!"));
-        assertTrue("display name should be longer than one character", this.type.getDisplayName().length() > 1);
     }
 }

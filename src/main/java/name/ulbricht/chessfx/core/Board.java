@@ -78,21 +78,21 @@ public final class Board implements Cloneable {
         // clear all squares
         Arrays.fill(this.pieces, null);
 
-        Piece.Type[] baseLinePieces = new Piece.Type[]{
-                Piece.Type.ROOK, Piece.Type.KNIGHT, Piece.Type.BISHOP, Piece.Type.QUEEN,
-                Piece.Type.KING, Piece.Type.BISHOP, Piece.Type.KNIGHT, Piece.Type.ROOK};
+        PieceType[] baseLinePieces = new PieceType[]{
+                PieceType.ROOK, PieceType.KNIGHT, PieceType.BISHOP, PieceType.QUEEN,
+                PieceType.KING, PieceType.BISHOP, PieceType.KNIGHT, PieceType.ROOK};
 
         Optional<Coordinate> whiteCoordinate = Optional.of(Coordinate.valueOf("a1"));
         Optional<Coordinate> blackCoordinate = Optional.of(Coordinate.valueOf("a8"));
         for (int i = 0; i < Coordinate.COLUMNS; i++) {
             if (whiteCoordinate.isPresent()) {
                 setPiece(whiteCoordinate.get(), new Piece(baseLinePieces[i], Player.WHITE));
-                whiteCoordinate.get().moveUp().ifPresent(c -> setPiece(c, new Piece(Piece.Type.PAWN, Player.WHITE)));
+                whiteCoordinate.get().moveUp().ifPresent(c -> setPiece(c, new Piece(PieceType.PAWN, Player.WHITE)));
                 whiteCoordinate = whiteCoordinate.get().moveRight();
             }
             if (blackCoordinate.isPresent()) {
                 setPiece(blackCoordinate.get(), new Piece(baseLinePieces[i], Player.BLACK));
-                blackCoordinate.get().moveDown().ifPresent(c -> setPiece(c, new Piece(Piece.Type.PAWN, Player.BLACK)));
+                blackCoordinate.get().moveDown().ifPresent(c -> setPiece(c, new Piece(PieceType.PAWN, Player.BLACK)));
                 blackCoordinate = blackCoordinate.get().moveRight();
             }
         }

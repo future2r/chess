@@ -80,7 +80,7 @@ final class Rules {
     }
 
     private List<Move> findPawnMoves(Coordinate from) {
-        checkValidPiece(from, Piece.Type.PAWN);
+        checkValidPiece(from, PieceType.PAWN);
         List<Move> moves = new ArrayList<>();
         int direction = this.player == Player.WHITE ? 1 : -1;
 
@@ -115,7 +115,7 @@ final class Rules {
     }
 
     private List<Move> findKnightMoves(Coordinate from) {
-        checkValidPiece(from, Piece.Type.KNIGHT);
+        checkValidPiece(from, PieceType.KNIGHT);
         List<Move> moves = new ArrayList<>();
 
         int[][] jumps = new int[][]{{-1, 2}, {1, 2}, {-2, 1}, {-2, -1}, {2, 1}, {2, -1}, {-1, -2}, {1, -2}};
@@ -132,7 +132,7 @@ final class Rules {
     }
 
     private List<Move> findDirectionalMoves(Coordinate from, int maxSteps, Direction... directions) {
-        checkValidPiece(from, Piece.Type.ROOK, Piece.Type.BISHOP, Piece.Type.QUEEN, Piece.Type.KING);
+        checkValidPiece(from, PieceType.ROOK, PieceType.BISHOP, PieceType.QUEEN, PieceType.KING);
         List<Move> moves = new ArrayList<>();
 
         for (Direction direction : directions) {
@@ -155,7 +155,7 @@ final class Rules {
         return moves;
     }
 
-    private void checkValidPiece(Coordinate coordinate, Piece.Type... pieceTypes) {
+    private void checkValidPiece(Coordinate coordinate, PieceType... pieceTypes) {
         Piece piece = this.board.getPiece(coordinate).orElseThrow(() -> new IllegalArgumentException("square cannot be empty"));
         if (piece.getPlayer().isOpponent(this.player)) throw new IllegalArgumentException("player mismatch");
 

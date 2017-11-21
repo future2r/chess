@@ -3,11 +3,9 @@ package name.ulbricht.chessfx.gui.design;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.RadialGradient;
-import javafx.scene.paint.Stop;
 import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.core.Piece;
+import name.ulbricht.chessfx.core.PieceType;
 import name.ulbricht.chessfx.core.Player;
 
 import java.util.HashMap;
@@ -23,13 +21,13 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
     private static final Color COLOR_TO = Color.rgb(0, 255, 0, 0.7);
     private static final Color COLOR_CAPTURED = Color.rgb(255, 0, 0, 0.7);
 
-    private final Map<Player, Map<Piece.Type, Image>> pieceImages = new HashMap<>();
+    private final Map<Player, Map<PieceType, Image>> pieceImages = new HashMap<>();
 
     public ClassicBoardRenderer() {
         for (Player player : Player.values()) {
-            Map<Piece.Type, Image> images = new HashMap<>();
+            Map<PieceType, Image> images = new HashMap<>();
             this.pieceImages.put(player, images);
-            for (Piece.Type type : Piece.Type.values()) {
+            for (PieceType type : PieceType.values()) {
                 images.put(type, loadImage("classic-" + player.name().toLowerCase() + "-" + type.name().toLowerCase() + ".png"));
             }
         }

@@ -7,33 +7,7 @@ import java.util.Objects;
  */
 public final class Piece implements Cloneable {
 
-    /**
-     * Defines all valid piece types.
-     */
-    public enum Type {
-        PAWN, ROOK, KNIGHT, BISHOP, QUEEN, KING;
-
-        /**
-         * Returns a localized short name for this piece type. This name follows the official chess piece notation.
-         * Usually this will be a single character. The type {@link #PAWN} may not have a short name.
-         *
-         * @return the short name for this piece type
-         */
-        public String getShortName() {
-            return Messages.getString("Piece." + this.getClass().getSimpleName() + '.' + name() + ".shortName");
-        }
-
-        /**
-         * Returns a localized display name for this piece type.
-         *
-         * @return the display name for this piece type
-         */
-        public String getDisplayName() {
-            return Messages.getString("Piece." + this.getClass().getSimpleName() + '.' + name() + ".displayName");
-        }
-    }
-
-    private final Type type;
+    private final PieceType type;
     private final Player player;
     private int moveCount;
 
@@ -43,7 +17,7 @@ public final class Piece implements Cloneable {
      * @param type   the type of the piece
      * @param player the player that owns this piece
      */
-    public Piece(Type type, Player player) {
+    public Piece(PieceType type, Player player) {
         this.type = Objects.requireNonNull(type, "type cannot be null");
         this.player = Objects.requireNonNull(player, "player cannot be null");
     }
@@ -53,7 +27,7 @@ public final class Piece implements Cloneable {
      *
      * @return the type of this piece
      */
-    public Type getType() {
+    public PieceType getType() {
         return this.type;
     }
 

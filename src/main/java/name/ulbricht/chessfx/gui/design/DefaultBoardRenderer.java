@@ -8,6 +8,7 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import name.ulbricht.chessfx.core.Coordinate;
 import name.ulbricht.chessfx.core.Piece;
+import name.ulbricht.chessfx.core.PieceType;
 import name.ulbricht.chessfx.core.Player;
 
 import java.util.HashMap;
@@ -25,16 +26,16 @@ final class DefaultBoardRenderer extends AbstractBoardRenderer {
 
     private final Image lightSquareImage;
     private final Image darkSquareImage;
-    private final Map<Player, Map<Piece.Type, Image>> pieceImages = new HashMap<>();
+    private final Map<Player, Map<PieceType, Image>> pieceImages = new HashMap<>();
 
     public DefaultBoardRenderer() {
         this.lightSquareImage = loadImage("default-square-light.png");
         this.darkSquareImage = loadImage("default-square-dark.png");
 
         for (Player player : Player.values()) {
-            Map<Piece.Type, Image> images = new HashMap<>();
+            Map<PieceType, Image> images = new HashMap<>();
             this.pieceImages.put(player, images);
-            for (Piece.Type type : Piece.Type.values()) {
+            for (PieceType type : PieceType.values()) {
                 images.put(type, loadImage("default-" + player.name().toLowerCase() + "-" + type.name().toLowerCase() + ".png"));
             }
         }

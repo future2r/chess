@@ -32,7 +32,7 @@ final class PGNListener extends PGNBaseListener {
 
     @Override
     public void enterTag_name(PGNParser.Tag_nameContext ctx) {
-        this.tagName = ctx.SYMBOL().getSymbol().getText();
+        this.tagName = ctx.SYMBOL().getText();
     }
 
     @Override
@@ -43,6 +43,12 @@ final class PGNListener extends PGNBaseListener {
     @Override
     public void exitTag_pair(PGNParser.Tag_pairContext ctx) {
         this.game.setTag(this.tagName, this.tagValue);
+    }
+
+    @Override
+    public void enterSan_move(PGNParser.San_moveContext ctx) {
+        SANMove move = SANMove.of(ctx.SYMBOL().getText());
+        this.game.getMoves().add(move);
     }
 
     private static String dequote(String s) {

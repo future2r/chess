@@ -11,7 +11,7 @@ public class MoveTest {
         Board board = new Board();
 
         Coordinate from = Coordinate.valueOf("d4");
-        board.setPiece(from, new Piece(Piece.Type.PAWN, Player.WHITE));
+        board.setPiece(from, new Piece(PieceType.PAWN, Player.WHITE));
 
         Coordinate to = Coordinate.valueOf("d5");
 
@@ -27,10 +27,10 @@ public class MoveTest {
         Board board = new Board();
 
         Coordinate from = Coordinate.valueOf("d4");
-        board.setPiece(from, new Piece(Piece.Type.QUEEN, Player.WHITE));
+        board.setPiece(from, new Piece(PieceType.QUEEN, Player.WHITE));
 
         Coordinate to = Coordinate.valueOf("d5");
-        board.setPiece(to, new Piece(Piece.Type.PAWN, Player.BLACK));
+        board.setPiece(to, new Piece(PieceType.PAWN, Player.BLACK));
 
         Move move = Move.simple(board, from, to);
 

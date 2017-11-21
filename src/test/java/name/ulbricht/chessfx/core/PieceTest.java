@@ -8,9 +8,9 @@ public final class PieceTest {
 
     @Test
     public void testCreate() {
-        Piece piece = new Piece(Piece.Type.KING, Player.WHITE);
+        Piece piece = new Piece(PieceType.KING, Player.WHITE);
 
-        assertEquals(Piece.Type.KING, piece.getType());
+        assertEquals(PieceType.KING, piece.getType());
         assertEquals(Player.WHITE, piece.getPlayer());
     }
 
@@ -27,7 +27,7 @@ public final class PieceTest {
     @Test
     public void testCreate_PlayerNull() {
         try {
-            new Piece(Piece.Type.KING, null);
+            new Piece(PieceType.KING, null);
             fail("NullPointerException expected");
         } catch (NullPointerException ex) {
             assertEquals("player cannot be null", ex.getMessage());
@@ -36,14 +36,14 @@ public final class PieceTest {
 
     @Test
     public void testToString() {
-        Piece piece = new Piece(Piece.Type.KING, Player.WHITE);
+        Piece piece = new Piece(PieceType.KING, Player.WHITE);
 
-        assertEquals(String.format("%s (%s)", Piece.Type.KING.getDisplayName(), Player.WHITE.getDisplayName()), piece.toString());
+        assertEquals(String.format("%s (%s)", PieceType.KING.getDisplayName(), Player.WHITE.getDisplayName()), piece.toString());
     }
 
     @Test
     public void testClone() {
-        Piece piece = new Piece(Piece.Type.KING, Player.WHITE);
+        Piece piece = new Piece(PieceType.KING, Player.WHITE);
         piece.incrementMoveCount();
 
         Piece clone = piece.clone();
