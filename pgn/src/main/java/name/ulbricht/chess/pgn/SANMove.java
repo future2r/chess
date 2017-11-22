@@ -1,19 +1,16 @@
 package name.ulbricht.chess.pgn;
 
-import name.ulbricht.chess.game.Coordinate;
-import name.ulbricht.chess.game.PieceType;
-
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class SANMove {
 
-    private static final String ROOK = "R";
-    private static final String KNIGHT = "N";
-    private static final String BISHOP = "B";
-    private static final String QUEEN = "Q";
-    private static final String KING = "K";
+    static final String ROOK = "R";
+    static final String KNIGHT = "N";
+    static final String BISHOP = "B";
+    static final String QUEEN = "Q";
+    static final String KING = "K";
 
     private static final String PIECE = "[" + ROOK + KNIGHT + BISHOP + QUEEN + KING + "]";
     private static final String COLUMN = "[a-h]";
@@ -39,14 +36,14 @@ public final class SANMove {
         Matcher matcher = KINGSIDE_CASTLING.matcher(s);
         if (matcher.matches()) {
             boolean check = matcher.group(2) != null;
-            return new SANMove(Type.KINGSIDE_CASTLING, PieceType.KING, null, null,
+            return new SANMove(Type.KINGSIDE_CASTLING, KING, null, null,
                     false, null, null, check);
         }
 
         matcher = QUEENSIDE_CASTLING.matcher(s);
         if (matcher.matches()) {
             boolean check = matcher.group(2) != null;
-            return new SANMove(Type.QUEENSIDE_CASTLING, PieceType.KING, null, null,
+            return new SANMove(Type.QUEENSIDE_CASTLING, KING, null, null,
                     false, null, null, check);
         }
 
@@ -61,55 +58,37 @@ public final class SANMove {
             final int PROMOTION_GROUP = 8;
             final int CHECK_GROUP = 9;
 
-            PieceType pieceType = toPieceType(matcher.group(PIECE_GROUP));
+            String piece = matcher.group(PIECE_GROUP);
             String fromColumn = matcher.group(FROM_COLUMN_GROUP);
             String fromRow = matcher.group(FROM_ROW_GROUP);
             boolean capture = matcher.group(CAPTURE_GROUP) != null;
-            Coordinate to = Coordinate.valueOf(matcher.group(TO_COLUMN_GROUP) + matcher.group(TO_ROW_GROUP));
-            PieceType promotion = matcher.group(PROMOTION_GROUP) != null ? toPieceType(matcher.group(PROMOTION_GROUP)) : null;
+            String to = matcher.group(TO_COLUMN_GROUP) + matcher.group(TO_ROW_GROUP);
+            String promotion = matcher.group(PROMOTION_GROUP);
             boolean check = matcher.group(CHECK_GROUP) != null;
 
-            return new SANMove(Type.DEFAULT, pieceType, fromColumn, fromRow, capture, to, promotion, check);
+            return new SANMove(Type.DEFAULT, piece, fromColumn, fromRow, capture, to, promotion, check);
         }
 
         throw new IllegalArgumentException("Cannot parse SAN move " + s);
     }
 
-    private static PieceType toPieceType(String s) {
-        if (s == null || s.equals("")) return PieceType.PAWN;
-        switch (s) {
-            case ROOK:
-                return PieceType.ROOK;
-            case KNIGHT:
-                return PieceType.KNIGHT;
-            case BISHOP:
-                return PieceType.BISHOP;
-            case QUEEN:
-                return PieceType.QUEEN;
-            case KING:
-                return PieceType.KING;
-            default:
-                throw new IllegalArgumentException("Unknown piece notation " + s);
-        }
-    }
-
     private final Type type;
-    private final PieceType pieceType;
+    private final String piece;
     private final String fromColumn;
     private final String fromRow;
     private final boolean capture;
-    private final Coordinate to;
-    private final PieceType promotion;
+    private final String to;
+    private final String promotion;
     private final boolean check;
 
-    private SANMove(Type type, PieceType pieceType, String fromColumn, String fromRow, boolean capture,
-                    Coordinate to, PieceType promotion, boolean check) {
+    private SANMove(Type type, String piece, String fromColumn, String fromRow, boolean capture,
+                    String to, String promotion, boolean check) {
         this.type = Objects.requireNonNull(type);
 
         if (type == Type.KINGSIDE_CASTLING || type == Type.QUEENSIDE_CASTLING) {
-            if (pieceType != PieceType.KING)
+            if (!piece.equals(KING))
                 throw new IllegalArgumentException(String.format("Move type %s cannot used with piece type %s",
-                        type, pieceType));
+                        type, piece));
             if (to != null || fromColumn != null || fromRow != null)
                 throw new IllegalArgumentException(String.format("Move type %s does not support coordinates",
                         type));
@@ -118,11 +97,14 @@ public final class SANMove {
                         type));
         }
 
-        if (promotion != null && pieceType != PieceType.PAWN) {
+        if (promotion != null && piece != null) {
             throw new IllegalArgumentException("Only pawns can be promoted.");
         }
+        if (promotion!=null && promotion.equals(KING)) {
+            throw new IllegalArgumentException("Pawns cannot be promoted to " + promotion);
+        }
 
-        this.pieceType = pieceType;
+        this.piece = piece;
         this.fromColumn = fromColumn;
         this.fromRow = fromRow;
         this.capture = capture;
@@ -135,8 +117,8 @@ public final class SANMove {
         return this.type;
     }
 
-    public PieceType getPieceType() {
-        return pieceType;
+    public String getPiece() {
+        return piece;
     }
 
     public String getFromColumn() {
@@ -151,11 +133,11 @@ public final class SANMove {
         return this.capture;
     }
 
-    public Coordinate getTo() {
+    public String getTo() {
         return this.to;
     }
 
-    public PieceType getPromotion() {
+    public String getPromotion() {
         return this.promotion;
     }
 
