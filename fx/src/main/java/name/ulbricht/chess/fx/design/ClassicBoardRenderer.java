@@ -10,7 +10,6 @@ import name.ulbricht.chess.game.Player;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 final class ClassicBoardRenderer extends AbstractBoardRenderer {
 
@@ -34,7 +33,8 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
     }
 
     @Override
-    public void drawSquare(GraphicsContext gc, double size, Coordinate coordinate) {
+    public void drawSquare(GraphicsContext gc, double size, Coordinate coordinate, Piece piece,
+                           boolean focused, boolean squareFocused, boolean squareSelected, SquareIndicator indicator) {
         // background
         Color backgroundColor;
         if (((coordinate.getColumnIndex() + coordinate.getRowIndex()) % 2) == 0)
@@ -44,16 +44,15 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
         gc.fillRect(0, 0, size + 1, size + 1);
 
         // focused & selected
-        if (coordinate.equals(getContext().getSelectedSquare())) {
+        if (squareSelected) {
             gc.setFill(COLOR_SELECTED);
             gc.fillRect(0, 0, size + 1, size + 1);
-        } else if (getContext().isBoardFocused() && coordinate.equals(getContext().getFocusedSquare())) {
+        } else if (focused && squareFocused) {
             gc.setFill(COLOR_FOCUSED);
             gc.fillRect(0, 0, size + 1, size + 1);
         }
 
-        Piece piece = getContext().getBoard().getPiece(coordinate);
-        if (piece!=null) {
+        if (piece != null) {
             Image image = this.pieceImages.get(piece.getPlayer()).get(piece.getType());
 
             double imageWidth = image.getWidth();
@@ -66,12 +65,12 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
         }
 
         // captured or move target
-        if (getContext().isDisplayedCapturedSquare(coordinate)) {
+        if (indicator == SquareIndicator.CAPTURED) {
             gc.setFill(COLOR_CAPTURED);
             double circleInset = 0.25 * size;
             double circleSize = size - (2 * circleInset);
             gc.fillOval(circleInset, circleInset, circleSize, circleSize);
-        } else if (getContext().isDisplayedToSquare(coordinate)) {
+        } else if (indicator == SquareIndicator.TARGET) {
             gc.setFill(COLOR_TO);
             double circleInset = 0.25 * size;
             double circleSize = size - (2 * circleInset);

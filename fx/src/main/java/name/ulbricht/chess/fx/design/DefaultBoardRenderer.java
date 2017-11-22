@@ -13,7 +13,6 @@ import name.ulbricht.chess.game.Player;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 final class DefaultBoardRenderer extends AbstractBoardRenderer {
 
@@ -43,20 +42,20 @@ final class DefaultBoardRenderer extends AbstractBoardRenderer {
 
 
     @Override
-    public void drawSquare(GraphicsContext gc, double size, Coordinate coordinate) {
+    public void drawSquare(GraphicsContext gc, double size, Coordinate coordinate, Piece piece,
+                           boolean focused, boolean squareFocused, boolean squareSelected, SquareIndicator indicator) {
         Image squareImage = ((coordinate.getColumnIndex() + coordinate.getRowIndex()) % 2) == 0 ?
                 this.lightSquareImage : this.darkSquareImage;
         gc.drawImage(squareImage, 0, 0, size, size);
 
         // focused & selected
-        if (coordinate.equals(getContext().getSelectedSquare())) {
+        if (squareSelected) {
             drawOuterHighlight(gc, size, COLOR_SELECTED);
-        } else if (getContext().isBoardFocused() && coordinate.equals(getContext().getFocusedSquare())) {
+        } else if (focused && squareFocused) {
             drawOuterHighlight(gc, size, COLOR_FOCUSED);
         }
 
-        Piece piece = getContext().getBoard().getPiece(coordinate);
-        if (piece!=null) {
+        if (piece != null) {
             Image image = this.pieceImages.get(piece.getPlayer()).get(piece.getType());
 
             double imageWidth = image.getWidth();
@@ -69,8 +68,8 @@ final class DefaultBoardRenderer extends AbstractBoardRenderer {
         }
 
         // captured or move target
-        if (getContext().isDisplayedCapturedSquare(coordinate)) drawInnerHighlight(gc, size, COLOR_CAPTURED);
-        else if (getContext().isDisplayedToSquare(coordinate)) drawInnerHighlight(gc, size, COLOR_TO);
+        if (indicator == SquareIndicator.CAPTURED) drawInnerHighlight(gc, size, COLOR_CAPTURED);
+        else if (indicator == SquareIndicator.TARGET) drawInnerHighlight(gc, size, COLOR_TO);
     }
 
     private void drawOuterHighlight(GraphicsContext gc, double squareSize, Color color) {

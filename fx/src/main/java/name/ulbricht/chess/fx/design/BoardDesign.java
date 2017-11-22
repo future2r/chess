@@ -30,11 +30,9 @@ public final class BoardDesign {
         return Messages.getString("BoardDesign." + this.id + ".displayName");
     }
 
-    public BoardRenderer createRenderer(BoardRendererContext context) {
+    public BoardRenderer createRenderer() {
         try {
-            BoardRenderer renderer = this.rendererClass.getConstructor().newInstance();
-            renderer.setContext(context);
-            return renderer;
+            return this.rendererClass.getConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
             throw new InternalError(e);
         }

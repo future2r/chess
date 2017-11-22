@@ -10,27 +10,6 @@ import name.ulbricht.chess.game.Coordinate;
 
 abstract class AbstractBoardRenderer implements BoardRenderer {
 
-    private BoardRendererContext context;
-
-    @Override
-    public void setContext(BoardRendererContext context) {
-        this.context = context;
-    }
-
-    BoardRendererContext getContext() {
-        return this.context;
-    }
-
-    @Override
-    public double getPrefSquareSize() {
-        return 100;
-    }
-
-    @Override
-    public double getPrefBorderSize() {
-        return 30;
-    }
-
     @Override
     public void drawBackground(GraphicsContext gc, double width, double height) {
         gc.setFill(Color.DARKGRAY);
@@ -38,8 +17,8 @@ abstract class AbstractBoardRenderer implements BoardRenderer {
     }
 
     @Override
-    public void drawBorder(GraphicsContext gc, double width, double height, Border border, int index) {
-        gc.setFill(getContext().isBoardFocused() ? Color.GRAY : Color.SILVER);
+    public void drawBorder(GraphicsContext gc, double width, double height, Border border, int index, boolean focused) {
+        gc.setFill(focused ? Color.GRAY : Color.SILVER);
         gc.fillRect(0, 0, width + 1, height + 1);
 
         String text = null;
@@ -54,7 +33,7 @@ abstract class AbstractBoardRenderer implements BoardRenderer {
                 break;
         }
 
-        gc.setFill(getContext().isBoardFocused() ? Color.WHITE : Color.GRAY);
+        gc.setFill(focused ? Color.WHITE : Color.GRAY);
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setTextBaseline(VPos.CENTER);
         gc.setFont(Font.font("SansSerif", FontWeight.BOLD, Math.min(width, height) * 0.6));
@@ -62,8 +41,8 @@ abstract class AbstractBoardRenderer implements BoardRenderer {
     }
 
     @Override
-    public void drawCorner(GraphicsContext gc, double size, Corner corner) {
-        gc.setFill(getContext().isBoardFocused() ? Color.GRAY : Color.SILVER);
+    public void drawCorner(GraphicsContext gc, double size, Corner corner, boolean focused) {
+        gc.setFill(focused ? Color.GRAY : Color.SILVER);
         gc.fillRect(0, 0, size + 1, size + 1);
     }
 }
