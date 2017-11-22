@@ -10,10 +10,9 @@ final class MoveTest {
     @Test
     void testSimpleNoCapture() {
         Game game = new Game();
-        game.clear();
 
         Coordinate source = Coordinate.d4;
-        game.setPiece(source, new Piece(PieceType.PAWN, Player.WHITE));
+        game.setup(c -> c == source ? new Piece(PieceType.PAWN, Player.WHITE) : null, Player.WHITE);
 
         Coordinate target = Coordinate.d5;
 
@@ -27,13 +26,15 @@ final class MoveTest {
     @Test
     void testSimpleCaptures() {
         Game game = new Game();
-        game.clear();
 
         Coordinate source = Coordinate.d4;
-        game.setPiece(source, new Piece(PieceType.QUEEN, Player.WHITE));
-
         Coordinate target = Coordinate.d5;
-        game.setPiece(target, new Piece(PieceType.PAWN, Player.BLACK));
+
+        game.setup(c -> {
+            if (c == source) return new Piece(PieceType.QUEEN, Player.WHITE);
+            if (c == target) return new Piece(PieceType.PAWN, Player.BLACK);
+            return null;
+        }, Player.WHITE);
 
         Move move = Move.simple(game, source, target);
 

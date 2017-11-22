@@ -76,7 +76,7 @@ final class Rules {
 
             // two steps forward (if not yet moved)
             Piece me = game.getPiece(source);
-            if (me.getMoveCount() == 0 && game.getPiece(target) == null) {
+            if (!me.isMoved() && game.getPiece(target) == null) {
                 target = source.moveTo(0, 2 * direction);
                 if (target != null) {
                     if (game.getPiece(target) == null)

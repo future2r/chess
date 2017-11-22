@@ -88,7 +88,7 @@ final class BoardCanvas extends Canvas {
     }
 
     void newGame() {
-        this.game.start();
+        this.game.setupDefault();
         this.currentPlayerProperty.set(this.game.getCurrentPlayer());
         this.focusedSquareProperty.set(null);
         this.selectedSquareProperty.set(null);

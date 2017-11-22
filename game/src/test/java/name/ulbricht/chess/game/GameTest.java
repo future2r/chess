@@ -69,29 +69,4 @@ final class GameTest {
         if (piece == null) assertNull(game.getPiece(coordinate));
         else assertEquals(piece, game.getPiece(coordinate), "Unexpected piece");
     }
-
-    @Test
-    void testSetGetPiece() {
-
-        Game game = new Game();
-        game.clear();
-
-        Piece piece = new Piece(PieceType.PAWN, Player.WHITE);
-        Coordinate[] coordinates = Coordinate.values();
-
-        for (Coordinate setCoordinate : coordinates) {
-            game.setPiece(setCoordinate, piece);
-
-            for (Coordinate getCoordinate : coordinates) {
-
-                if (setCoordinate.equals(getCoordinate)) {
-                    assertEquals(piece, game.getPiece(getCoordinate), "piece expected");
-                } else {
-                    assertNull(game.getPiece(getCoordinate), "no piece expected");
-                }
-            }
-
-            game.setPiece(setCoordinate, null);
-        }
-    }
 }

@@ -46,7 +46,7 @@ public final class PieceTest {
     @Test
     public void testClone() {
         Piece piece = new Piece(PieceType.KING, Player.WHITE);
-        piece.incrementMoveCount();
+        piece.markMoved();
 
         Piece clone = piece.clone();
 
@@ -55,6 +55,6 @@ public final class PieceTest {
 
         assertEquals(piece.getType(), clone.getType());
         assertEquals(piece.getPlayer(), clone.getPlayer());
-        assertEquals(piece.getMoveCount(), clone.getMoveCount());
+        assertEquals(piece.isMoved(), clone.isMoved());
     }
 }

@@ -9,7 +9,7 @@ public final class Piece implements Cloneable {
 
     private final PieceType type;
     private final Player player;
-    private int moveCount;
+    private boolean moved;
 
     /**
      * Creates a new piece.
@@ -41,19 +41,26 @@ public final class Piece implements Cloneable {
     }
 
     /**
-     * Returns the number of moves performed with this piece in the current game. This may be used by the the rules.
+     * Returns if this piece has been moved in the current game.
      *
-     * @return the number of moves of this piece
+     * @return {@code true} if the piece was moved, otherwise {@code false}
      */
-    int getMoveCount() {
-        return this.moveCount;
+    boolean isMoved() {
+        return this.moved;
     }
 
     /**
-     * Increments the number of moves performed with this piece.
+     * Marks this piece as moved.
      */
-    void incrementMoveCount() {
-        this.moveCount++;
+    void markMoved() {
+        this.moved = true;
+    }
+
+    /**
+     * Resets the moved flag. This is used for board setup.
+     */
+    void resetMoved() {
+        this.moved = false;
     }
 
     @Override
@@ -78,7 +85,7 @@ public final class Piece implements Cloneable {
 
         return Objects.equals(this.type, other.type)
                 && Objects.equals(this.player, other.player)
-                && this.moveCount == other.moveCount;
+                && this.moved == other.moved;
     }
 
     @Override
