@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class SANMoveTest {
+final class SANMoveTest {
 
     @Test
-    public void pawn() {
+    void pawn() {
         SANMove move = SANMove.of("e4");
 
         assertEquals(SANMove.Type.DEFAULT, move.getType());
@@ -23,7 +23,7 @@ public final class SANMoveTest {
 
 
     @Test
-    public void pawnCheck() {
+    void pawnCheck() {
         SANMove move = SANMove.of("e4+");
 
         assertEquals(SANMove.Type.DEFAULT, move.getType());
@@ -37,7 +37,7 @@ public final class SANMoveTest {
     }
 
     @Test
-    public void pawnCaptures() {
+    void pawnCaptures() {
         SANMove move = SANMove.of("dxe4");
 
         assertEquals(SANMove.Type.DEFAULT, move.getType());
@@ -52,7 +52,7 @@ public final class SANMoveTest {
 
 
     @Test
-    public void bishopCaptures() {
+    void bishopCaptures() {
         SANMove move = SANMove.of("Bxe4");
 
         assertEquals(SANMove.Type.DEFAULT, move.getType());
@@ -67,7 +67,7 @@ public final class SANMoveTest {
 
 
     @Test
-    public void disambiguousColumn() {
+    void disambiguousColumn() {
         SANMove move = SANMove.of("Ngf3");
 
         assertEquals(SANMove.Type.DEFAULT, move.getType());
@@ -82,7 +82,7 @@ public final class SANMoveTest {
 
 
     @Test
-    public void disambiguousRow() {
+    void disambiguousRow() {
         SANMove move = SANMove.of("N5f3");
 
         assertEquals(SANMove.Type.DEFAULT, move.getType());
@@ -97,7 +97,7 @@ public final class SANMoveTest {
 
 
     @Test
-    public void disambiguousFull() {
+    void disambiguousFull() {
         SANMove move = SANMove.of("Qe2f3");
 
         assertEquals(SANMove.Type.DEFAULT, move.getType());
@@ -112,7 +112,7 @@ public final class SANMoveTest {
 
 
     @Test
-    public void disambiguousColumnCaptures() {
+    void disambiguousColumnCaptures() {
         SANMove move = SANMove.of("Ngxf3");
 
         assertEquals(SANMove.Type.DEFAULT, move.getType());
@@ -127,7 +127,7 @@ public final class SANMoveTest {
 
 
     @Test
-    public void disambiguousRowCaptures() {
+    void disambiguousRowCaptures() {
         SANMove move = SANMove.of("N5xf3");
 
         assertEquals(SANMove.Type.DEFAULT, move.getType());
@@ -142,7 +142,7 @@ public final class SANMoveTest {
 
 
     @Test
-    public void disambiguousFullCaptures() {
+    void disambiguousFullCaptures() {
         SANMove move = SANMove.of("Qe2xf3");
 
         assertEquals(SANMove.Type.DEFAULT, move.getType());
@@ -157,7 +157,7 @@ public final class SANMoveTest {
 
 
     @Test
-    public void pawnPromotion() {
+    void pawnPromotion() {
         SANMove move = SANMove.of("e8=Q");
 
         assertEquals(SANMove.Type.DEFAULT, move.getType());
@@ -171,7 +171,7 @@ public final class SANMoveTest {
     }
 
     @Test
-    public void kignsideCastling() {
+    void kignsideCastling() {
         SANMove move = SANMove.of("O-O");
 
         assertEquals(SANMove.Type.KINGSIDE_CASTLING, move.getType());
@@ -181,7 +181,7 @@ public final class SANMoveTest {
     }
 
     @Test
-    public void kignsideCastlingCheck() {
+    void kignsideCastlingCheck() {
         SANMove move = SANMove.of("O-O+");
 
         assertEquals(SANMove.Type.KINGSIDE_CASTLING, move.getType());
@@ -191,7 +191,7 @@ public final class SANMoveTest {
     }
 
     @Test
-    public void queensideCastling() {
+    void queensideCastling() {
         SANMove move = SANMove.of("O-O-O");
 
         assertEquals(SANMove.Type.QUEENSIDE_CASTLING, move.getType());
@@ -201,7 +201,7 @@ public final class SANMoveTest {
     }
 
     @Test
-    public void queensideCastlingCheck() {
+    void queensideCastlingCheck() {
         SANMove move = SANMove.of("O-O-O+");
 
         assertEquals(SANMove.Type.QUEENSIDE_CASTLING, move.getType());

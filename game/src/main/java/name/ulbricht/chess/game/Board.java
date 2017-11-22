@@ -17,7 +17,7 @@ public final class Board implements Cloneable {
     /**
      * Creates a new empty board.
      */
-    public Board() {
+    Board() {
         // create all required squares
         this.pieces = new Piece[Coordinate.COLUMNS * Coordinate.ROWS];
     }
@@ -44,7 +44,7 @@ public final class Board implements Cloneable {
      * @see #getPiece(Coordinate)
      * @see #removePiece(Coordinate)
      */
-    public Optional<Piece> setPiece(Coordinate coordinate, Piece piece) {
+    Optional<Piece> setPiece(Coordinate coordinate, Piece piece) {
         Optional<Piece> replacedPiece = getPiece(Objects.requireNonNull(coordinate, "coordinate cannot be null"));
         this.pieces[coordinate.ordinal()] = piece;
 
@@ -68,14 +68,14 @@ public final class Board implements Cloneable {
      * @param coordinate the coordinate
      * @return an optional replaced piece
      */
-    public Optional<Piece> removePiece(Coordinate coordinate) {
+    Optional<Piece> removePiece(Coordinate coordinate) {
         return setPiece(coordinate, null);
     }
 
     /**
      * Initializes the board with the initial positions of the pieces.
      */
-    public void setup() {
+    void setup() {
         // clear all squares
         Arrays.fill(this.pieces, null);
 

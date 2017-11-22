@@ -17,7 +17,7 @@ public final class Piece implements Cloneable {
      * @param type   the type of the piece
      * @param player the player that owns this piece
      */
-    public Piece(PieceType type, Player player) {
+    Piece(PieceType type, Player player) {
         this.type = Objects.requireNonNull(type, "type cannot be null");
         this.player = Objects.requireNonNull(player, "player cannot be null");
     }
@@ -45,14 +45,14 @@ public final class Piece implements Cloneable {
      *
      * @return the number of moves of this piece
      */
-    public int getMoveCount() {
+    int getMoveCount() {
         return this.moveCount;
     }
 
     /**
      * Increments the number of moves performed with this piece.
      */
-    public void incrementMoveCount() {
+    void incrementMoveCount() {
         this.moveCount++;
     }
 

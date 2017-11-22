@@ -9,12 +9,12 @@ final class SimpleMove extends AbstractMove {
         Objects.requireNonNull(from, "from cannot be null");
         Objects.requireNonNull(to, "to cannot be null");
 
-        if (board.getPiece(to).isPresent()) return new SimpleMove(board, from, to, to);
-        else return new SimpleMove(board, from, to, null);
+        if (board.getPiece(to).isPresent()) return new SimpleMove(from, to, to);
+        else return new SimpleMove(from, to, null);
     }
 
-    private SimpleMove(Board board, Coordinate from, Coordinate to, Coordinate captures) {
-        super(board, from, to, captures);
+    private SimpleMove(Coordinate from, Coordinate to, Coordinate captures) {
+        super(from, to, captures);
     }
 
     @Override

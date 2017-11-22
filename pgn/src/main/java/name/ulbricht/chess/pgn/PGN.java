@@ -15,13 +15,13 @@ import java.util.List;
 
 public final class PGN {
 
-    public static final String EVENT_TAG = "Event";
-    public static final String SITE_TAG = "Site";
-    public static final String DATE_TAG = "Date";
-    public static final String ROUND_TAG = "Round";
-    public static final String WHITE_TAG = "White";
-    public static final String BLACK_TAG = "Black";
-    public static final String RESULT_TAG = "Result";
+    static final String EVENT_TAG = "Event";
+    static final String SITE_TAG = "Site";
+    static final String DATE_TAG = "Date";
+    static final String ROUND_TAG = "Round";
+    static final String WHITE_TAG = "White";
+    static final String BLACK_TAG = "Black";
+    static final String RESULT_TAG = "Result";
 
     private static final Charset encoding = StandardCharsets.ISO_8859_1;
 

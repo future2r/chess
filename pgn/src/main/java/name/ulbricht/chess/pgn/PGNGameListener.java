@@ -20,7 +20,7 @@ final class PGNGameListener extends PGNBaseListener implements PGNDatabaseListen
     PGNGameListener(int fromIndex, int toIndex) {
         if (fromIndex < 0) throw new IllegalArgumentException("fromIndex cannot be < 0");
         if (toIndex < 0) throw new IllegalArgumentException("toIndex cannot be < 0");
-        if (toIndex > toIndex) throw new IllegalArgumentException("toIndex cannot be > toIndex");
+        if (fromIndex > toIndex) throw new IllegalArgumentException("toIndex cannot be > toIndex");
 
         this.fromIndex = fromIndex;
         this.toIndex = toIndex;

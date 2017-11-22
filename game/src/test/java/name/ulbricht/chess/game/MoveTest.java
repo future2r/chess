@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MoveTest {
+final class MoveTest {
 
     @Test
-    public void testSimpleNoCpature() {
+    void testSimpleNoCpature() {
         Board board = new Board();
 
         Coordinate from = Coordinate.valueOf("d4");
@@ -25,7 +25,7 @@ public class MoveTest {
     }
 
     @Test
-    public void testSimpleCaptures() {
+    void testSimpleCaptures() {
         Board board = new Board();
 
         Coordinate from = Coordinate.valueOf("d4");

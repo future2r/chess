@@ -18,6 +18,7 @@
         <antlr4.version>4.7</antlr4.version>
         <junit.jupiter.version>5.0.2</junit.jupiter.version>
         <junit.platform.version>1.0.2</junit.platform.version>
+        <apiguardian.version>1.0.0</apiguardian.version>
     </properties>
 
     <modules>
@@ -44,6 +45,11 @@
                 <artifactId>junit-jupiter-params</artifactId>
                 <version>${junit.jupiter.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apiguardian </groupId>
+                <artifactId>apiguardian-api</artifactId>
+                <version>${apiguardian.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
