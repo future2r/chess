@@ -1,7 +1,5 @@
 package name.ulbricht.chess.game;
 
-import java.util.Optional;
-
 /**
  * Represents a coordinate on a board. These coordinates are based on a unique zero-based index (the ordinal value)
  * representing each coordinate. All other properties of a coordinate are derived from that index. The index 0
@@ -73,64 +71,64 @@ public enum Coordinate {
     }
 
     /**
-     * Returns an optional coordinate for the square directly left next to the square represented by this coordinate. If
-     * there is no such square (because the board ends here) the return value will be empty.
+     * Returns the coordinate for the square directly left next to the square represented by this coordinate. If
+     * there is no such square (because the board ends here) the return value will be {@code null}.
      *
-     * @return an optional coordinate left to this coordinate
+     * @return the coordinate left to this coordinate or {@code null}
      * @see #moveTo(int, int)
      */
-    public Optional<Coordinate> moveLeft() {
+    public Coordinate moveLeft() {
         return moveTo(-1, 0);
     }
 
     /**
-     * Returns an optional coordinate for the square directly right next to the square represented by this coordinate.
-     * If there is no such square (because the board ends here) the return value will be empty.
+     * Returns the coordinate for the square directly right next to the square represented by this coordinate.
+     * If there is no such square (because the board ends here) the return value will be {@code null}.
      *
-     * @return an optional coordinate right to this coordinate
+     * @return the coordinate right to this coordinate or {@code null}
      * @see #moveTo(int, int)
      */
-    public Optional<Coordinate> moveRight() {
+    public Coordinate moveRight() {
         return moveTo(1, 0);
     }
 
     /**
-     * Returns an optional coordinate for the square directly above the square represented by this coordinate. If there
-     * is no such square (because the board ends here) the return value will be empty.
+     * Returns the coordinate for the square directly above the square represented by this coordinate. If there
+     * is no such square (because the board ends here) the return value will be {@code null}.
      *
-     * @return an optional coordinate above this coordinate
+     * @return the coordinate above this coordinate or {@code null}
      * @see #moveTo(int, int)
      */
-    public Optional<Coordinate> moveUp() {
+    public Coordinate moveUp() {
         return moveTo(0, 1);
     }
 
     /**
-     * Returns an optional coordinate for the square directly below the square represented by this coordinate. If there
-     * is no such square (because the board ends here) the return value will be empty.
+     * Returns the coordinate for the square directly below the square represented by this coordinate. If there
+     * is no such square (because the board ends here) the return value will be {@code null}.
      *
-     * @return an optional coordinate below this coordinate
+     * @return the coordinate below this coordinate or {@code null}
      * @see #moveTo(int, int)
      */
-    public Optional<Coordinate> moveDown() {
+    public Coordinate moveDown() {
         return moveTo(0, -1);
     }
 
     /**
-     * Returns an optional coordinate that can be reached by moving the specified offset from this coordinate. If there
-     * is no such square (because the board ends here) the return value will be empty.
+     * Returns the coordinate that can be reached by moving the specified offset from this coordinate. If there
+     * is no such square (because the board ends here) the return value will be {@code null}..
      *
      * @param columnOffset positive offset will move right, negative offset will move left
      * @param rowOffset    positive offset will move up, negative offset will move down
-     * @return an optional coordinate
+     * @return the coordinate or {@code null}.
      */
-    public Optional<Coordinate> moveTo(int columnOffset, int rowOffset) {
+    public Coordinate moveTo(int columnOffset, int rowOffset) {
         int newColumn = getColumnIndex() + columnOffset;
         int newRow = getRowIndex() + rowOffset;
 
         if (newColumn >= 0 && newColumn < COLUMNS && newRow >= 0 && newRow < ROWS)
-            return Optional.of(Coordinate.valueOf(newColumn, newRow));
-        else return Optional.empty();
+            return Coordinate.valueOf(newColumn, newRow);
+        else return null;
     }
 
     /**

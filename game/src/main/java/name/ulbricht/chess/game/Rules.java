@@ -85,17 +85,17 @@ final class Rules {
         int direction = this.player == Player.WHITE ? 1 : -1;
 
         // one step forward
-        Optional<Coordinate> to = from.moveTo(0, direction);
-        if (to.isPresent()) {
-            if (!this.board.getPiece(to.get()).isPresent()) moves.add(Move.simple(this.board, from, to.get()));
+        Coordinate to = from.moveTo(0, direction);
+        if (to != null) {
+            if (!this.board.getPiece(to).isPresent()) moves.add(Move.simple(this.board, from, to));
 
             // two steps forward (if not yet moved)
             Piece me = this.board.getPiece(from).orElseThrow(() -> new IllegalStateException("piece expected"));
-            if (me.getMoveCount() == 0 && !this.board.getPiece(to.get()).isPresent()) {
+            if (me.getMoveCount() == 0 && !this.board.getPiece(to).isPresent()) {
                 to = from.moveTo(0, 2 * direction);
-                if (to.isPresent()) {
-                    if (!this.board.getPiece(to.get()).isPresent())
-                        moves.add(Move.simple(this.board, from, to.get()));
+                if (to != null) {
+                    if (!this.board.getPiece(to).isPresent())
+                        moves.add(Move.simple(this.board, from, to));
                 }
             }
         }
@@ -104,10 +104,10 @@ final class Rules {
         int[][] captures = new int[][]{{-1, direction}, {1, direction}};
         for (int[] capture : captures) {
             to = from.moveTo(capture[0], capture[1]);
-            if (to.isPresent()) {
-                Optional<Piece> p = this.board.getPiece(to.get());
+            if (to != null) {
+                Optional<Piece> p = this.board.getPiece(to);
                 if (p.isPresent() && p.get().getPlayer().isOpponent(this.player))
-                    moves.add(Move.simple(this.board, from, to.get()));
+                    moves.add(Move.simple(this.board, from, to));
             }
         }
 
@@ -120,12 +120,12 @@ final class Rules {
 
         int[][] jumps = new int[][]{{-1, 2}, {1, 2}, {-2, 1}, {-2, -1}, {2, 1}, {2, -1}, {-1, -2}, {1, -2}};
         for (int[] jump : jumps) {
-            Optional<Coordinate> to = from.moveTo(jump[0], jump[1]);
-            if (to.isPresent()) {
-                Optional<Piece> piece = this.board.getPiece(to.get());
-                if (!piece.isPresent()) moves.add(Move.simple(this.board, from, to.get()));
+            Coordinate to = from.moveTo(jump[0], jump[1]);
+            if (to != null) {
+                Optional<Piece> piece = this.board.getPiece(to);
+                if (!piece.isPresent()) moves.add(Move.simple(this.board, from, to));
                 else if (piece.get().getPlayer().isOpponent(this.player))
-                    moves.add(Move.simple(this.board, from, to.get()));
+                    moves.add(Move.simple(this.board, from, to));
             }
         }
         return moves;
@@ -136,20 +136,20 @@ final class Rules {
         List<Move> moves = new ArrayList<>();
 
         for (Direction direction : directions) {
-            Optional<Coordinate> to;
+            Coordinate to;
             int step = 1;
             do {
                 to = from.moveTo(step * direction.getColumnOffset(), step * direction.getRowOffset());
-                if (to.isPresent()) {
-                    Optional<Piece> piece = this.board.getPiece(to.get());
-                    if (!piece.isPresent()) moves.add(Move.simple(this.board, from, to.get()));
+                if (to != null) {
+                    Optional<Piece> piece = this.board.getPiece(to);
+                    if (!piece.isPresent()) moves.add(Move.simple(this.board, from, to));
                     else if (piece.get().getPlayer().isOpponent(this.player)) {
-                        moves.add(Move.simple(this.board, from, to.get()));
+                        moves.add(Move.simple(this.board, from, to));
                         break;
                     } else break;
                 }
                 step++;
-            } while (step <= maxSteps && to.isPresent());
+            } while (step <= maxSteps && to != null);
         }
 
         return moves;

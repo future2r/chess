@@ -16,7 +16,6 @@ import name.ulbricht.chess.game.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 final class BoardCanvas extends Canvas {
 
@@ -115,16 +114,16 @@ final class BoardCanvas extends Canvas {
         this.currentPlayerProperty.set(this.game.getCurrentPlayer());
     }
 
-    Game getGame(){
+    Game getGame() {
         return this.game;
     }
 
     void setDesign(BoardDesign design) {
-        this.renderer=design.createRenderer(new RendererContextImpl());
+        this.renderer = design.createRenderer(new RendererContextImpl());
         draw();
     }
 
-    void newGame(){
+    void newGame() {
         this.game.start();
         this.currentPlayerProperty.set(this.game.getCurrentPlayer());
         this.focusedSquareProperty.set(null);
@@ -174,33 +173,35 @@ final class BoardCanvas extends Canvas {
         switch (e.getCode()) {
             case LEFT:
                 if (focused != null) {
-                    focused.moveLeft().ifPresentOrElse(
-                            this.focusedSquareProperty::set,
-                            () -> this.focusedSquareProperty.set(Coordinate.valueOf(Coordinate.COLUMNS - 1, focused.getRowIndex())));
+                    Coordinate left = focused.moveLeft();
+                    if (left != null) this.focusedSquareProperty.set(left);
+                    else
+                        this.focusedSquareProperty.set(Coordinate.valueOf(Coordinate.COLUMNS - 1, focused.getRowIndex()));
                 } else this.focusedSquareProperty.set(Coordinate.a1);
                 e.consume();
                 break;
             case RIGHT:
                 if (focused != null) {
-                    focused.moveRight().ifPresentOrElse(
-                            this.focusedSquareProperty::set,
-                            () -> this.focusedSquareProperty.set(Coordinate.valueOf(0, focused.getRowIndex())));
+                    Coordinate right = focused.moveRight();
+                    if (right != null) this.focusedSquareProperty.set(right);
+                    else this.focusedSquareProperty.set(Coordinate.valueOf(0, focused.getRowIndex()));
                 } else this.focusedSquareProperty.set(Coordinate.a1);
                 e.consume();
                 break;
             case UP:
                 if (focused != null) {
-                    focused.moveUp().ifPresentOrElse(
-                            this.focusedSquareProperty::set,
-                            () -> this.focusedSquareProperty.set(Coordinate.valueOf(focused.getColumnIndex(), 0)));
+                    Coordinate up = focused.moveUp();
+                    if (up != null) this.focusedSquareProperty.set(up);
+                    else this.focusedSquareProperty.set(Coordinate.valueOf(focused.getColumnIndex(), 0));
                 } else this.focusedSquareProperty.set(Coordinate.a1);
                 e.consume();
                 break;
             case DOWN:
                 if (focused != null) {
-                    focused.moveDown().ifPresentOrElse(
-                            this.focusedSquareProperty::set,
-                            () -> this.focusedSquareProperty.set(Coordinate.valueOf(focused.getColumnIndex(), Coordinate.ROWS - 1)));
+                    Coordinate down = focused.moveDown();
+                    if (down != null) this.focusedSquareProperty.set(down);
+                    else
+                        this.focusedSquareProperty.set(Coordinate.valueOf(focused.getColumnIndex(), Coordinate.ROWS - 1));
                 } else this.focusedSquareProperty.set(Coordinate.a1);
                 e.consume();
                 break;

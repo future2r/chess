@@ -4,9 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 final class CoordinateTest {
 
@@ -74,49 +72,49 @@ final class CoordinateTest {
 
     @Test
     void testMoveLeft() {
-        assertEquals(Coordinate.g1, Coordinate.h1.moveLeft().get());
-        assertEquals(Coordinate.d5, Coordinate.e5.moveLeft().get());
-        assertEquals(Coordinate.a8, Coordinate.b8.moveLeft().get());
+        assertEquals(Coordinate.g1, Coordinate.h1.moveLeft());
+        assertEquals(Coordinate.d5, Coordinate.e5.moveLeft());
+        assertEquals(Coordinate.a8, Coordinate.b8.moveLeft());
     }
 
     @Test
     void testMoveLeft_Fail() {
-        assertFalse(Coordinate.a5.moveLeft().isPresent());
+        assertNull(Coordinate.a5.moveLeft());
     }
 
     @Test
     void testMoveRight() {
-        assertEquals(Coordinate.b1, Coordinate.a1.moveRight().get());
-        assertEquals(Coordinate.f5, Coordinate.e5.moveRight().get());
-        assertEquals(Coordinate.h8, Coordinate.g8.moveRight().get());
+        assertEquals(Coordinate.b1, Coordinate.a1.moveRight());
+        assertEquals(Coordinate.f5, Coordinate.e5.moveRight());
+        assertEquals(Coordinate.h8, Coordinate.g8.moveRight());
     }
 
     @Test
     void testMoveRight_Fail() {
-        assertFalse(Coordinate.h5.moveRight().isPresent());
+        assertNull(Coordinate.h5.moveRight());
     }
 
     @Test
     void testMoveUp() {
-        assertEquals(Coordinate.a2, Coordinate.a1.moveUp().get());
-        assertEquals(Coordinate.e6, Coordinate.e5.moveUp().get());
-        assertEquals(Coordinate.h8, Coordinate.h7.moveUp().get());
+        assertEquals(Coordinate.a2, Coordinate.a1.moveUp());
+        assertEquals(Coordinate.e6, Coordinate.e5.moveUp());
+        assertEquals(Coordinate.h8, Coordinate.h7.moveUp());
     }
 
     @Test
     void testMoveUp_Fail() {
-        assertFalse(Coordinate.d8.moveUp().isPresent());
+        assertNull(Coordinate.d8.moveUp());
     }
 
     @Test
     void testMoveDown() {
-        assertEquals(Coordinate.a7, Coordinate.a8.moveDown().get());
-        assertEquals(Coordinate.e4, Coordinate.e5.moveDown().get());
-        assertEquals(Coordinate.h1, Coordinate.h2.moveDown().get());
+        assertEquals(Coordinate.a7, Coordinate.a8.moveDown());
+        assertEquals(Coordinate.e4, Coordinate.e5.moveDown());
+        assertEquals(Coordinate.h1, Coordinate.h2.moveDown());
     }
 
     @Test
     void testMoveDown_Fail() {
-        assertFalse(Coordinate.e1.moveDown().isPresent());
+        assertNull(Coordinate.e1.moveDown());
     }
 }
