@@ -10,14 +10,15 @@ final class MoveTest {
 
     @Test
     void testSimpleNoCpature() {
-        Board board = new Board();
+        Game game = new Game();
+        game.clear();
 
         Coordinate from = Coordinate.d4;
-        board.setPiece(from, new Piece(PieceType.PAWN, Player.WHITE));
+        game.setPiece(from, new Piece(PieceType.PAWN, Player.WHITE));
 
         Coordinate to = Coordinate.d5;
 
-        Move move = Move.simple(board, from, to);
+        Move move = Move.simple(game, from, to);
 
         assertEquals(from, move.getFrom());
         assertEquals(to, move.getTo());
@@ -26,15 +27,16 @@ final class MoveTest {
 
     @Test
     void testSimpleCaptures() {
-        Board board = new Board();
+        Game game = new Game();
+        game.clear();
 
         Coordinate from = Coordinate.d4;
-        board.setPiece(from, new Piece(PieceType.QUEEN, Player.WHITE));
+        game.setPiece(from, new Piece(PieceType.QUEEN, Player.WHITE));
 
         Coordinate to = Coordinate.d5;
-        board.setPiece(to, new Piece(PieceType.PAWN, Player.BLACK));
+        game.setPiece(to, new Piece(PieceType.PAWN, Player.BLACK));
 
-        Move move = Move.simple(board, from, to);
+        Move move = Move.simple(game, from, to);
 
         assertEquals(from, move.getFrom());
         assertEquals(to, move.getTo());

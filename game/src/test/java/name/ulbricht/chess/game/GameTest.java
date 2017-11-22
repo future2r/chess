@@ -10,10 +10,9 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-final class BoardTest {
+final class GameTest {
 
     private static Stream<Arguments> createSetupArguments() {
 
@@ -65,44 +64,34 @@ final class BoardTest {
     @ParameterizedTest(name = "{index}: [{arguments}]")
     @MethodSource("createSetupArguments")
     void testSetup(Coordinate coordinate, Piece piece) {
-        Board board = new Board();
-        board.setup();
+        Game game = new Game();
 
-        if (piece == null) assertNull(board.getPiece(coordinate));
-        else assertEquals(piece, board.getPiece(coordinate), "Unexpected piece");
+        if (piece == null) assertNull(game.getPiece(coordinate));
+        else assertEquals(piece, game.getPiece(coordinate), "Unexpected piece");
     }
 
     @Test
     void testSetGetPiece() {
 
-        Board board = new Board();
+        Game game = new Game();
+        game.clear();
+
         Piece piece = new Piece(PieceType.PAWN, Player.WHITE);
         Coordinate[] coordinates = Coordinate.values();
 
         for (Coordinate setCoordinate : coordinates) {
-            board.setPiece(setCoordinate, piece);
+            game.setPiece(setCoordinate, piece);
 
             for (Coordinate getCoordinate : coordinates) {
 
                 if (setCoordinate.equals(getCoordinate)) {
-                    assertEquals(piece, board.getPiece(getCoordinate), "piece expected");
+                    assertEquals(piece, game.getPiece(getCoordinate), "piece expected");
                 } else {
-                    assertNull(board.getPiece(getCoordinate), "no piece expected");
+                    assertNull(game.getPiece(getCoordinate), "no piece expected");
                 }
             }
 
-            board.setPiece(setCoordinate, null);
+            game.setPiece(setCoordinate, null);
         }
-    }
-
-    @Test
-    void testClone() {
-        Board board = new Board();
-
-        Board clone = board.clone();
-
-        assertFalse(board == clone);
-        assertEquals(board, clone);
-
     }
 }

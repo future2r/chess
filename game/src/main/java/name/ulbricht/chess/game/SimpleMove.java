@@ -4,12 +4,12 @@ import java.util.Objects;
 
 final class SimpleMove extends AbstractMove {
 
-    static Move create(Board board, Coordinate from, Coordinate to) {
-        Objects.requireNonNull(board, "board cannot be null");
+    static Move create(Game game, Coordinate from, Coordinate to) {
+        Objects.requireNonNull(game, "board cannot be null");
         Objects.requireNonNull(from, "from cannot be null");
         Objects.requireNonNull(to, "to cannot be null");
 
-        if (board.getPiece(to) != null) return new SimpleMove(from, to, to);
+        if (game.getPiece(to) != null) return new SimpleMove(from, to, to);
         else return new SimpleMove(from, to, null);
     }
 
@@ -18,12 +18,12 @@ final class SimpleMove extends AbstractMove {
     }
 
     @Override
-    public void perform(Board board) {
+    public void perform(Game game) {
         // remove the piece
-        Piece piece = board.removePiece(getFrom());
+        Piece piece = game.removePiece(getFrom());
 
         // set the piece to the to square
-        board.setPiece(getTo(), piece);
+        game.setPiece(getTo(), piece);
 
         // increment the move count of the moved piece
         piece.incrementMoveCount();

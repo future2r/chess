@@ -4,12 +4,12 @@ import java.util.*;
 
 final class Rules {
 
-    private final Board board;
+    private final Game game;
     private final Player player;
     private final Map<Coordinate, List<Move>> legalMoves;
 
-    Rules(Board board, Player player) {
-        this.board = board;
+    Rules(Game game, Player player) {
+        this.game = game;
         this.player = player;
 
         this.legalMoves = findLegalMoves();
@@ -22,7 +22,7 @@ final class Rules {
     private Map<Coordinate, List<Move>> findLegalMoves() {
         Map<Coordinate, List<Move>> legalMoves = new TreeMap<>();
 
-        for (Map.Entry<Coordinate, Piece> entry : this.board.pieces().entrySet()) {
+        for (Map.Entry<Coordinate, Piece> entry : this.game.pieces().entrySet()) {
             Coordinate coordinate = entry.getKey();
             Piece piece = entry.getValue();
 
@@ -57,7 +57,7 @@ final class Rules {
     }
 
     private List<Move> findLegalMoves(Coordinate from) {
-        Piece piece = this.board.getPiece(from);
+        Piece piece = this.game.getPiece(from);
         if (piece != null) {
             switch (piece.getType()) {
                 case PAWN:
@@ -87,15 +87,15 @@ final class Rules {
         // one step forward
         Coordinate to = from.moveTo(0, direction);
         if (to != null) {
-            if (this.board.getPiece(to) == null) moves.add(Move.simple(this.board, from, to));
+            if (this.game.getPiece(to) == null) moves.add(Move.simple(this.game, from, to));
 
             // two steps forward (if not yet moved)
-            Piece me = this.board.getPiece(from);
-            if (me.getMoveCount() == 0 && this.board.getPiece(to) == null) {
+            Piece me = this.game.getPiece(from);
+            if (me.getMoveCount() == 0 && this.game.getPiece(to) == null) {
                 to = from.moveTo(0, 2 * direction);
                 if (to != null) {
-                    if (this.board.getPiece(to) == null)
-                        moves.add(Move.simple(this.board, from, to));
+                    if (this.game.getPiece(to) == null)
+                        moves.add(Move.simple(this.game, from, to));
                 }
             }
         }
@@ -105,9 +105,9 @@ final class Rules {
         for (int[] capture : captures) {
             to = from.moveTo(capture[0], capture[1]);
             if (to != null) {
-                Piece piece = this.board.getPiece(to);
+                Piece piece = this.game.getPiece(to);
                 if (piece != null && piece.getPlayer().isOpponent(this.player))
-                    moves.add(Move.simple(this.board, from, to));
+                    moves.add(Move.simple(this.game, from, to));
             }
         }
 
@@ -122,10 +122,10 @@ final class Rules {
         for (int[] jump : jumps) {
             Coordinate to = from.moveTo(jump[0], jump[1]);
             if (to != null) {
-                Piece piece = this.board.getPiece(to);
-                if (piece == null) moves.add(Move.simple(this.board, from, to));
+                Piece piece = this.game.getPiece(to);
+                if (piece == null) moves.add(Move.simple(this.game, from, to));
                 else if (piece.getPlayer().isOpponent(this.player))
-                    moves.add(Move.simple(this.board, from, to));
+                    moves.add(Move.simple(this.game, from, to));
             }
         }
         return moves;
@@ -141,10 +141,10 @@ final class Rules {
             do {
                 to = from.moveTo(step * direction.getColumnOffset(), step * direction.getRowOffset());
                 if (to != null) {
-                    Piece piece = this.board.getPiece(to);
-                    if (piece==null) moves.add(Move.simple(this.board, from, to));
+                    Piece piece = this.game.getPiece(to);
+                    if (piece==null) moves.add(Move.simple(this.game, from, to));
                     else if (piece.getPlayer().isOpponent(this.player)) {
-                        moves.add(Move.simple(this.board, from, to));
+                        moves.add(Move.simple(this.game, from, to));
                         break;
                     } else break;
                 }
@@ -156,7 +156,7 @@ final class Rules {
     }
 
     private void checkValidPiece(Coordinate coordinate, PieceType... pieceTypes) {
-        Piece piece = this.board.getPiece(coordinate);
+        Piece piece = this.game.getPiece(coordinate);
         if (piece.getPlayer().isOpponent(this.player)) throw new IllegalArgumentException("player mismatch");
 
         if (!Arrays.asList(pieceTypes).contains(piece.getType()))

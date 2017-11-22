@@ -90,7 +90,7 @@ public final class MainController implements Initializable {
 
     private void updateSelectedSquareLabel(Coordinate selected) {
         if (selected != null) {
-            Piece piece = this.canvas.getGame().getBoard().getPiece(selected);
+            Piece piece = this.canvas.getGame().getPiece(selected);
             if (piece!=null) this.selectedSquareValueLabel.setText(selected.toString() + ' ' + piece.getType().getDisplayName() + ' ' + piece.getPlayer().getDisplayName());
             else this.selectedSquareValueLabel.setText(selected.toString());
         } else

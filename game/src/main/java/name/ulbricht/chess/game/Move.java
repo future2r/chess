@@ -13,9 +13,9 @@ public interface Move {
 
     Optional<Coordinate> getCaptures();
 
-    void perform(Board board);
+    void perform(Game game);
 
-    static Move simple(Board board, Coordinate from, Coordinate to) {
-        return SimpleMove.create(board, from, to);
+    static Move simple(Game game, Coordinate from, Coordinate to) {
+        return SimpleMove.create(game, from, to);
     }
 }

@@ -1,11 +1,11 @@
 package name.ulbricht.chess.fx.design;
 
-import name.ulbricht.chess.game.Board;
 import name.ulbricht.chess.game.Coordinate;
+import name.ulbricht.chess.game.Game;
 
 public interface BoardRendererContext {
 
-    Board getBoard();
+    Game getBoard();
 
     boolean isBoardFocused();
 

@@ -47,8 +47,8 @@ final class BoardCanvas extends Canvas {
     private class RendererContextImpl implements BoardRendererContext {
 
         @Override
-        public Board getBoard() {
-            return BoardCanvas.this.game.getBoard();
+        public Game getBoard() {
+            return BoardCanvas.this.game;
         }
 
         @Override
@@ -147,7 +147,7 @@ final class BoardCanvas extends Canvas {
     private void mouseMoved(MouseEvent e) {
         Coordinate coordinate = getSquareAt(e.getX(), e.getY());
         if (coordinate != null) {
-            Piece piece = this.game.getBoard().getPiece(coordinate);
+            Piece piece = this.game.getPiece(coordinate);
             if (piece != null)
                 tooltip.setText(coordinate.toString() + ' ' + piece.getType().getDisplayName() + ' ' + piece.getPlayer().getDisplayName());
             else tooltip.setText(coordinate.toString());

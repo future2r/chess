@@ -1,16 +1,15 @@
 package name.ulbricht.chess.game;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Represents a game on the board.
  */
 public final class Game {
 
-    private final Board board;
+    private final Piece[] board;
     private Player currentPlayer;
     private final Map<Coordinate, List<Move>> legalMoves = new TreeMap<>();
 
@@ -18,20 +17,11 @@ public final class Game {
      * Creates a new game. This game will have a new board with the initial positions of the pieces.
      */
     public Game() {
-        this.board = new Board();
+        this.board = new Piece[Coordinate.COLUMNS * Coordinate.ROWS];
         start();
     }
 
-    /**
-     * Returns the current board.
-     *
-     * @return the current board
-     */
-    public Board getBoard() {
-        return this.board;
-    }
-
-    /**
+     /**
      * Returns the current player.
      *
      * @return the current player
@@ -44,9 +34,83 @@ public final class Game {
      * Starts a new game. Everything will be reset to the initial values.
      */
     public void start() {
-        this.board.setup();
+        setup();
         this.currentPlayer = Player.WHITE;
         findLegalMoves();
+    }
+
+    private void setup() {
+        clear();
+
+        PieceType[] baseLinePieces = new PieceType[]{
+                PieceType.ROOK, PieceType.KNIGHT, PieceType.BISHOP, PieceType.QUEEN,
+                PieceType.KING, PieceType.BISHOP, PieceType.KNIGHT, PieceType.ROOK};
+
+        Coordinate whiteCoordinate = Coordinate.a1;
+        Coordinate blackCoordinate = Coordinate.a8;
+        for (int i = 0; i < Coordinate.COLUMNS; i++) {
+            setPiece(whiteCoordinate, new Piece(baseLinePieces[i], Player.WHITE));
+            setPiece(whiteCoordinate.moveUp(), new Piece(PieceType.PAWN, Player.WHITE));
+            whiteCoordinate = whiteCoordinate.moveRight();
+
+            setPiece(blackCoordinate, new Piece(baseLinePieces[i], Player.BLACK));
+            setPiece(blackCoordinate.moveDown(), new Piece(PieceType.PAWN, Player.BLACK));
+            blackCoordinate = blackCoordinate.moveRight();
+        }
+    }
+
+    /**
+     * Returns a map with all pieces on the board. The keys are the coordinates and the values are the pieces. Empty
+     * square will not be returned.
+     *
+     * @return a map with coordinates and pieces
+     */
+    public Map<Coordinate, Piece> pieces() {
+        return Stream.of(Coordinate.values())
+                .filter(c -> this.board[c.ordinal()] != null)
+                .collect(Collectors.toMap(c -> c, c -> this.board[c.ordinal()]));
+    }
+
+    /**
+     * Sets a piece to the square defined by the given coordinate. If the piece is {@code null} then the square will be
+     * cleared. Any current piece will be replaced and returned.
+     *
+     * @param coordinate the coordinate
+     * @param piece      the piece or {@code null}
+     * @return the replaced piece or {@code null}
+     * @see #getPiece(Coordinate)
+     * @see #removePiece(Coordinate)
+     */
+    Piece setPiece(Coordinate coordinate, Piece piece) {
+        Piece replacedPiece = getPiece(Objects.requireNonNull(coordinate, "coordinate cannot be null"));
+        this.board[coordinate.ordinal()] = piece;
+
+        return replacedPiece;
+    }
+
+    /**
+     * Returns the piece at the given coordinate. If the square is empty the returned value will be {@code null}.
+     *
+     * @param coordinate the coordinate
+     * @return the piece or {@code null}
+     * @see #setPiece(Coordinate, Piece)
+     */
+    public Piece getPiece(Coordinate coordinate) {
+        return this.board[Objects.requireNonNull(coordinate, "coordinate cannot be null").ordinal()];
+    }
+
+    /**
+     * Removes the current piece from the square and returns a potentially replaced piece.
+     *
+     * @param coordinate the coordinate
+     * @return the replaced piece or {@code null}
+     */
+    Piece removePiece(Coordinate coordinate) {
+        return setPiece(coordinate, null);
+    }
+
+    void clear() {
+        Arrays.fill(this.board, null);
     }
 
     /**
@@ -62,7 +126,7 @@ public final class Game {
     private void findLegalMoves() {
         this.legalMoves.clear();
 
-        Rules rules = new Rules(this.board, this.currentPlayer);
+        Rules rules = new Rules(this, this.currentPlayer);
         this.legalMoves.putAll(rules.getLegalMoves());
     }
 
@@ -72,7 +136,7 @@ public final class Game {
      * @param move the move to perform
      */
     public void performMove(Move move) {
-        move.perform(this.board);
+        move.perform(this);
         this.currentPlayer = this.currentPlayer == Player.WHITE ? Player.BLACK : Player.WHITE;
         findLegalMoves();
     }
