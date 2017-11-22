@@ -3,8 +3,7 @@ package name.ulbricht.chess.game;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 final class MoveTest {
 
@@ -22,7 +21,7 @@ final class MoveTest {
 
         assertEquals(from, move.getFrom());
         assertEquals(to, move.getTo());
-        assertFalse(move.getCaptures().isPresent());
+        assertNull(move.getCaptures());
     }
 
     @Test
@@ -40,7 +39,6 @@ final class MoveTest {
 
         assertEquals(from, move.getFrom());
         assertEquals(to, move.getTo());
-        assertTrue(move.getCaptures().isPresent());
-        assertEquals(to, move.getCaptures().get());
+        assertEquals(to, move.getCaptures());
     }
 }

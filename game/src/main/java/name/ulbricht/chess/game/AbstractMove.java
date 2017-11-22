@@ -1,7 +1,6 @@
 package name.ulbricht.chess.game;
 
 import java.util.Objects;
-import java.util.Optional;
 
 abstract class AbstractMove implements Move {
 
@@ -26,8 +25,8 @@ abstract class AbstractMove implements Move {
     }
 
     @Override
-    public Optional<Coordinate> getCaptures() {
-        return Optional.ofNullable(captures);
+    public Coordinate getCaptures() {
+        return captures;
     }
 
     @Override

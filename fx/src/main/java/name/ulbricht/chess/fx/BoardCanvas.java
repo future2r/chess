@@ -186,7 +186,7 @@ final class BoardCanvas extends Canvas {
     private void selectSquare(Coordinate coordinate) {
         // check if we can execute a move
         Optional<Move> move = this.displayedMovesProperty.stream()
-                .filter(m -> coordinate.equals(m.getTo()) || (m.getCaptures().isPresent() && coordinate.equals(m.getCaptures().get())))
+                .filter(m -> coordinate.equals(m.getTo()) || coordinate.equals(m.getCaptures()))
                 .findFirst();
 
         if (move.isPresent()) {
@@ -307,7 +307,7 @@ final class BoardCanvas extends Canvas {
             gc.translate(squareXOffset, squareYOffset);
 
             BoardRenderer.SquareIndicator squareIndicator;
-            if (this.displayedMovesProperty.stream().anyMatch(m -> m.getCaptures().isPresent() && m.getCaptures().get().equals(coordinate))) {
+            if (this.displayedMovesProperty.stream().anyMatch(m -> coordinate.equals(m.getCaptures()))) {
                 squareIndicator = BoardRenderer.SquareIndicator.CAPTURED;
             } else if (this.displayedMovesProperty.stream().anyMatch(m -> coordinate.equals(m.getTo()))) {
                 squareIndicator = BoardRenderer.SquareIndicator.TARGET;

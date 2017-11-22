@@ -1,7 +1,5 @@
 package name.ulbricht.chess.game;
 
-import java.util.Optional;
-
 /**
  * Represents a move on a board.
  */
@@ -11,7 +9,7 @@ public interface Move {
 
     Coordinate getTo();
 
-    Optional<Coordinate> getCaptures();
+    Coordinate getCaptures();
 
     void perform(Game game);
 
