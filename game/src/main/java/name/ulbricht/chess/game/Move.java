@@ -3,17 +3,42 @@ package name.ulbricht.chess.game;
 /**
  * Represents a move on a board.
  */
-public interface Move {
+public final class Move {
 
-    Coordinate getFrom();
+    static Move simple(Game game, Coordinate source, Coordinate target) {
+        return new Move(game, MoveType.SIMPLE, source, target, null);
+    }
 
-    Coordinate getTo();
+    private final Game game;
+    private final MoveType type;
+    private final Coordinate source;
+    private final Coordinate target;
+    private final Coordinate captures;
 
-    Coordinate getCaptures();
+    private Move(Game game, MoveType type, Coordinate source, Coordinate target, Coordinate captures) {
+        this.game = game;
+        this.type = type;
+        this.source = source;
+        this.target = target;
+        this.captures = captures;
+    }
 
-    void perform(Game game);
+    public MoveType getType() {
+        return this.type;
+    }
 
-    static Move simple(Game game, Coordinate from, Coordinate to) {
-        return SimpleMove.create(game, from, to);
+    public Coordinate getSource() {
+        return this.source;
+    }
+
+    public Coordinate getTarget() {
+        return this.target;
+    }
+
+    public Coordinate getCaptures() {
+        if (this.captures != null) return this.captures;
+        Piece piece = this.game.getPiece(this.target);
+        if (piece != null && piece.getPlayer().isOpponent(this.game.getCurrentPlayer())) return this.target;
+        return null;
     }
 }

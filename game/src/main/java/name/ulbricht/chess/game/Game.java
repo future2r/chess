@@ -21,7 +21,7 @@ public final class Game {
         start();
     }
 
-     /**
+    /**
      * Returns the current player.
      *
      * @return the current player
@@ -79,13 +79,9 @@ public final class Game {
      * @param piece      the piece or {@code null}
      * @return the replaced piece or {@code null}
      * @see #getPiece(Coordinate)
-     * @see #removePiece(Coordinate)
      */
-    Piece setPiece(Coordinate coordinate, Piece piece) {
-        Piece replacedPiece = getPiece(Objects.requireNonNull(coordinate, "coordinate cannot be null"));
+    void setPiece(Coordinate coordinate, Piece piece) {
         this.board[coordinate.ordinal()] = piece;
-
-        return replacedPiece;
     }
 
     /**
@@ -99,14 +95,15 @@ public final class Game {
         return this.board[Objects.requireNonNull(coordinate, "coordinate cannot be null").ordinal()];
     }
 
-    /**
-     * Removes the current piece from the square and returns a potentially replaced piece.
-     *
-     * @param coordinate the coordinate
-     * @return the replaced piece or {@code null}
-     */
-    Piece removePiece(Coordinate coordinate) {
-        return setPiece(coordinate, null);
+    void movePiece(Coordinate source, Coordinate target) {
+        Piece piece = getPiece(source);
+        if (piece == null) throw new IllegalStateException("No piece to move");
+        setPiece(target, piece);
+        piece.incrementMoveCount();
+    }
+
+    void removePiece(Coordinate coordinate) {
+        setPiece(coordinate, null);
     }
 
     void clear() {
@@ -125,9 +122,7 @@ public final class Game {
 
     private void findLegalMoves() {
         this.legalMoves.clear();
-
-        Rules rules = new Rules(this, this.currentPlayer);
-        this.legalMoves.putAll(rules.getLegalMoves());
+        this.legalMoves.putAll(Rules.findLegalMoves(this));
     }
 
     /**
@@ -136,7 +131,18 @@ public final class Game {
      * @param move the move to perform
      */
     public void performMove(Move move) {
-        move.perform(this);
+        if (this.legalMoves.values().stream().flatMap(l -> l.stream()).noneMatch(m -> m == move))
+            throw new IllegalArgumentException("Not a legal move");
+
+        switch (move.getType()) {
+            case SIMPLE:
+                if (move.getCaptures() != null) removePiece(move.getCaptures());
+                movePiece(move.getSource(), move.getTarget());
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported move type: " + move.getType());
+        }
+
         this.currentPlayer = this.currentPlayer == Player.WHITE ? Player.BLACK : Player.WHITE;
         findLegalMoves();
     }

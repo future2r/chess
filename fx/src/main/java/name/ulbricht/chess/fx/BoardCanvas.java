@@ -186,7 +186,7 @@ final class BoardCanvas extends Canvas {
     private void selectSquare(Coordinate coordinate) {
         // check if we can execute a move
         Optional<Move> move = this.displayedMovesProperty.stream()
-                .filter(m -> coordinate.equals(m.getTo()) || coordinate.equals(m.getCaptures()))
+                .filter(m -> coordinate.equals(m.getTarget()) || coordinate.equals(m.getCaptures()))
                 .findFirst();
 
         if (move.isPresent()) {
@@ -199,11 +199,9 @@ final class BoardCanvas extends Canvas {
     private void performMove(Move move) {
         this.game.performMove(move);
 
-        //System.out.println("change from: " + this.currentPlayerProperty.get());
         this.currentPlayerProperty.set(this.game.getCurrentPlayer());
-        //System.out.println("         to: " + this.currentPlayerProperty.get());
         this.selectedSquareProperty.set(null);
-        this.focusedSquareProperty.set(move.getTo());
+        this.focusedSquareProperty.set(move.getTarget());
     }
 
 
@@ -309,7 +307,7 @@ final class BoardCanvas extends Canvas {
             BoardRenderer.SquareIndicator squareIndicator;
             if (this.displayedMovesProperty.stream().anyMatch(m -> coordinate.equals(m.getCaptures()))) {
                 squareIndicator = BoardRenderer.SquareIndicator.CAPTURED;
-            } else if (this.displayedMovesProperty.stream().anyMatch(m -> coordinate.equals(m.getTo()))) {
+            } else if (this.displayedMovesProperty.stream().anyMatch(m -> coordinate.equals(m.getTarget()))) {
                 squareIndicator = BoardRenderer.SquareIndicator.TARGET;
             } else {
                 squareIndicator = null;

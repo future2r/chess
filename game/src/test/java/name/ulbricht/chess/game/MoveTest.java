@@ -8,19 +8,19 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 final class MoveTest {
 
     @Test
-    void testSimpleNoCpature() {
+    void testSimpleNoCapture() {
         Game game = new Game();
         game.clear();
 
-        Coordinate from = Coordinate.d4;
-        game.setPiece(from, new Piece(PieceType.PAWN, Player.WHITE));
+        Coordinate source = Coordinate.d4;
+        game.setPiece(source, new Piece(PieceType.PAWN, Player.WHITE));
 
-        Coordinate to = Coordinate.d5;
+        Coordinate target = Coordinate.d5;
 
-        Move move = Move.simple(game, from, to);
+        Move move = Move.simple(game, source, target);
 
-        assertEquals(from, move.getFrom());
-        assertEquals(to, move.getTo());
+        assertEquals(source, move.getSource());
+        assertEquals(target, move.getTarget());
         assertNull(move.getCaptures());
     }
 
@@ -29,16 +29,16 @@ final class MoveTest {
         Game game = new Game();
         game.clear();
 
-        Coordinate from = Coordinate.d4;
-        game.setPiece(from, new Piece(PieceType.QUEEN, Player.WHITE));
+        Coordinate source = Coordinate.d4;
+        game.setPiece(source, new Piece(PieceType.QUEEN, Player.WHITE));
 
-        Coordinate to = Coordinate.d5;
-        game.setPiece(to, new Piece(PieceType.PAWN, Player.BLACK));
+        Coordinate target = Coordinate.d5;
+        game.setPiece(target, new Piece(PieceType.PAWN, Player.BLACK));
 
-        Move move = Move.simple(game, from, to);
+        Move move = Move.simple(game, source, target);
 
-        assertEquals(from, move.getFrom());
-        assertEquals(to, move.getTo());
-        assertEquals(to, move.getCaptures());
+        assertEquals(source, move.getSource());
+        assertEquals(target, move.getTarget());
+        assertEquals(target, move.getCaptures());
     }
 }
