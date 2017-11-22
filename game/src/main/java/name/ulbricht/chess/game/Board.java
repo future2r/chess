@@ -83,8 +83,8 @@ public final class Board implements Cloneable {
                 PieceType.ROOK, PieceType.KNIGHT, PieceType.BISHOP, PieceType.QUEEN,
                 PieceType.KING, PieceType.BISHOP, PieceType.KNIGHT, PieceType.ROOK};
 
-        Optional<Coordinate> whiteCoordinate = Optional.of(Coordinate.valueOf("a1"));
-        Optional<Coordinate> blackCoordinate = Optional.of(Coordinate.valueOf("a8"));
+        Optional<Coordinate> whiteCoordinate = Optional.of(Coordinate.a1);
+        Optional<Coordinate> blackCoordinate = Optional.of(Coordinate.a8);
         for (int i = 0; i < Coordinate.COLUMNS; i++) {
             if (whiteCoordinate.isPresent()) {
                 setPiece(whiteCoordinate.get(), new Piece(baseLinePieces[i], Player.WHITE));

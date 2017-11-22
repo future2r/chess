@@ -12,10 +12,10 @@ final class MoveTest {
     void testSimpleNoCpature() {
         Board board = new Board();
 
-        Coordinate from = Coordinate.valueOf("d4");
+        Coordinate from = Coordinate.d4;
         board.setPiece(from, new Piece(PieceType.PAWN, Player.WHITE));
 
-        Coordinate to = Coordinate.valueOf("d5");
+        Coordinate to = Coordinate.d5;
 
         Move move = Move.simple(board, from, to);
 
@@ -28,10 +28,10 @@ final class MoveTest {
     void testSimpleCaptures() {
         Board board = new Board();
 
-        Coordinate from = Coordinate.valueOf("d4");
+        Coordinate from = Coordinate.d4;
         board.setPiece(from, new Piece(PieceType.QUEEN, Player.WHITE));
 
-        Coordinate to = Coordinate.valueOf("d5");
+        Coordinate to = Coordinate.d5;
         board.setPiece(to, new Piece(PieceType.PAWN, Player.BLACK));
 
         Move move = Move.simple(board, from, to);

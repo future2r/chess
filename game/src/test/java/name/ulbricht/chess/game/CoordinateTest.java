@@ -74,49 +74,49 @@ final class CoordinateTest {
 
     @Test
     void testMoveLeft() {
-        assertEquals(Coordinate.valueOf("g1"), Coordinate.valueOf("h1").moveLeft().get());
-        assertEquals(Coordinate.valueOf("d5"), Coordinate.valueOf("e5").moveLeft().get());
-        assertEquals(Coordinate.valueOf("a8"), Coordinate.valueOf("b8").moveLeft().get());
+        assertEquals(Coordinate.g1, Coordinate.h1.moveLeft().get());
+        assertEquals(Coordinate.d5, Coordinate.e5.moveLeft().get());
+        assertEquals(Coordinate.a8, Coordinate.b8.moveLeft().get());
     }
 
     @Test
     void testMoveLeft_Fail() {
-        assertFalse(Coordinate.valueOf("a5").moveLeft().isPresent());
+        assertFalse(Coordinate.a5.moveLeft().isPresent());
     }
 
     @Test
     void testMoveRight() {
-        assertEquals(Coordinate.valueOf("b1"), Coordinate.valueOf("a1").moveRight().get());
-        assertEquals(Coordinate.valueOf("f5"), Coordinate.valueOf("e5").moveRight().get());
-        assertEquals(Coordinate.valueOf("h8"), Coordinate.valueOf("g8").moveRight().get());
+        assertEquals(Coordinate.b1, Coordinate.a1.moveRight().get());
+        assertEquals(Coordinate.f5, Coordinate.e5.moveRight().get());
+        assertEquals(Coordinate.h8, Coordinate.g8.moveRight().get());
     }
 
     @Test
     void testMoveRight_Fail() {
-        assertFalse(Coordinate.valueOf("h5").moveRight().isPresent());
+        assertFalse(Coordinate.h5.moveRight().isPresent());
     }
 
     @Test
     void testMoveUp() {
-        assertEquals(Coordinate.valueOf("a2"), Coordinate.valueOf("a1").moveUp().get());
-        assertEquals(Coordinate.valueOf("e6"), Coordinate.valueOf("e5").moveUp().get());
-        assertEquals(Coordinate.valueOf("h8"), Coordinate.valueOf("h7").moveUp().get());
+        assertEquals(Coordinate.a2, Coordinate.a1.moveUp().get());
+        assertEquals(Coordinate.e6, Coordinate.e5.moveUp().get());
+        assertEquals(Coordinate.h8, Coordinate.h7.moveUp().get());
     }
 
     @Test
     void testMoveUp_Fail() {
-        assertFalse(Coordinate.valueOf("d8").moveUp().isPresent());
+        assertFalse(Coordinate.d8.moveUp().isPresent());
     }
 
     @Test
     void testMoveDown() {
-        assertEquals(Coordinate.valueOf("a7"), Coordinate.valueOf("a8").moveDown().get());
-        assertEquals(Coordinate.valueOf("e4"), Coordinate.valueOf("e5").moveDown().get());
-        assertEquals(Coordinate.valueOf("h1"), Coordinate.valueOf("h2").moveDown().get());
+        assertEquals(Coordinate.a7, Coordinate.a8.moveDown().get());
+        assertEquals(Coordinate.e4, Coordinate.e5.moveDown().get());
+        assertEquals(Coordinate.h1, Coordinate.h2.moveDown().get());
     }
 
     @Test
     void testMoveDown_Fail() {
-        assertFalse(Coordinate.valueOf("e1").moveDown().isPresent());
+        assertFalse(Coordinate.e1.moveDown().isPresent());
     }
 }

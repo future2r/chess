@@ -177,7 +177,7 @@ final class BoardCanvas extends Canvas {
                     focused.moveLeft().ifPresentOrElse(
                             this.focusedSquareProperty::set,
                             () -> this.focusedSquareProperty.set(Coordinate.valueOf(Coordinate.COLUMNS - 1, focused.getRowIndex())));
-                } else this.focusedSquareProperty.set(Coordinate.valueOf("a1"));
+                } else this.focusedSquareProperty.set(Coordinate.a1);
                 e.consume();
                 break;
             case RIGHT:
@@ -185,7 +185,7 @@ final class BoardCanvas extends Canvas {
                     focused.moveRight().ifPresentOrElse(
                             this.focusedSquareProperty::set,
                             () -> this.focusedSquareProperty.set(Coordinate.valueOf(0, focused.getRowIndex())));
-                } else this.focusedSquareProperty.set(Coordinate.valueOf("a1"));
+                } else this.focusedSquareProperty.set(Coordinate.a1);
                 e.consume();
                 break;
             case UP:
@@ -193,7 +193,7 @@ final class BoardCanvas extends Canvas {
                     focused.moveUp().ifPresentOrElse(
                             this.focusedSquareProperty::set,
                             () -> this.focusedSquareProperty.set(Coordinate.valueOf(focused.getColumnIndex(), 0)));
-                } else this.focusedSquareProperty.set(Coordinate.valueOf("a1"));
+                } else this.focusedSquareProperty.set(Coordinate.a1);
                 e.consume();
                 break;
             case DOWN:
@@ -201,7 +201,7 @@ final class BoardCanvas extends Canvas {
                     focused.moveDown().ifPresentOrElse(
                             this.focusedSquareProperty::set,
                             () -> this.focusedSquareProperty.set(Coordinate.valueOf(focused.getColumnIndex(), Coordinate.ROWS - 1)));
-                } else this.focusedSquareProperty.set(Coordinate.valueOf("a1"));
+                } else this.focusedSquareProperty.set(Coordinate.a1);
                 e.consume();
                 break;
             case ENTER:
