@@ -57,9 +57,9 @@ final class Rules {
     }
 
     private List<Move> findLegalMoves(Coordinate from) {
-        Optional<Piece> piece = this.board.getPiece(from);
-        if (piece.isPresent()) {
-            switch (piece.get().getType()) {
+        Piece piece = this.board.getPiece(from);
+        if (piece != null) {
+            switch (piece.getType()) {
                 case PAWN:
                     return findPawnMoves(from);
                 case ROOK:
@@ -87,14 +87,14 @@ final class Rules {
         // one step forward
         Coordinate to = from.moveTo(0, direction);
         if (to != null) {
-            if (!this.board.getPiece(to).isPresent()) moves.add(Move.simple(this.board, from, to));
+            if (this.board.getPiece(to) == null) moves.add(Move.simple(this.board, from, to));
 
             // two steps forward (if not yet moved)
-            Piece me = this.board.getPiece(from).orElseThrow(() -> new IllegalStateException("piece expected"));
-            if (me.getMoveCount() == 0 && !this.board.getPiece(to).isPresent()) {
+            Piece me = this.board.getPiece(from);
+            if (me.getMoveCount() == 0 && this.board.getPiece(to) == null) {
                 to = from.moveTo(0, 2 * direction);
                 if (to != null) {
-                    if (!this.board.getPiece(to).isPresent())
+                    if (this.board.getPiece(to) == null)
                         moves.add(Move.simple(this.board, from, to));
                 }
             }
@@ -105,8 +105,8 @@ final class Rules {
         for (int[] capture : captures) {
             to = from.moveTo(capture[0], capture[1]);
             if (to != null) {
-                Optional<Piece> p = this.board.getPiece(to);
-                if (p.isPresent() && p.get().getPlayer().isOpponent(this.player))
+                Piece piece = this.board.getPiece(to);
+                if (piece != null && piece.getPlayer().isOpponent(this.player))
                     moves.add(Move.simple(this.board, from, to));
             }
         }
@@ -122,9 +122,9 @@ final class Rules {
         for (int[] jump : jumps) {
             Coordinate to = from.moveTo(jump[0], jump[1]);
             if (to != null) {
-                Optional<Piece> piece = this.board.getPiece(to);
-                if (!piece.isPresent()) moves.add(Move.simple(this.board, from, to));
-                else if (piece.get().getPlayer().isOpponent(this.player))
+                Piece piece = this.board.getPiece(to);
+                if (piece == null) moves.add(Move.simple(this.board, from, to));
+                else if (piece.getPlayer().isOpponent(this.player))
                     moves.add(Move.simple(this.board, from, to));
             }
         }
@@ -141,9 +141,9 @@ final class Rules {
             do {
                 to = from.moveTo(step * direction.getColumnOffset(), step * direction.getRowOffset());
                 if (to != null) {
-                    Optional<Piece> piece = this.board.getPiece(to);
-                    if (!piece.isPresent()) moves.add(Move.simple(this.board, from, to));
-                    else if (piece.get().getPlayer().isOpponent(this.player)) {
+                    Piece piece = this.board.getPiece(to);
+                    if (piece==null) moves.add(Move.simple(this.board, from, to));
+                    else if (piece.getPlayer().isOpponent(this.player)) {
                         moves.add(Move.simple(this.board, from, to));
                         break;
                     } else break;
@@ -156,7 +156,7 @@ final class Rules {
     }
 
     private void checkValidPiece(Coordinate coordinate, PieceType... pieceTypes) {
-        Piece piece = this.board.getPiece(coordinate).orElseThrow(() -> new IllegalArgumentException("square cannot be empty"));
+        Piece piece = this.board.getPiece(coordinate);
         if (piece.getPlayer().isOpponent(this.player)) throw new IllegalArgumentException("player mismatch");
 
         if (!Arrays.asList(pieceTypes).contains(piece.getType()))

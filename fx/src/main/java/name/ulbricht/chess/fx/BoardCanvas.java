@@ -147,9 +147,10 @@ final class BoardCanvas extends Canvas {
     private void mouseMoved(MouseEvent e) {
         Coordinate coordinate = getSquareAt(e.getX(), e.getY());
         if (coordinate != null) {
-            this.game.getBoard().getPiece(coordinate).ifPresentOrElse(
-                    p -> tooltip.setText(coordinate.toString() + ' ' + p.getType().getDisplayName() + ' ' + p.getPlayer().getDisplayName()),
-                    () -> tooltip.setText(coordinate.toString()));
+            Piece piece = this.game.getBoard().getPiece(coordinate);
+            if (piece != null)
+                tooltip.setText(coordinate.toString() + ' ' + piece.getType().getDisplayName() + ' ' + piece.getPlayer().getDisplayName());
+            else tooltip.setText(coordinate.toString());
             Tooltip.install(this, tooltip);
             this.focusedSquareProperty.set(coordinate);
         } else {

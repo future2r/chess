@@ -9,7 +9,7 @@ final class SimpleMove extends AbstractMove {
         Objects.requireNonNull(from, "from cannot be null");
         Objects.requireNonNull(to, "to cannot be null");
 
-        if (board.getPiece(to).isPresent()) return new SimpleMove(from, to, to);
+        if (board.getPiece(to) != null) return new SimpleMove(from, to, to);
         else return new SimpleMove(from, to, null);
     }
 
@@ -20,7 +20,7 @@ final class SimpleMove extends AbstractMove {
     @Override
     public void perform(Board board) {
         // remove the piece
-        Piece piece = board.removePiece(getFrom()).orElseThrow(() -> new IllegalStateException("piece expected"));
+        Piece piece = board.removePiece(getFrom());
 
         // set the piece to the to square
         board.setPiece(getTo(), piece);

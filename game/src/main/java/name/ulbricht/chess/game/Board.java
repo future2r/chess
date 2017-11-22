@@ -3,7 +3,6 @@ package name.ulbricht.chess.game;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,36 +38,36 @@ public final class Board implements Cloneable {
      * cleared. Any current piece will be replaced and returned.
      *
      * @param coordinate the coordinate
-     * @param piece      the field or {@code null}
-     * @return an optional replaced piece
+     * @param piece      the piece or {@code null}
+     * @return the replaced piece or {@code null}
      * @see #getPiece(Coordinate)
      * @see #removePiece(Coordinate)
      */
-    Optional<Piece> setPiece(Coordinate coordinate, Piece piece) {
-        Optional<Piece> replacedPiece = getPiece(Objects.requireNonNull(coordinate, "coordinate cannot be null"));
+    Piece setPiece(Coordinate coordinate, Piece piece) {
+        Piece replacedPiece = getPiece(Objects.requireNonNull(coordinate, "coordinate cannot be null"));
         this.pieces[coordinate.ordinal()] = piece;
 
         return replacedPiece;
     }
 
     /**
-     * Returns the piece at the given coordinate. If the square is empty the returned value will be empty.
+     * Returns the piece at the given coordinate. If the square is empty the returned value will be {@code null}.
      *
      * @param coordinate the coordinate
-     * @return an optional piece
+     * @return the piece or {@code null}
      * @see #setPiece(Coordinate, Piece)
      */
-    public Optional<Piece> getPiece(Coordinate coordinate) {
-        return Optional.ofNullable(this.pieces[Objects.requireNonNull(coordinate, "coordinate cannot be null").ordinal()]);
+    public Piece getPiece(Coordinate coordinate) {
+        return this.pieces[Objects.requireNonNull(coordinate, "coordinate cannot be null").ordinal()];
     }
 
     /**
-     * Removes the current piece from the square and returns a potentially replaced piece
+     * Removes the current piece from the square and returns a potentially replaced piece.
      *
      * @param coordinate the coordinate
-     * @return an optional replaced piece
+     * @return the replaced piece or {@code null}
      */
-    Optional<Piece> removePiece(Coordinate coordinate) {
+    Piece removePiece(Coordinate coordinate) {
         return setPiece(coordinate, null);
     }
 

@@ -52,9 +52,9 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
             gc.fillRect(0, 0, size + 1, size + 1);
         }
 
-        Optional<Piece> piece = getContext().getBoard().getPiece(coordinate);
-        if (piece.isPresent()) {
-            Image image = this.pieceImages.get(piece.get().getPlayer()).get(piece.get().getType());
+        Piece piece = getContext().getBoard().getPiece(coordinate);
+        if (piece!=null) {
+            Image image = this.pieceImages.get(piece.getPlayer()).get(piece.getType());
 
             double imageWidth = image.getWidth();
             double imageHeight = image.getHeight();

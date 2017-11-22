@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 final class BoardTest {
 
@@ -67,8 +68,8 @@ final class BoardTest {
         Board board = new Board();
         board.setup();
 
-        if (piece == null) assertFalse(board.getPiece(coordinate).isPresent());
-        else assertEquals(piece, board.getPiece(coordinate).get(), "Unexpected piece");
+        if (piece == null) assertNull(board.getPiece(coordinate));
+        else assertEquals(piece, board.getPiece(coordinate), "Unexpected piece");
     }
 
     @Test
@@ -84,9 +85,9 @@ final class BoardTest {
             for (Coordinate getCoordinate : coordinates) {
 
                 if (setCoordinate.equals(getCoordinate)) {
-                    assertEquals(piece, board.getPiece(getCoordinate).get(), "piece expected");
+                    assertEquals(piece, board.getPiece(getCoordinate), "piece expected");
                 } else {
-                    assertFalse(board.getPiece(getCoordinate).isPresent(), "no piece expected");
+                    assertNull(board.getPiece(getCoordinate), "no piece expected");
                 }
             }
 
