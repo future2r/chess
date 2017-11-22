@@ -87,6 +87,7 @@ public final class Game {
     private void movePiece(Coordinate source, Coordinate target) {
         Piece piece = getPiece(source);
         if (piece == null) throw new IllegalStateException("No piece to move");
+        removePiece(source);
         setPiece(target, piece);
         piece.markMoved();
     }
