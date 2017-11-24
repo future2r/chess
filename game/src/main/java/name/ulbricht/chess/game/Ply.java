@@ -7,54 +7,57 @@ import java.util.Objects;
  */
 public final class Ply {
 
-    static Ply simple(Player player, Coordinate source, Coordinate target) {
-        Objects.requireNonNull(player);
+    static Ply simple(Piece piece, Coordinate source, Coordinate target) {
+        Objects.requireNonNull(piece);
         Objects.requireNonNull(source);
         Objects.requireNonNull(target);
 
-        return new Ply(player, PlyType.SIMPLE, source, target, null);
+        return new Ply(PlyType.SIMPLE, piece, source, target, null, null);
     }
 
-    static Ply simpleCaptures(Player player, Coordinate source, Coordinate target) {
-        Objects.requireNonNull(player);
+    static Ply simpleCaptures(Piece piece, Coordinate source, Coordinate target, Piece capturedPiece) {
+        Objects.requireNonNull(piece);
         Objects.requireNonNull(source);
         Objects.requireNonNull(target);
+        Objects.requireNonNull(capturedPiece);
 
-        return new Ply(player, PlyType.SIMPLE, source, target, target);
+        return new Ply(PlyType.SIMPLE, piece, source, target, target, capturedPiece);
     }
 
-    static Ply pawnDoubleAdvance(Player player, Coordinate source) {
-        Objects.requireNonNull(player);
+    static Ply pawnDoubleAdvance(Piece piece, Coordinate source) {
+        Objects.requireNonNull(piece);
         Objects.requireNonNull(source);
 
         Coordinate target;
-        if ((player == Player.WHITE && source.rowIndex != 1) || (player == Player.BLACK && source.rowIndex != 6))
+        if ((piece.player == Player.WHITE && source.rowIndex != 1) || (piece.player == Player.BLACK && source.rowIndex != 6))
             throw new IllegalArgumentException("Illegal source for player.");
 
-        target = source.go(Direction.forward(player), 2);
-        return new Ply(player, PlyType.PAWN_DOUBLE_ADVANCE, source, target, null);
+        target = source.go(Direction.forward(piece.player), 2);
+        return new Ply(PlyType.PAWN_DOUBLE_ADVANCE, piece, source, target, null, null);
     }
 
-    private final Player player;
     private final PlyType type;
+    private final Piece piece;
     private final Coordinate source;
     private final Coordinate target;
     private final Coordinate captures;
+    private final Piece capturedPiece;
 
-    private Ply(Player player, PlyType type, Coordinate source, Coordinate target, Coordinate captures) {
-        this.player = player;
+    private Ply(PlyType type, Piece piece, Coordinate source, Coordinate target, Coordinate captures, Piece capturedPiece) {
         this.type = type;
+        this.piece = piece;
         this.source = source;
         this.target = target;
         this.captures = captures;
-    }
-
-    public Player getPlayer() {
-        return this.player;
+        this.capturedPiece = capturedPiece;
     }
 
     public PlyType getType() {
         return this.type;
+    }
+
+    public Piece getPiece() {
+        return this.piece;
     }
 
     public Coordinate getSource() {
@@ -67,6 +70,10 @@ public final class Ply {
 
     public Coordinate getCaptures() {
         return this.captures;
+    }
+
+    public Piece getCapturedPiece() {
+        return this.capturedPiece;
     }
 
     @Override

@@ -154,7 +154,7 @@ public final class Game {
     }
 
     private List<Ply> findPawnMoves(Coordinate source) {
-        expectPiece(source, this.activePlayer, PieceType.PAWN);
+        Piece piece = expectPiece(source, this.activePlayer, PieceType.PAWN);
         List<Ply> plies = new ArrayList<>();
         Direction direction = Direction.forward(this.activePlayer);
         int startRow = this.activePlayer == Player.WHITE ? 1 : 6;
@@ -162,13 +162,13 @@ public final class Game {
         // one step forward
         Coordinate target = source.go(direction);
         if (target != null) {
-            if (getPiece(target) == null) plies.add(Ply.simple(this.activePlayer, source, target));
+            if (getPiece(target) == null) plies.add(Ply.simple(piece, source, target));
 
             // two steps forward (if not yet moved)
             if (source.rowIndex == startRow && getPiece(target) == null) {
                 target = source.go(direction, 2);
                 if (target != null && getPiece(target) == null)
-                    plies.add(Ply.pawnDoubleAdvance(this.activePlayer, source));
+                    plies.add(Ply.pawnDoubleAdvance(piece, source));
             }
         }
 
@@ -176,9 +176,9 @@ public final class Game {
         for (Direction captures : new Direction[]{Direction.forwardLeft(this.activePlayer), Direction.forwardRight(this.activePlayer)}) {
             target = source.go(captures);
             if (target != null) {
-                Piece piece = getPiece(target);
-                if (piece != null && piece.player.isOpponent(getActivePlayer()))
-                    plies.add(Ply.simpleCaptures(this.activePlayer, source, target));
+                Piece capturedPiece = getPiece(target);
+                if (capturedPiece != null && capturedPiece.player.isOpponent(getActivePlayer()))
+                    plies.add(Ply.simpleCaptures(piece, source, target, capturedPiece));
             }
         }
 
@@ -186,24 +186,24 @@ public final class Game {
     }
 
     private List<Ply> findKnightMoves(Coordinate source) {
-        expectPiece(source, this.activePlayer, PieceType.KNIGHT);
+        Piece piece = expectPiece(source, this.activePlayer, PieceType.KNIGHT);
         List<Ply> plies = new ArrayList<>();
         int[][] jumps = new int[][]{{-1, 2}, {1, 2}, {-2, 1}, {-2, -1}, {2, 1}, {2, -1}, {-1, -2}, {1, -2}};
         for (int[] jump : jumps) {
             Coordinate target = source.go(jump[0], jump[1]);
             if (target != null) {
-                Piece piece = getPiece(target);
-                if (piece == null)
-                    plies.add(Ply.simple(this.activePlayer, source, target));
-                else if (piece.player.isOpponent(this.activePlayer))
-                    plies.add(Ply.simpleCaptures(this.activePlayer, source, target));
+                Piece capturedPiece = getPiece(target);
+                if (capturedPiece == null)
+                    plies.add(Ply.simple(piece, source, target));
+                else if (capturedPiece.player.isOpponent(this.activePlayer))
+                    plies.add(Ply.simpleCaptures(piece, source, target, capturedPiece));
             }
         }
         return plies;
     }
 
     private List<Ply> findDirectionalMoves(Coordinate source, int maxSteps, Direction... directions) {
-        expectPiece(source, this.activePlayer, PieceType.ROOK, PieceType.BISHOP, PieceType.QUEEN, PieceType.KING);
+        Piece piece = expectPiece(source, this.activePlayer, PieceType.ROOK, PieceType.BISHOP, PieceType.QUEEN, PieceType.KING);
         List<Ply> plies = new ArrayList<>();
         for (Direction direction : directions) {
             Coordinate target;
@@ -211,10 +211,10 @@ public final class Game {
             do {
                 target = source.go(direction, step);
                 if (target != null) {
-                    Piece piece = getPiece(target);
-                    if (piece == null) plies.add(Ply.simple(this.activePlayer, source, target));
-                    else if (piece.player.isOpponent(this.activePlayer)) {
-                        plies.add(Ply.simpleCaptures(this.activePlayer, source, target));
+                    Piece capturedPiece = getPiece(target);
+                    if (capturedPiece == null) plies.add(Ply.simple(piece, source, target));
+                    else if (capturedPiece.player.isOpponent(this.activePlayer)) {
+                        plies.add(Ply.simpleCaptures(piece, source, target, capturedPiece));
                         break;
                     } else break;
                 }
@@ -224,12 +224,13 @@ public final class Game {
         return plies;
     }
 
-    private void expectPiece(Coordinate coordinate, Player player, PieceType... pieceTypes) {
+    private Piece expectPiece(Coordinate coordinate, Player player, PieceType... pieceTypes) {
         Piece piece = getPiece(coordinate);
         if (piece == null) throw new IllegalStateException("Piece expected");
         if (piece.player != player)
             throw new IllegalStateException("Expected piece of player: " + player);
         if (!Arrays.asList(pieceTypes).contains(piece.type))
             throw new IllegalArgumentException("Unexpected piece type: " + piece.type);
+        return piece;
     }
 }
