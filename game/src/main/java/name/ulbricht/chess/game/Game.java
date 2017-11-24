@@ -118,6 +118,10 @@ public final class Game {
                 if (move.getCaptures() != null) removePiece(move.getCaptures());
                 movePiece(move.getSource(), move.getTarget());
                 break;
+            case PAWN_DOUBLE_ADVANCE:
+                movePiece(move.getSource(), move.getTarget());
+                // TODO set en passant target
+                break;
             default:
                 throw new IllegalArgumentException("Unsupported move type: " + move.getType());
         }

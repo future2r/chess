@@ -9,7 +9,7 @@ public enum MoveType {
 
     PAWN_DOUBLE_ADVANCE,
 
-    PAWN_EN_PASSENT,
+    PAWN_EN_PASSANT,
 
     PAWN_PROMOTION
 }
