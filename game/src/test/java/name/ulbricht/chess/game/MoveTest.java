@@ -12,7 +12,7 @@ final class MoveTest {
         Game game = new Game();
 
         Coordinate source = Coordinate.d4;
-        game.setup(c -> c == source ? new Piece(PieceType.PAWN, Player.WHITE) : null, Player.WHITE);
+        game.setup(FENPositions.of("8/8/8/8/3P4/8/8/8 w KQkq - 0 1"));
 
         Coordinate target = Coordinate.d5;
 
@@ -30,11 +30,7 @@ final class MoveTest {
         Coordinate source = Coordinate.d4;
         Coordinate target = Coordinate.d5;
 
-        game.setup(c -> {
-            if (c == source) return new Piece(PieceType.QUEEN, Player.WHITE);
-            if (c == target) return new Piece(PieceType.PAWN, Player.BLACK);
-            return null;
-        }, Player.WHITE);
+        game.setup(FENPositions.of("8/8/8/3p4/3Q4/8/8/8 w KQkq - 0 1"));
 
         Move move = Move.simple(source, target, target);
 

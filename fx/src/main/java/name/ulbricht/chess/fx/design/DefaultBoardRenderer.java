@@ -56,7 +56,7 @@ final class DefaultBoardRenderer extends AbstractBoardRenderer {
         }
 
         if (piece != null) {
-            Image image = this.pieceImages.get(piece.getPlayer()).get(piece.getType());
+            Image image = this.pieceImages.get(piece.player).get(piece.type);
 
             double imageWidth = image.getWidth();
             double imageHeight = image.getHeight();

@@ -1,7 +1,6 @@
 package name.ulbricht.chess.game;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -11,7 +10,7 @@ import java.util.stream.Stream;
 public final class Game {
 
     private final Piece[] board;
-    private Player currentPlayer;
+    private Player activePlayer;
     private final List<Move> legalMoves = new ArrayList<>();
 
     /**
@@ -27,35 +26,21 @@ public final class Game {
      *
      * @return the current player
      */
-    public Player getCurrentPlayer() {
-        return currentPlayer;
+    public Player getActivePlayer() {
+        return activePlayer;
     }
 
-    public void setup(Function<Coordinate, Piece> pieceFactory, Player initialPlayer) {
+    public void setup(FENPositions positions) {
         Arrays.fill(this.board, null);
         for (Coordinate coordinate : Coordinate.values()) {
-            Piece piece = pieceFactory.apply(coordinate);
-            if (piece != null) {
-                piece.resetMoved();
-                setPiece(coordinate, piece);
-            }
+            setPiece(coordinate, positions.getPiece(coordinate));
         }
-        this.currentPlayer = initialPlayer;
+        this.activePlayer = positions.getActivePlayer();
         findLegalMoves();
     }
 
     public void setupDefault() {
-        PieceType[] baseLinePieces = new PieceType[]{
-                PieceType.ROOK, PieceType.KNIGHT, PieceType.BISHOP, PieceType.QUEEN,
-                PieceType.KING, PieceType.BISHOP, PieceType.KNIGHT, PieceType.ROOK};
-
-        setup(c -> {
-            if (c.getRowIndex() == 0) return new Piece(baseLinePieces[c.getColumnIndex()], Player.WHITE);
-            if (c.getRowIndex() == 1) return new Piece(PieceType.PAWN, Player.WHITE);
-            if (c.getRowIndex() == 6) return new Piece(PieceType.PAWN, Player.BLACK);
-            if (c.getRowIndex() == 7) return new Piece(baseLinePieces[c.getColumnIndex()], Player.BLACK);
-            return null;
-        }, Player.WHITE);
+        setup(FENPositions.ofDefault());
     }
 
     /**
@@ -89,7 +74,6 @@ public final class Game {
         if (piece == null) throw new IllegalStateException("No piece to move");
         removePiece(source);
         setPiece(target, piece);
-        piece.markMoved();
     }
 
     private void removePiece(Coordinate coordinate) {
@@ -114,7 +98,7 @@ public final class Game {
 
         for (Coordinate coordinate : Coordinate.values()) {
             Piece piece = getPiece(coordinate);
-            if (piece != null && piece.getPlayer() == this.currentPlayer) {
+            if (piece != null && piece.player == this.activePlayer) {
                 this.legalMoves.addAll(findLegalMoves(coordinate));
             }
         }
@@ -138,7 +122,7 @@ public final class Game {
                 throw new IllegalArgumentException("Unsupported move type: " + move.getType());
         }
 
-        this.currentPlayer = this.currentPlayer == Player.WHITE ? Player.BLACK : Player.WHITE;
+        this.activePlayer = this.activePlayer == Player.WHITE ? Player.BLACK : Player.WHITE;
         findLegalMoves();
     }
 
@@ -157,7 +141,7 @@ public final class Game {
     private List<Move> findLegalMoves(Coordinate source) {
         Piece piece = getPiece(source);
         if (piece != null) {
-            switch (piece.getType()) {
+            switch (piece.type) {
                 case PAWN:
                     return findPawnMoves(source);
                 case ROOK:
@@ -178,9 +162,10 @@ public final class Game {
     }
 
     private List<Move> findPawnMoves(Coordinate source) {
-        expectPiece(source, this.currentPlayer, PieceType.PAWN);
+        expectPiece(source, this.activePlayer, PieceType.PAWN);
         List<Move> moves = new ArrayList<>();
-        int direction = this.currentPlayer == Player.WHITE ? 1 : -1;
+        int direction = this.activePlayer == Player.WHITE ? 1 : -1;
+        int startRow = this.activePlayer == Player.WHITE ? 1 : 6;
 
         // one step forward
         Coordinate target = source.moveTo(0, direction);
@@ -188,8 +173,7 @@ public final class Game {
             if (getPiece(target) == null) moves.add(Move.simple(source, target, null));
 
             // two steps forward (if not yet moved)
-            Piece me = getPiece(source);
-            if (!me.isMoved() && getPiece(target) == null) {
+            if (source.getRowIndex() == startRow && getPiece(target) == null) {
                 target = source.moveTo(0, 2 * direction);
                 if (target != null && getPiece(target) == null)
                     moves.add(Move.simple(source, target, null));
@@ -203,7 +187,7 @@ public final class Game {
             target = source.moveTo(capture[0], capture[1]);
             if (target != null) {
                 Piece piece = getPiece(target);
-                if (piece != null && piece.getPlayer().isOpponent(getCurrentPlayer()))
+                if (piece != null && piece.player.isOpponent(getActivePlayer()))
                     moves.add(Move.simple(source, target, target));
             }
         }
@@ -212,7 +196,7 @@ public final class Game {
     }
 
     private List<Move> findKnightMoves(Coordinate source) {
-        expectPiece(source, this.currentPlayer, PieceType.KNIGHT);
+        expectPiece(source, this.activePlayer, PieceType.KNIGHT);
         List<Move> moves = new ArrayList<>();
         int[][] jumps = new int[][]{{-1, 2}, {1, 2}, {-2, 1}, {-2, -1}, {2, 1}, {2, -1}, {-1, -2}, {1, -2}};
         for (int[] jump : jumps) {
@@ -221,7 +205,7 @@ public final class Game {
                 Piece piece = getPiece(target);
                 if (piece == null)
                     moves.add(Move.simple(source, target, null));
-                else if (piece.getPlayer().isOpponent(this.currentPlayer))
+                else if (piece.player.isOpponent(this.activePlayer))
                     moves.add(Move.simple(source, target, target));
             }
         }
@@ -229,7 +213,7 @@ public final class Game {
     }
 
     private List<Move> findDirectionalMoves(Coordinate source, int maxSteps, Direction... directions) {
-        expectPiece(source, this.currentPlayer, PieceType.ROOK, PieceType.BISHOP, PieceType.QUEEN, PieceType.KING);
+        expectPiece(source, this.activePlayer, PieceType.ROOK, PieceType.BISHOP, PieceType.QUEEN, PieceType.KING);
         List<Move> moves = new ArrayList<>();
         for (Direction direction : directions) {
             Coordinate target;
@@ -239,7 +223,7 @@ public final class Game {
                 if (target != null) {
                     Piece piece = getPiece(target);
                     if (piece == null) moves.add(Move.simple(source, target, null));
-                    else if (piece.getPlayer().isOpponent(this.currentPlayer)) {
+                    else if (piece.player.isOpponent(this.activePlayer)) {
                         moves.add(Move.simple(source, target, target));
                         break;
                     } else break;
@@ -253,9 +237,9 @@ public final class Game {
     private void expectPiece(Coordinate coordinate, Player player, PieceType... pieceTypes) {
         Piece piece = getPiece(coordinate);
         if (piece == null) throw new IllegalStateException("Piece expected");
-        if (piece.getPlayer() != player)
+        if (piece.player != player)
             throw new IllegalStateException("Expected piece of player: " + player);
-        if (!Arrays.asList(pieceTypes).contains(piece.getType()))
-            throw new IllegalArgumentException("Unexpected piece type: " + piece.getType());
+        if (!Arrays.asList(pieceTypes).contains(piece.type))
+            throw new IllegalArgumentException("Unexpected piece type: " + piece.type);
     }
 }

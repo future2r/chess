@@ -75,7 +75,7 @@ final class BoardCanvas extends Canvas {
         this.focusedSquareProperty.addListener((observable, oldValue, newValue) -> draw());
         this.displayedMovesProperty.addListener((observable, oldValue, newValue) -> draw());
 
-        this.currentPlayerProperty.set(this.game.getCurrentPlayer());
+        this.currentPlayerProperty.set(this.game.getActivePlayer());
     }
 
     Game getGame() {
@@ -89,7 +89,7 @@ final class BoardCanvas extends Canvas {
 
     void newGame() {
         this.game.setupDefault();
-        this.currentPlayerProperty.set(this.game.getCurrentPlayer());
+        this.currentPlayerProperty.set(this.game.getActivePlayer());
         this.focusedSquareProperty.set(null);
         this.selectedSquareProperty.set(null);
     }
@@ -113,7 +113,7 @@ final class BoardCanvas extends Canvas {
         if (coordinate != null) {
             Piece piece = this.game.getPiece(coordinate);
             if (piece != null)
-                tooltip.setText(coordinate.toString() + ' ' + piece.getType().getDisplayName() + ' ' + piece.getPlayer().getDisplayName());
+                tooltip.setText(coordinate.toString() + ' ' + piece.type.getDisplayName() + ' ' + piece.player.getDisplayName());
             else tooltip.setText(coordinate.toString());
             Tooltip.install(this, tooltip);
             this.focusedSquareProperty.set(coordinate);
@@ -199,7 +199,7 @@ final class BoardCanvas extends Canvas {
     private void performMove(Move move) {
         this.game.performMove(move);
 
-        this.currentPlayerProperty.set(this.game.getCurrentPlayer());
+        this.currentPlayerProperty.set(this.game.getActivePlayer());
         this.selectedSquareProperty.set(null);
         this.focusedSquareProperty.set(move.getTarget());
     }

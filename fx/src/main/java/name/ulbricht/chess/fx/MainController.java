@@ -12,7 +12,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
 import name.ulbricht.chess.fx.design.BoardDesign;
 import name.ulbricht.chess.game.Coordinate;
 import name.ulbricht.chess.game.Piece;
@@ -91,7 +90,8 @@ public final class MainController implements Initializable {
     private void updateSelectedSquareLabel(Coordinate selected) {
         if (selected != null) {
             Piece piece = this.canvas.getGame().getPiece(selected);
-            if (piece!=null) this.selectedSquareValueLabel.setText(selected.toString() + ' ' + piece.getType().getDisplayName() + ' ' + piece.getPlayer().getDisplayName());
+            if (piece != null)
+                this.selectedSquareValueLabel.setText(selected.toString() + ' ' + piece.type.getDisplayName() + ' ' + piece.type.getDisplayName());
             else this.selectedSquareValueLabel.setText(selected.toString());
         } else
             this.selectedSquareValueLabel.setText("");
