@@ -12,7 +12,7 @@ public final class Game {
 
     private final Piece[] board;
     private Player currentPlayer;
-    private final Map<Coordinate, List<Move>> legalMoves = new TreeMap<>();
+    private final List<Move> legalMoves = new ArrayList<>();
 
     /**
      * Creates a new game. This game will have a new board with the initial positions of the pieces.
@@ -102,22 +102,26 @@ public final class Game {
      *
      * @return a map with pieces and their legal moves
      */
-    public Map<Coordinate, List<Move>> getLegalMoves() {
-        return Collections.unmodifiableMap(this.legalMoves);
+    public List<Move> getLegalMoves() {
+        return Collections.unmodifiableList(this.legalMoves);
+    }
+
+    public List<Move> getLegalMoves(Coordinate source) {
+        return this.legalMoves.stream().filter(m -> m.getSource() == source).collect(Collectors.toList());
     }
 
     private void findLegalMoves() {
         this.legalMoves.clear();
-        this.legalMoves.putAll(Rules.findLegalMoves(this));
+        this.legalMoves.addAll(Rules.findLegalMoves(this));
     }
 
     /**
-     * Performs the specified move in this game. The piece will be moved the the current player is switched.
+     * Performs the specified move in this game. The piece will be moved and the the current player is switched.
      *
      * @param move the move to perform
      */
     public void performMove(Move move) {
-        if (this.legalMoves.values().stream().flatMap(l -> l.stream()).noneMatch(m -> m == move))
+        if (!this.legalMoves.contains(move))
             throw new IllegalArgumentException("Not a legal move");
 
         switch (move.getType()) {

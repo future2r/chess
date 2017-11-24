@@ -4,8 +4,8 @@ import java.util.*;
 
 final class Rules {
 
-    static Map<Coordinate, List<Move>> findLegalMoves(Game game) {
-        Map<Coordinate, List<Move>> legalMoves = new TreeMap<>();
+    static List<Move> findLegalMoves(Game game) {
+        List<Move> legalMoves = new ArrayList<>();
 
         for (Map.Entry<Coordinate, Piece> entry : game.pieces().entrySet()) {
             Coordinate coordinate = entry.getKey();
@@ -14,7 +14,7 @@ final class Rules {
             if (piece.getPlayer() == game.getCurrentPlayer()) {
                 List<Move> moves = findLegalMoves(game, coordinate);
                 if (!moves.isEmpty()) {
-                    legalMoves.put(coordinate, moves);
+                    legalMoves.addAll(moves);
                 }
             }
         }
@@ -72,27 +72,26 @@ final class Rules {
         // one step forward
         Coordinate target = source.moveTo(0, direction);
         if (target != null) {
-            if (game.getPiece(target) == null) moves.add(Move.simple(game, source, target));
+            if (game.getPiece(target) == null) moves.add(Move.simple(source, target, null));
 
             // two steps forward (if not yet moved)
             Piece me = game.getPiece(source);
             if (!me.isMoved() && game.getPiece(target) == null) {
                 target = source.moveTo(0, 2 * direction);
-                if (target != null) {
-                    if (game.getPiece(target) == null)
-                        moves.add(Move.simple(game, source, target));
-                }
+                if (target != null && game.getPiece(target) == null)
+                    moves.add(Move.simple(source, target, null));
             }
         }
 
         // check capture
         int[][] captures = new int[][]{{-1, direction}, {1, direction}};
-        for (int[] capture : captures) {
+        for (
+                int[] capture : captures) {
             target = source.moveTo(capture[0], capture[1]);
             if (target != null) {
                 Piece piece = game.getPiece(target);
                 if (piece != null && piece.getPlayer().isOpponent(game.getCurrentPlayer()))
-                    moves.add(Move.simple(game, source, target));
+                    moves.add(Move.simple(source, target, target));
             }
         }
 
@@ -108,8 +107,10 @@ final class Rules {
             Coordinate target = source.moveTo(jump[0], jump[1]);
             if (target != null) {
                 Piece piece = game.getPiece(target);
-                if (piece == null || piece.getPlayer().isOpponent(game.getCurrentPlayer()))
-                    moves.add(Move.simple(game, source, target));
+                if (piece == null)
+                    moves.add(Move.simple(source, target, null));
+                else if (piece.getPlayer().isOpponent(game.getCurrentPlayer()))
+                    moves.add(Move.simple(source, target, target));
             }
         }
         return moves;
@@ -126,9 +127,9 @@ final class Rules {
                 target = source.moveTo(step * direction.getColumnOffset(), step * direction.getRowOffset());
                 if (target != null) {
                     Piece piece = game.getPiece(target);
-                    if (piece == null) moves.add(Move.simple(game, source, target));
+                    if (piece == null) moves.add(Move.simple(source, target, null));
                     else if (piece.getPlayer().isOpponent(game.getCurrentPlayer())) {
-                        moves.add(Move.simple(game, source, target));
+                        moves.add(Move.simple(source, target, target));
                         break;
                     } else break;
                 }

@@ -16,7 +16,7 @@ final class MoveTest {
 
         Coordinate target = Coordinate.d5;
 
-        Move move = Move.simple(game, source, target);
+        Move move = Move.simple(source, target, null);
 
         assertEquals(source, move.getSource());
         assertEquals(target, move.getTarget());
@@ -36,7 +36,7 @@ final class MoveTest {
             return null;
         }, Player.WHITE);
 
-        Move move = Move.simple(game, source, target);
+        Move move = Move.simple(source, target, target);
 
         assertEquals(source, move.getSource());
         assertEquals(target, move.getTarget());
