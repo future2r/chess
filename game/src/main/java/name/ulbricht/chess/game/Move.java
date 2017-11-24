@@ -28,13 +28,10 @@ public final class Move {
         Objects.requireNonNull(source);
 
         Coordinate target;
-        if (player == Player.WHITE) {
-            if (source.rowIndex != 1) throw new IllegalArgumentException("Illegal source for player.");
-            target = source.moveTo(0, 2);
-        } else {
-            if (source.rowIndex != 6) throw new IllegalArgumentException("Illegal source for player.");
-            target = source.moveTo(0, -2);
-        }
+        if ((player == Player.WHITE && source.rowIndex != 1) || (player == Player.BLACK && source.rowIndex != 6))
+            throw new IllegalArgumentException("Illegal source for player.");
+
+        target = source.move(MoveDirection.forward(player), 2);
         return new Move(player, MoveType.PAWN_DOUBLE_ADVANCE, source, target, null);
     }
 

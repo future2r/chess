@@ -138,7 +138,7 @@ final class BoardCanvas extends Canvas {
         switch (e.getCode()) {
             case LEFT:
                 if (focused != null) {
-                    Coordinate left = focused.moveLeft();
+                    Coordinate left = focused.move(MoveDirection.LEFT);
                     if (left != null) this.focusedSquareProperty.set(left);
                     else
                         this.focusedSquareProperty.set(Coordinate.valueOf(Coordinate.COLUMNS - 1, focused.rowIndex));
@@ -147,7 +147,7 @@ final class BoardCanvas extends Canvas {
                 break;
             case RIGHT:
                 if (focused != null) {
-                    Coordinate right = focused.moveRight();
+                    Coordinate right = focused.move(MoveDirection.RIGHT);
                     if (right != null) this.focusedSquareProperty.set(right);
                     else this.focusedSquareProperty.set(Coordinate.valueOf(0, focused.rowIndex));
                 } else this.focusedSquareProperty.set(Coordinate.a1);
@@ -155,7 +155,7 @@ final class BoardCanvas extends Canvas {
                 break;
             case UP:
                 if (focused != null) {
-                    Coordinate up = focused.moveUp();
+                    Coordinate up = focused.move(MoveDirection.UP);
                     if (up != null) this.focusedSquareProperty.set(up);
                     else this.focusedSquareProperty.set(Coordinate.valueOf(focused.columnIndex, 0));
                 } else this.focusedSquareProperty.set(Coordinate.a1);
@@ -163,7 +163,7 @@ final class BoardCanvas extends Canvas {
                 break;
             case DOWN:
                 if (focused != null) {
-                    Coordinate down = focused.moveDown();
+                    Coordinate down = focused.move(MoveDirection.DOWN);
                     if (down != null) this.focusedSquareProperty.set(down);
                     else
                         this.focusedSquareProperty.set(Coordinate.valueOf(focused.columnIndex, Coordinate.ROWS - 1));

@@ -130,18 +130,6 @@ public final class Game {
         findLegalMoves();
     }
 
-    private enum Direction {
-        UP(0, 1), UP_RIGHT(1, 1), RIGHT(1, 0), DOWN_RIGHT(1, -1), DOWN(0, -1), DOWN_LEFT(-1, -1), LEFT(-1, 0), UP_LEFT(-1, 1);
-
-        final int columnOffset;
-        final int rowOffset;
-
-        Direction(int columnOffset, int rowOffset) {
-            this.columnOffset = columnOffset;
-            this.rowOffset = rowOffset;
-        }
-    }
-
     private List<Move> findLegalMoves(Coordinate source) {
         Piece piece = getPiece(source);
         if (piece != null) {
@@ -150,16 +138,16 @@ public final class Game {
                     return findPawnMoves(source);
                 case ROOK:
                     return findDirectionalMoves(source, Integer.MAX_VALUE,
-                            Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT);
+                            MoveDirection.UP, MoveDirection.RIGHT, MoveDirection.DOWN, MoveDirection.LEFT);
                 case KNIGHT:
                     return findKnightMoves(source);
                 case BISHOP:
                     return findDirectionalMoves(source, Integer.MAX_VALUE,
-                            Direction.UP_LEFT, Direction.UP_RIGHT, Direction.DOWN_RIGHT, Direction.DOWN_LEFT);
+                            MoveDirection.UP_LEFT, MoveDirection.UP_RIGHT, MoveDirection.DOWN_RIGHT, MoveDirection.DOWN_LEFT);
                 case QUEEN:
-                    return findDirectionalMoves(source, Integer.MAX_VALUE, Direction.values());
+                    return findDirectionalMoves(source, Integer.MAX_VALUE, MoveDirection.values());
                 case KING:
-                    return findDirectionalMoves(source, 1, Direction.values());
+                    return findDirectionalMoves(source, 1, MoveDirection.values());
             }
         }
         return Collections.emptyList();
@@ -168,27 +156,25 @@ public final class Game {
     private List<Move> findPawnMoves(Coordinate source) {
         expectPiece(source, this.activePlayer, PieceType.PAWN);
         List<Move> moves = new ArrayList<>();
-        int direction = this.activePlayer == Player.WHITE ? 1 : -1;
+        MoveDirection direction = MoveDirection.forward(this.activePlayer);
         int startRow = this.activePlayer == Player.WHITE ? 1 : 6;
 
         // one step forward
-        Coordinate target = source.moveTo(0, direction);
+        Coordinate target = source.move(direction);
         if (target != null) {
             if (getPiece(target) == null) moves.add(Move.simple(this.activePlayer, source, target));
 
             // two steps forward (if not yet moved)
             if (source.rowIndex == startRow && getPiece(target) == null) {
-                target = source.moveTo(0, 2 * direction);
+                target = source.move(direction, 2);
                 if (target != null && getPiece(target) == null)
                     moves.add(Move.pawnDoubleAdvance(this.activePlayer, source));
             }
         }
 
-        // check capture
-        int[][] captures = new int[][]{{-1, direction}, {1, direction}};
-        for (
-                int[] capture : captures) {
-            target = source.moveTo(capture[0], capture[1]);
+        // check captures
+        for (MoveDirection captures : new MoveDirection[]{MoveDirection.forwardLeft(this.activePlayer), MoveDirection.forwardRight(this.activePlayer)}) {
+            target = source.move(captures);
             if (target != null) {
                 Piece piece = getPiece(target);
                 if (piece != null && piece.player.isOpponent(getActivePlayer()))
@@ -204,7 +190,7 @@ public final class Game {
         List<Move> moves = new ArrayList<>();
         int[][] jumps = new int[][]{{-1, 2}, {1, 2}, {-2, 1}, {-2, -1}, {2, 1}, {2, -1}, {-1, -2}, {1, -2}};
         for (int[] jump : jumps) {
-            Coordinate target = source.moveTo(jump[0], jump[1]);
+            Coordinate target = source.move(jump[0], jump[1]);
             if (target != null) {
                 Piece piece = getPiece(target);
                 if (piece == null)
@@ -216,14 +202,14 @@ public final class Game {
         return moves;
     }
 
-    private List<Move> findDirectionalMoves(Coordinate source, int maxSteps, Direction... directions) {
+    private List<Move> findDirectionalMoves(Coordinate source, int maxSteps, MoveDirection... directions) {
         expectPiece(source, this.activePlayer, PieceType.ROOK, PieceType.BISHOP, PieceType.QUEEN, PieceType.KING);
         List<Move> moves = new ArrayList<>();
-        for (Direction direction : directions) {
+        for (MoveDirection direction : directions) {
             Coordinate target;
             int step = 1;
             do {
-                target = source.moveTo(step * direction.columnOffset, step * direction.rowOffset);
+                target = source.move(direction, step);
                 if (target != null) {
                     Piece piece = getPiece(target);
                     if (piece == null) moves.add(Move.simple(this.activePlayer, source, target));

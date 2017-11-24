@@ -40,50 +40,6 @@ public enum Coordinate {
     public static final int ROWS = 8;
 
     /**
-     * Returns the coordinate for the square directly left next to the square represented by this coordinate. If there
-     * is no such square (because the board ends here) the return value will be {@code null}.
-     *
-     * @return the coordinate left to this coordinate or {@code null}
-     * @see #moveTo(int, int)
-     */
-    public Coordinate moveLeft() {
-        return moveTo(-1, 0);
-    }
-
-    /**
-     * Returns the coordinate for the square directly right next to the square represented by this coordinate. If there
-     * is no such square (because the board ends here) the return value will be {@code null}.
-     *
-     * @return the coordinate right to this coordinate or {@code null}
-     * @see #moveTo(int, int)
-     */
-    public Coordinate moveRight() {
-        return moveTo(1, 0);
-    }
-
-    /**
-     * Returns the coordinate for the square directly above the square represented by this coordinate. If there is no
-     * such square (because the board ends here) the return value will be {@code null}.
-     *
-     * @return the coordinate above this coordinate or {@code null}
-     * @see #moveTo(int, int)
-     */
-    public Coordinate moveUp() {
-        return moveTo(0, 1);
-    }
-
-    /**
-     * Returns the coordinate for the square directly below the square represented by this coordinate. If there is no
-     * such square (because the board ends here) the return value will be {@code null}.
-     *
-     * @return the coordinate below this coordinate or {@code null}
-     * @see #moveTo(int, int)
-     */
-    public Coordinate moveDown() {
-        return moveTo(0, -1);
-    }
-
-    /**
      * Returns the coordinate that can be reached by moving the specified offset from this coordinate. If there is no
      * such square (because the board ends here) the return value will be {@code null}..
      *
@@ -91,13 +47,21 @@ public enum Coordinate {
      * @param rowOffset    positive offset will move up, negative offset will move down
      * @return the coordinate or {@code null}.
      */
-    public Coordinate moveTo(int columnOffset, int rowOffset) {
+    public Coordinate move(int columnOffset, int rowOffset) {
         int newColumn = this.columnIndex + columnOffset;
         int newRow = this.rowIndex + rowOffset;
 
         if (newColumn >= 0 && newColumn < COLUMNS && newRow >= 0 && newRow < ROWS)
             return Coordinate.valueOf(newColumn, newRow);
         else return null;
+    }
+
+    public Coordinate move(MoveDirection direction) {
+        return move(direction, 1);
+    }
+
+    public Coordinate move(MoveDirection direction, int steps) {
+        return move(steps * direction.columnOffset, steps * direction.rowOffset);
     }
 
     /**
