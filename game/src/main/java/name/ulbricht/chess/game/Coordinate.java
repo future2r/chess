@@ -17,6 +17,18 @@ public enum Coordinate {
     a7, b7, c7, d7, e7, f7, g7, h7,
     a8, b8, c8, d8, e8, f8, g8, h8;
 
+    public final int columnIndex;
+    public final String columnName;
+    public final int rowIndex;
+    public final String rowName;
+
+    Coordinate() {
+        this.columnIndex = ordinal() % ROWS;
+        this.columnName = toColumnName(this.columnIndex);
+        this.rowIndex = ordinal() / COLUMNS;
+        this.rowName = toRowName(this.rowIndex);
+    }
+
     /**
      * Number of columns for this kind of coordinates.
      */
@@ -28,51 +40,8 @@ public enum Coordinate {
     public static final int ROWS = 8;
 
     /**
-     * Returns the zero-based column index tof this coordinate.
-     *
-     * @return the column index of this coordinate
-     * @see #getColumnName()
-     */
-    public int getColumnIndex() {
-        return ordinal() % ROWS;
-    }
-
-    /**
-     * Returns a name for the column index of this coordinate. Usually the name will be single character, alphabetically
-     * ordered.
-     *
-     * @return the name of the column
-     * @see #getColumnIndex()
-     * @see #toColumnName(int)
-     */
-    public String getColumnName() {
-        return toColumnName(getColumnIndex());
-    }
-
-    /**
-     * Returns the zero-based row index tof this coordinate.
-     *
-     * @return the row index of this coordinate
-     * @see #getRowName()
-     */
-    public int getRowIndex() {
-        return ordinal() / COLUMNS;
-    }
-
-    /**
-     * Returns a name for the row index of this coordinate. Usually the name will be single one-based digit.
-     *
-     * @return the name of the column
-     * @see #getColumnIndex()
-     * @see #toColumnName(int)
-     */
-    public String getRowName() {
-        return toRowName(getRowIndex());
-    }
-
-    /**
-     * Returns the coordinate for the square directly left next to the square represented by this coordinate. If
-     * there is no such square (because the board ends here) the return value will be {@code null}.
+     * Returns the coordinate for the square directly left next to the square represented by this coordinate. If there
+     * is no such square (because the board ends here) the return value will be {@code null}.
      *
      * @return the coordinate left to this coordinate or {@code null}
      * @see #moveTo(int, int)
@@ -82,8 +51,8 @@ public enum Coordinate {
     }
 
     /**
-     * Returns the coordinate for the square directly right next to the square represented by this coordinate.
-     * If there is no such square (because the board ends here) the return value will be {@code null}.
+     * Returns the coordinate for the square directly right next to the square represented by this coordinate. If there
+     * is no such square (because the board ends here) the return value will be {@code null}.
      *
      * @return the coordinate right to this coordinate or {@code null}
      * @see #moveTo(int, int)
@@ -93,8 +62,8 @@ public enum Coordinate {
     }
 
     /**
-     * Returns the coordinate for the square directly above the square represented by this coordinate. If there
-     * is no such square (because the board ends here) the return value will be {@code null}.
+     * Returns the coordinate for the square directly above the square represented by this coordinate. If there is no
+     * such square (because the board ends here) the return value will be {@code null}.
      *
      * @return the coordinate above this coordinate or {@code null}
      * @see #moveTo(int, int)
@@ -104,8 +73,8 @@ public enum Coordinate {
     }
 
     /**
-     * Returns the coordinate for the square directly below the square represented by this coordinate. If there
-     * is no such square (because the board ends here) the return value will be {@code null}.
+     * Returns the coordinate for the square directly below the square represented by this coordinate. If there is no
+     * such square (because the board ends here) the return value will be {@code null}.
      *
      * @return the coordinate below this coordinate or {@code null}
      * @see #moveTo(int, int)
@@ -115,16 +84,16 @@ public enum Coordinate {
     }
 
     /**
-     * Returns the coordinate that can be reached by moving the specified offset from this coordinate. If there
-     * is no such square (because the board ends here) the return value will be {@code null}..
+     * Returns the coordinate that can be reached by moving the specified offset from this coordinate. If there is no
+     * such square (because the board ends here) the return value will be {@code null}..
      *
      * @param columnOffset positive offset will move right, negative offset will move left
      * @param rowOffset    positive offset will move up, negative offset will move down
      * @return the coordinate or {@code null}.
      */
     public Coordinate moveTo(int columnOffset, int rowOffset) {
-        int newColumn = getColumnIndex() + columnOffset;
-        int newRow = getRowIndex() + rowOffset;
+        int newColumn = this.columnIndex + columnOffset;
+        int newRow = this.rowIndex + rowOffset;
 
         if (newColumn >= 0 && newColumn < COLUMNS && newRow >= 0 && newRow < ROWS)
             return Coordinate.valueOf(newColumn, newRow);
@@ -138,7 +107,6 @@ public enum Coordinate {
      * @param columnIndex the column index
      * @return a name for the column index
      * @throws IndexOutOfBoundsException if the index exceeds the lower or upper limit
-     * @see #getColumnName()
      */
     public static String toColumnName(int columnIndex) throws IndexOutOfBoundsException {
         return Character.valueOf((char) (97 + checkColumnIndex(columnIndex))).toString();
@@ -151,7 +119,6 @@ public enum Coordinate {
      * @param rowIndex the row index
      * @return a name for the row index
      * @throws IndexOutOfBoundsException if the index exceeds the lower or upper limit
-     * @see #getRowName()
      */
     public static String toRowName(int rowIndex) {
         return Character.valueOf((char) (49 + checkRowIndex(rowIndex))).toString();

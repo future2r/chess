@@ -164,7 +164,7 @@ public final class FENPositions {
         if (!s.equals(EMPTY_FIELD)) {
             Coordinate coordinate = Coordinate.valueOf(s);
             int expectedRowIndex = this.activePlayer == Player.WHITE ? 5 : 2;
-            if (coordinate.getRowIndex() != expectedRowIndex)
+            if (coordinate.rowIndex != expectedRowIndex)
                 throw new IllegalArgumentException("Illegal row for active player.");
             this.enPassantTarget = coordinate;
         }

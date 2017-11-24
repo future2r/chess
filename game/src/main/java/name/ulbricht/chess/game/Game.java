@@ -173,7 +173,7 @@ public final class Game {
             if (getPiece(target) == null) moves.add(Move.simple(source, target, null));
 
             // two steps forward (if not yet moved)
-            if (source.getRowIndex() == startRow && getPiece(target) == null) {
+            if (source.rowIndex == startRow && getPiece(target) == null) {
                 target = source.moveTo(0, 2 * direction);
                 if (target != null && getPiece(target) == null)
                     moves.add(Move.simple(source, target, null));

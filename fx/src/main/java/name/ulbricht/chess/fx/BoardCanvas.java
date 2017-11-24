@@ -141,7 +141,7 @@ final class BoardCanvas extends Canvas {
                     Coordinate left = focused.moveLeft();
                     if (left != null) this.focusedSquareProperty.set(left);
                     else
-                        this.focusedSquareProperty.set(Coordinate.valueOf(Coordinate.COLUMNS - 1, focused.getRowIndex()));
+                        this.focusedSquareProperty.set(Coordinate.valueOf(Coordinate.COLUMNS - 1, focused.rowIndex));
                 } else this.focusedSquareProperty.set(Coordinate.a1);
                 e.consume();
                 break;
@@ -149,7 +149,7 @@ final class BoardCanvas extends Canvas {
                 if (focused != null) {
                     Coordinate right = focused.moveRight();
                     if (right != null) this.focusedSquareProperty.set(right);
-                    else this.focusedSquareProperty.set(Coordinate.valueOf(0, focused.getRowIndex()));
+                    else this.focusedSquareProperty.set(Coordinate.valueOf(0, focused.rowIndex));
                 } else this.focusedSquareProperty.set(Coordinate.a1);
                 e.consume();
                 break;
@@ -157,7 +157,7 @@ final class BoardCanvas extends Canvas {
                 if (focused != null) {
                     Coordinate up = focused.moveUp();
                     if (up != null) this.focusedSquareProperty.set(up);
-                    else this.focusedSquareProperty.set(Coordinate.valueOf(focused.getColumnIndex(), 0));
+                    else this.focusedSquareProperty.set(Coordinate.valueOf(focused.columnIndex, 0));
                 } else this.focusedSquareProperty.set(Coordinate.a1);
                 e.consume();
                 break;
@@ -166,7 +166,7 @@ final class BoardCanvas extends Canvas {
                     Coordinate down = focused.moveDown();
                     if (down != null) this.focusedSquareProperty.set(down);
                     else
-                        this.focusedSquareProperty.set(Coordinate.valueOf(focused.getColumnIndex(), Coordinate.ROWS - 1));
+                        this.focusedSquareProperty.set(Coordinate.valueOf(focused.columnIndex, Coordinate.ROWS - 1));
                 } else this.focusedSquareProperty.set(Coordinate.a1);
                 e.consume();
                 break;
@@ -297,9 +297,9 @@ final class BoardCanvas extends Canvas {
         // draw the squares
         for (Coordinate coordinate : Coordinate.values()) {
 
-            double squareXOffset = dim.borderSize + dim.xOffset + (coordinate.getColumnIndex() * dim.squareSize);
+            double squareXOffset = dim.borderSize + dim.xOffset + (coordinate.columnIndex * dim.squareSize);
             double squareYOffset = dim.borderSize + (dim.yOffset + ((Coordinate.ROWS - 1) * dim.squareSize))
-                    - (coordinate.getRowIndex() * dim.squareSize);
+                    - (coordinate.rowIndex * dim.squareSize);
 
             gc.save();
             gc.translate(squareXOffset, squareYOffset);

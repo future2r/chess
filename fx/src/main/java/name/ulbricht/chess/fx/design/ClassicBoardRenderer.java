@@ -31,7 +31,7 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
                            boolean focused, boolean squareFocused, boolean squareSelected, SquareIndicator indicator) {
         // background
         Color backgroundColor;
-        if (((coordinate.getColumnIndex() + coordinate.getRowIndex()) % 2) == 0)
+        if (((coordinate.columnIndex + coordinate.rowIndex) % 2) == 0)
             backgroundColor = Color.rgb(0xFF, 0xCC, 0x99);
         else backgroundColor = Color.rgb(0xCC, 0x99, 0x66);
         gc.setFill(backgroundColor);

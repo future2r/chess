@@ -19,12 +19,12 @@ final class CoordinateTest {
         assertEquals(fieldIndex, coordinate.ordinal(), "fieldIndex");
 
         // check column
-        assertEquals(columnIndex, coordinate.getColumnIndex(), "columnIndex");
-        assertEquals(columnName, coordinate.getColumnName(), "columnName");
+        assertEquals(columnIndex, coordinate.columnIndex, "columnIndex");
+        assertEquals(columnName, coordinate.columnName, "columnName");
 
         // check row
-        assertEquals(rowIndex, coordinate.getRowIndex(), "rowIndex");
-        assertEquals(rowName, coordinate.getRowName(), "rowName");
+        assertEquals(rowIndex, coordinate.rowIndex, "rowIndex");
+        assertEquals(rowName, coordinate.rowName, "rowName");
 
         // check fieldName
         assertEquals(fieldName, coordinate.toString(), "fieldName");
