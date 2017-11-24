@@ -32,7 +32,7 @@ public final class Ply {
         if ((piece.player == Player.WHITE && source.rowIndex != 1) || (piece.player == Player.BLACK && source.rowIndex != 6))
             throw new IllegalArgumentException("Illegal source for player.");
 
-        target = source.go(Direction.forward(piece.player), 2);
+        target = source.go(MoveDirection.forward(piece.player), 2);
         return new Ply(PlyType.PAWN_DOUBLE_ADVANCE, piece, source, target, null, null);
     }
 

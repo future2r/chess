@@ -39,29 +39,25 @@ public enum Coordinate {
      */
     public static final int ROWS = 8;
 
-    /**
-     * Returns the coordinate that can be reached by moving the specified offset from this coordinate. If there is no
-     * such square (because the board ends here) the return value will be {@code null}..
-     *
-     * @param columnOffset positive offset will go right, negative offset will go left
-     * @param rowOffset    positive offset will go up, negative offset will go down
-     * @return the coordinate or {@code null}.
-     */
-    public Coordinate go(int columnOffset, int rowOffset) {
-        int newColumn = this.columnIndex + columnOffset;
-        int newRow = this.rowIndex + rowOffset;
-
-        if (newColumn >= 0 && newColumn < COLUMNS && newRow >= 0 && newRow < ROWS)
-            return Coordinate.valueOf(newColumn, newRow);
-        else return null;
-    }
-
     public Coordinate go(Direction direction) {
         return go(direction, 1);
     }
 
+    /**
+     * Returns the coordinate that can be reached by moving to the specified direction from this coordinate. If there is
+     * no such square (because the board ends here) the return value will be {@code null}..
+     *
+     * @param direction the direction to move to
+     * @param steps     the number of steps to move in that direction
+     * @return the coordinate or {@code null}.
+     */
     public Coordinate go(Direction direction, int steps) {
-        return go(steps * direction.columnOffset, steps * direction.rowOffset);
+        int newColumn = this.columnIndex + (steps * direction.column());
+        int newRow = this.rowIndex + (steps * direction.row());
+
+        if (newColumn >= 0 && newColumn < COLUMNS && newRow >= 0 && newRow < ROWS)
+            return Coordinate.valueOf(newColumn, newRow);
+        else return null;
     }
 
     /**

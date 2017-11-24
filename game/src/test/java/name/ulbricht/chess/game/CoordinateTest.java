@@ -72,37 +72,37 @@ final class CoordinateTest {
 
     @Test
     void testGoLeft() {
-        assertEquals(Coordinate.g1, Coordinate.h1.go(Direction.LEFT));
-        assertEquals(Coordinate.d5, Coordinate.e5.go(Direction.LEFT));
-        assertEquals(Coordinate.a8, Coordinate.b8.go(Direction.LEFT));
+        assertEquals(Coordinate.g1, Coordinate.h1.go(MoveDirection.LEFT));
+        assertEquals(Coordinate.d5, Coordinate.e5.go(MoveDirection.LEFT));
+        assertEquals(Coordinate.a8, Coordinate.b8.go(MoveDirection.LEFT));
 
-        assertNull(Coordinate.a5.go(Direction.LEFT));
+        assertNull(Coordinate.a5.go(MoveDirection.LEFT));
     }
 
     @Test
     void testGoRight() {
-        assertEquals(Coordinate.b1, Coordinate.a1.go(Direction.RIGHT));
-        assertEquals(Coordinate.f5, Coordinate.e5.go(Direction.RIGHT));
-        assertEquals(Coordinate.h8, Coordinate.g8.go(Direction.RIGHT));
+        assertEquals(Coordinate.b1, Coordinate.a1.go(MoveDirection.RIGHT));
+        assertEquals(Coordinate.f5, Coordinate.e5.go(MoveDirection.RIGHT));
+        assertEquals(Coordinate.h8, Coordinate.g8.go(MoveDirection.RIGHT));
 
-        assertNull(Coordinate.h5.go(Direction.RIGHT));
+        assertNull(Coordinate.h5.go(MoveDirection.RIGHT));
     }
 
     @Test
     void testGoUp() {
-        assertEquals(Coordinate.a2, Coordinate.a1.go(Direction.UP));
-        assertEquals(Coordinate.e6, Coordinate.e5.go(Direction.UP));
-        assertEquals(Coordinate.h8, Coordinate.h7.go(Direction.UP));
+        assertEquals(Coordinate.a2, Coordinate.a1.go(MoveDirection.UP));
+        assertEquals(Coordinate.e6, Coordinate.e5.go(MoveDirection.UP));
+        assertEquals(Coordinate.h8, Coordinate.h7.go(MoveDirection.UP));
 
-        assertNull(Coordinate.d8.go(Direction.UP));
+        assertNull(Coordinate.d8.go(MoveDirection.UP));
     }
 
     @Test
     void testMoveDown() {
-        assertEquals(Coordinate.a7, Coordinate.a8.go(Direction.DOWN));
-        assertEquals(Coordinate.e4, Coordinate.e5.go(Direction.DOWN));
-        assertEquals(Coordinate.h1, Coordinate.h2.go(Direction.DOWN));
+        assertEquals(Coordinate.a7, Coordinate.a8.go(MoveDirection.DOWN));
+        assertEquals(Coordinate.e4, Coordinate.e5.go(MoveDirection.DOWN));
+        assertEquals(Coordinate.h1, Coordinate.h2.go(MoveDirection.DOWN));
 
-        assertNull(Coordinate.e1.go(Direction.DOWN));
+        assertNull(Coordinate.e1.go(MoveDirection.DOWN));
     }
 }
