@@ -170,13 +170,13 @@ public final class Game {
         // one step forward
         Coordinate target = source.moveTo(0, direction);
         if (target != null) {
-            if (getPiece(target) == null) moves.add(Move.simple(source, target, null));
+            if (getPiece(target) == null) moves.add(Move.simple(this.activePlayer, source, target));
 
             // two steps forward (if not yet moved)
             if (source.rowIndex == startRow && getPiece(target) == null) {
                 target = source.moveTo(0, 2 * direction);
                 if (target != null && getPiece(target) == null)
-                    moves.add(Move.simple(source, target, null));
+                    moves.add(Move.pawnDoubleAdvance(this.activePlayer, source));
             }
         }
 
@@ -188,7 +188,7 @@ public final class Game {
             if (target != null) {
                 Piece piece = getPiece(target);
                 if (piece != null && piece.player.isOpponent(getActivePlayer()))
-                    moves.add(Move.simple(source, target, target));
+                    moves.add(Move.simpleCaptures(this.activePlayer, source, target));
             }
         }
 
@@ -204,9 +204,9 @@ public final class Game {
             if (target != null) {
                 Piece piece = getPiece(target);
                 if (piece == null)
-                    moves.add(Move.simple(source, target, null));
+                    moves.add(Move.simple(this.activePlayer, source, target));
                 else if (piece.player.isOpponent(this.activePlayer))
-                    moves.add(Move.simple(source, target, target));
+                    moves.add(Move.simpleCaptures(this.activePlayer, source, target));
             }
         }
         return moves;
@@ -222,9 +222,9 @@ public final class Game {
                 target = source.moveTo(step * direction.columnOffset, step * direction.rowOffset);
                 if (target != null) {
                     Piece piece = getPiece(target);
-                    if (piece == null) moves.add(Move.simple(source, target, null));
+                    if (piece == null) moves.add(Move.simple(this.activePlayer, source, target));
                     else if (piece.player.isOpponent(this.activePlayer)) {
-                        moves.add(Move.simple(source, target, target));
+                        moves.add(Move.simpleCaptures(this.activePlayer, source, target));
                         break;
                     } else break;
                 }

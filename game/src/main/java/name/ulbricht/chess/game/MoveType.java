@@ -7,6 +7,8 @@ public enum MoveType {
 
     KINGSIDE_CASTLING,
 
+    PAWN_DOUBLE_ADVANCE,
+
     PAWN_EN_PASSENT,
 
     PAWN_PROMOTION
