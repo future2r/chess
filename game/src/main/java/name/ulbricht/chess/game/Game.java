@@ -97,10 +97,9 @@ public final class Game {
     }
 
     /**
-     * Returns a map with legal move for the current player. The keys are the coordinates of the piece to move. The
-     * values are lists with legal moves for this piece.
+     * Returns a list with legal move for the current player.
      *
-     * @return a map with pieces and their legal moves
+     * @return a list of legal moves
      */
     public List<Move> getLegalMoves() {
         return Collections.unmodifiableList(this.legalMoves);
@@ -112,7 +111,13 @@ public final class Game {
 
     private void findLegalMoves() {
         this.legalMoves.clear();
-        this.legalMoves.addAll(Rules.findLegalMoves(this));
+
+        for (Coordinate coordinate : Coordinate.values()) {
+            Piece piece = getPiece(coordinate);
+            if (piece != null && piece.getPlayer() == this.currentPlayer) {
+                this.legalMoves.addAll(findLegalMoves(coordinate));
+            }
+        }
     }
 
     /**
@@ -135,5 +140,122 @@ public final class Game {
 
         this.currentPlayer = this.currentPlayer == Player.WHITE ? Player.BLACK : Player.WHITE;
         findLegalMoves();
+    }
+
+    private enum Direction {
+        UP(0, 1), UP_RIGHT(1, 1), RIGHT(1, 0), DOWN_RIGHT(1, -1), DOWN(0, -1), DOWN_LEFT(-1, -1), LEFT(-1, 0), UP_LEFT(-1, 1);
+
+        final int columnOffset;
+        final int rowOffset;
+
+        Direction(int columnOffset, int rowOffset) {
+            this.columnOffset = columnOffset;
+            this.rowOffset = rowOffset;
+        }
+    }
+
+    private List<Move> findLegalMoves(Coordinate source) {
+        Piece piece = getPiece(source);
+        if (piece != null) {
+            switch (piece.getType()) {
+                case PAWN:
+                    return findPawnMoves(source);
+                case ROOK:
+                    return findDirectionalMoves(source, Integer.MAX_VALUE,
+                            Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT);
+                case KNIGHT:
+                    return findKnightMoves(source);
+                case BISHOP:
+                    return findDirectionalMoves(source, Integer.MAX_VALUE,
+                            Direction.UP_LEFT, Direction.UP_RIGHT, Direction.DOWN_RIGHT, Direction.DOWN_LEFT);
+                case QUEEN:
+                    return findDirectionalMoves(source, Integer.MAX_VALUE, Direction.values());
+                case KING:
+                    return findDirectionalMoves(source, 1, Direction.values());
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    private List<Move> findPawnMoves(Coordinate source) {
+        expectPiece(source, this.currentPlayer, PieceType.PAWN);
+        List<Move> moves = new ArrayList<>();
+        int direction = this.currentPlayer == Player.WHITE ? 1 : -1;
+
+        // one step forward
+        Coordinate target = source.moveTo(0, direction);
+        if (target != null) {
+            if (getPiece(target) == null) moves.add(Move.simple(source, target, null));
+
+            // two steps forward (if not yet moved)
+            Piece me = getPiece(source);
+            if (!me.isMoved() && getPiece(target) == null) {
+                target = source.moveTo(0, 2 * direction);
+                if (target != null && getPiece(target) == null)
+                    moves.add(Move.simple(source, target, null));
+            }
+        }
+
+        // check capture
+        int[][] captures = new int[][]{{-1, direction}, {1, direction}};
+        for (
+                int[] capture : captures) {
+            target = source.moveTo(capture[0], capture[1]);
+            if (target != null) {
+                Piece piece = getPiece(target);
+                if (piece != null && piece.getPlayer().isOpponent(getCurrentPlayer()))
+                    moves.add(Move.simple(source, target, target));
+            }
+        }
+
+        return moves;
+    }
+
+    private List<Move> findKnightMoves(Coordinate source) {
+        expectPiece(source, this.currentPlayer, PieceType.KNIGHT);
+        List<Move> moves = new ArrayList<>();
+        int[][] jumps = new int[][]{{-1, 2}, {1, 2}, {-2, 1}, {-2, -1}, {2, 1}, {2, -1}, {-1, -2}, {1, -2}};
+        for (int[] jump : jumps) {
+            Coordinate target = source.moveTo(jump[0], jump[1]);
+            if (target != null) {
+                Piece piece = getPiece(target);
+                if (piece == null)
+                    moves.add(Move.simple(source, target, null));
+                else if (piece.getPlayer().isOpponent(this.currentPlayer))
+                    moves.add(Move.simple(source, target, target));
+            }
+        }
+        return moves;
+    }
+
+    private List<Move> findDirectionalMoves(Coordinate source, int maxSteps, Direction... directions) {
+        expectPiece(source, this.currentPlayer, PieceType.ROOK, PieceType.BISHOP, PieceType.QUEEN, PieceType.KING);
+        List<Move> moves = new ArrayList<>();
+        for (Direction direction : directions) {
+            Coordinate target;
+            int step = 1;
+            do {
+                target = source.moveTo(step * direction.columnOffset, step * direction.rowOffset);
+                if (target != null) {
+                    Piece piece = getPiece(target);
+                    if (piece == null) moves.add(Move.simple(source, target, null));
+                    else if (piece.getPlayer().isOpponent(this.currentPlayer)) {
+                        moves.add(Move.simple(source, target, target));
+                        break;
+                    } else break;
+                }
+                step++;
+            } while (step <= maxSteps && target != null);
+        }
+        return moves;
+    }
+
+    private void expectPiece(Coordinate coordinate, Player player, PieceType... pieceTypes) {
+        Piece piece = getPiece(coordinate);
+        if (piece == null) throw new IllegalStateException("Piece expected");
+        if (piece.getPlayer() != player)
+            throw new IllegalStateException("Expected piece of player: " + player);
+        if (!Arrays.asList(pieceTypes).contains(piece.getType()))
+            throw new IllegalArgumentException("Unexpected piece type: " + piece.getType());
     }
 }
