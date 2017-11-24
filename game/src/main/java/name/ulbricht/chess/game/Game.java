@@ -12,6 +12,7 @@ public final class Game {
     private final Piece[] board;
     private Player activePlayer;
     private final List<Ply> legalPlies = new ArrayList<>();
+    private final List<Ply> plyHistory = new ArrayList<>();
 
     /**
      * Creates a new game. This game will have a new board with the initial positions of the pieces.
@@ -126,7 +127,8 @@ public final class Game {
                 throw new IllegalArgumentException("Unsupported ply type: " + ply.getType());
         }
 
-        this.activePlayer = this.activePlayer == Player.WHITE ? Player.BLACK : Player.WHITE;
+        this.plyHistory.add(ply);
+        this.activePlayer = this.activePlayer.opponent();
         findLegalMoves();
     }
 

@@ -35,4 +35,8 @@ public enum Player {
     public boolean isOpponent(Player other) {
         return this != Objects.requireNonNull(other, "other player cannot be null");
     }
+
+    public Player opponent() {
+        return this == WHITE ? BLACK : WHITE;
+    }
 }

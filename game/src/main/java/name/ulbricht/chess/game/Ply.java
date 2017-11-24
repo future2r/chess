@@ -1,5 +1,6 @@
 package name.ulbricht.chess.game;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Objects;
 public final class Ply {
 
     static Ply simple(Piece piece, Coordinate source, Coordinate target) {
-        Objects.requireNonNull(piece);
+        requirePieceType(piece, PieceType.values());
         Objects.requireNonNull(source);
         Objects.requireNonNull(target);
 
@@ -16,7 +17,7 @@ public final class Ply {
     }
 
     static Ply simpleCaptures(Piece piece, Coordinate source, Coordinate target, Piece capturedPiece) {
-        Objects.requireNonNull(piece);
+        requirePieceType(piece, PieceType.values());
         Objects.requireNonNull(source);
         Objects.requireNonNull(target);
         Objects.requireNonNull(capturedPiece);
@@ -25,15 +26,41 @@ public final class Ply {
     }
 
     static Ply pawnDoubleAdvance(Piece piece, Coordinate source) {
-        Objects.requireNonNull(piece);
+        requirePieceType(piece, PieceType.PAWN);
         Objects.requireNonNull(source);
 
         Coordinate target;
         if ((piece.player == Player.WHITE && source.rowIndex != 1) || (piece.player == Player.BLACK && source.rowIndex != 6))
             throw new IllegalArgumentException("Illegal source for player.");
-
         target = source.go(MoveDirection.forward(piece.player), 2);
+
         return new Ply(PlyType.PAWN_DOUBLE_ADVANCE, piece, source, target, null, null);
+    }
+
+    static Ply kingSideCastling(Piece piece) {
+        requirePieceType(piece, PieceType.PAWN);
+
+        int row = piece.player == Player.WHITE ? 0 : 7;
+        Coordinate source = Coordinate.valueOf(4, row);
+        Coordinate target = Coordinate.valueOf(1, row);
+
+        return new Ply(PlyType.KING_SIDE_CASTLING, piece, source, target, null, null);
+    }
+
+    static Ply queenSideCastling(Piece piece) {
+        requirePieceType(piece, PieceType.PAWN);
+
+        int row = piece.player == Player.WHITE ? 0 : 7;
+        Coordinate source = Coordinate.valueOf(4, row);
+        Coordinate target = Coordinate.valueOf(6, row);
+
+        return new Ply(PlyType.QUEEN_SIDE_CASTLING, piece, source, target, null, null);
+    }
+
+    private static void requirePieceType(Piece piece, PieceType... validPieceTypes) {
+        Objects.requireNonNull(piece, "piece cannot be null");
+        if (!Arrays.asList(validPieceTypes).contains(piece.type))
+            throw new IllegalArgumentException("Illegal piece type: " + piece.type);
     }
 
     private final PlyType type;
@@ -78,7 +105,7 @@ public final class Ply {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.type, this.source, this.target, this.captures);
+        return Objects.hash(this.type, this.piece, this.source, this.target, this.captures, this.capturedPiece);
     }
 
     @Override
@@ -88,8 +115,10 @@ public final class Ply {
         Ply other = (Ply) obj;
 
         return Objects.equals(this.type, other.type)
+                && Objects.equals(this.piece, other.piece)
                 && Objects.equals(this.source, other.source)
                 && Objects.equals(this.target, other.target)
-                && Objects.equals(this.captures, other.captures);
+                && Objects.equals(this.captures, other.captures)
+                && Objects.equals(this.capturedPiece, other.capturedPiece);
     }
 }

@@ -3,9 +3,9 @@ package name.ulbricht.chess.game;
 public enum PlyType {
     SIMPLE,
 
-    QUEENSIDE_CASTLING,
+    QUEEN_SIDE_CASTLING,
 
-    KINGSIDE_CASTLING,
+    KING_SIDE_CASTLING,
 
     PAWN_DOUBLE_ADVANCE,
 
