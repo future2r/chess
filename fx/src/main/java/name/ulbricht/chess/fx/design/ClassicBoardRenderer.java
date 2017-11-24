@@ -5,8 +5,6 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import name.ulbricht.chess.game.Coordinate;
 import name.ulbricht.chess.game.Piece;
-import name.ulbricht.chess.game.PieceType;
-import name.ulbricht.chess.game.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,15 +18,11 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
     private static final Color COLOR_TO = Color.rgb(0, 255, 0, 0.7);
     private static final Color COLOR_CAPTURED = Color.rgb(255, 0, 0, 0.7);
 
-    private final Map<Player, Map<PieceType, Image>> pieceImages = new HashMap<>();
+    private final Map<Piece, Image> pieceImages = new HashMap<>();
 
     public ClassicBoardRenderer() {
-        for (Player player : Player.values()) {
-            Map<PieceType, Image> images = new HashMap<>();
-            this.pieceImages.put(player, images);
-            for (PieceType type : PieceType.values()) {
-                images.put(type, loadImage("classic-" + player.name().toLowerCase() + "-" + type.name().toLowerCase() + ".png"));
-            }
+        for (Piece piece : Piece.values()) {
+            pieceImages.put(piece, loadImage("classic-" + piece.name().toLowerCase() + ".png"));
         }
     }
 
@@ -53,7 +47,7 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
         }
 
         if (piece != null) {
-            Image image = this.pieceImages.get(piece.player).get(piece.type);
+            Image image = this.pieceImages.get(piece);
 
             double imageWidth = image.getWidth();
             double imageHeight = image.getHeight();

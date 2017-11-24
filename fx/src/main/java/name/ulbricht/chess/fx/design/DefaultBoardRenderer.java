@@ -8,8 +8,6 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import name.ulbricht.chess.game.Coordinate;
 import name.ulbricht.chess.game.Piece;
-import name.ulbricht.chess.game.PieceType;
-import name.ulbricht.chess.game.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,18 +23,14 @@ final class DefaultBoardRenderer extends AbstractBoardRenderer {
 
     private final Image lightSquareImage;
     private final Image darkSquareImage;
-    private final Map<Player, Map<PieceType, Image>> pieceImages = new HashMap<>();
+    private final Map<Piece, Image> pieceImages = new HashMap<>();
 
     public DefaultBoardRenderer() {
         this.lightSquareImage = loadImage("default-square-light.png");
         this.darkSquareImage = loadImage("default-square-dark.png");
 
-        for (Player player : Player.values()) {
-            Map<PieceType, Image> images = new HashMap<>();
-            this.pieceImages.put(player, images);
-            for (PieceType type : PieceType.values()) {
-                images.put(type, loadImage("default-" + player.name().toLowerCase() + "-" + type.name().toLowerCase() + ".png"));
-            }
+        for (Piece piece : Piece.values()) {
+            pieceImages.put(piece, loadImage("default-" + piece.name().toLowerCase() + ".png"));
         }
     }
 
@@ -56,7 +50,7 @@ final class DefaultBoardRenderer extends AbstractBoardRenderer {
         }
 
         if (piece != null) {
-            Image image = this.pieceImages.get(piece.player).get(piece.type);
+            Image image = this.pieceImages.get(piece);
 
             double imageWidth = image.getWidth();
             double imageHeight = image.getHeight();
