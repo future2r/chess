@@ -1,6 +1,6 @@
 package name.ulbricht.chess.game;
 
-public enum MoveDirection {
+public enum Direction {
     UP(0, 1),
     UP_RIGHT(1, 1),
     RIGHT(1, 0),
@@ -10,22 +10,22 @@ public enum MoveDirection {
     LEFT(-1, 0),
     UP_LEFT(-1, 1);
 
-    static MoveDirection forward(Player player) {
+    static Direction forward(Player player) {
         return player == Player.WHITE ? UP : DOWN;
     }
 
-    static MoveDirection forwardLeft(Player player) {
+    static Direction forwardLeft(Player player) {
         return player == Player.WHITE ? UP_LEFT : DOWN_RIGHT;
     }
 
-    static MoveDirection forwardRight(Player player) {
+    static Direction forwardRight(Player player) {
         return player == Player.WHITE ? UP_RIGHT : DOWN_LEFT;
     }
 
     final int columnOffset;
     final int rowOffset;
 
-    MoveDirection(int columnOffset, int rowOffset) {
+    Direction(int columnOffset, int rowOffset) {
         this.columnOffset = columnOffset;
         this.rowOffset = rowOffset;
     }

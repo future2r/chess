@@ -1,6 +1,6 @@
 package name.ulbricht.chess.game;
 
-public enum MoveType {
+public enum PlyType {
     SIMPLE,
 
     QUEENSIDE_CASTLING,

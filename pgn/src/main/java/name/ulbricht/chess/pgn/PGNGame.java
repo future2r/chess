@@ -88,7 +88,7 @@ public final class PGNGame {
 
     private final Map<String, String> tags = new HashMap<>();
     private PGNGameInfo info;
-    private final List<SANMove> moves = new ArrayList<>();
+    private final List<SANPly> plies = new ArrayList<>();
 
     public String getTag(String key) {
         return this.tags.get(key);
@@ -106,7 +106,7 @@ public final class PGNGame {
         return this.info;
     }
 
-    public List<SANMove> getMoves() {
-        return this.moves;
+    public List<SANPly> getPlies() {
+        return this.plies;
     }
 }

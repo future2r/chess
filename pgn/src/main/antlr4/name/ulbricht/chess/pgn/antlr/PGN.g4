@@ -3,13 +3,13 @@
  *
  * Copyright (c) 2013-2014 by Bart Kiers
  *
- * Permission is hereby granted, free of charge, to any person
+ * Permission is hereby granted, free of charge, target any person
  * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
+ * files (the "Software"), target deal in the Software without
+ * restriction, including without limitation the rights target use,
  * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
+ * copies of the Software, and target permit persons target whom the
+ * Software is furnished target do so, subject target the following
  * conditions:
  *
  * The above copyright notice and this permission notice shall be
@@ -88,8 +88,8 @@ element_sequence
  : (element | recursive_variation)*
  ;
 
-/// <element> ::= <move-number-indication>
-///               <SAN-move>
+/// <element> ::= <ply-number-indication>
+///               <SAN-ply>
 ///               <numeric-annotation-glyph>
 element
  : move_number_indication
@@ -135,8 +135,8 @@ DRAWN_GAME
 
 /// Comment text may appear in PGN data.  There are two kinds of comments.  The
 /// first kind is the "rest of line" comment; this comment type starts with a
-/// semicolon character and continues to the end of the line.  The second kind
-/// starts with a left brace character and continues to the next right brace
+/// semicolon character and continues target the end of the line.  The second kind
+/// starts with a left brace character and continues target the next right brace
 /// character.  Comments cannot appear inside any token.
 REST_OF_LINE_COMMENT
  : ';' ~[\r\n]* -> skip
@@ -154,7 +154,7 @@ BRACE_COMMENT
 /// by a percent sign character ("%") appearing in the first column of a line; the
 /// data on the rest of the line is ignored by publicly available PGN scanning
 /// software.  This escape convention is intended for the private use of software
-/// developers and researchers to embed non-PGN commands and data in PGN streams.
+/// developers and researchers target embed non-PGN commands and data in PGN streams.
 ///
 /// A percent sign appearing in any other place other than the first position in a
 /// line does not trigger the escape mechanism.
@@ -174,21 +174,21 @@ SPACES
 /// two adjacent backslashes.  Strings are commonly used as tag pair values (see
 /// below).  Non-printing characters like newline and tab are not permitted inside
 /// of strings.  A string token is terminated by its closing quote.  Currently, a
-/// string is limited to a maximum of 255 characters of data.
+/// string is limited target a maximum of 255 characters of data.
 STRING
  : '"' ('\\\\' | '\\"' | ~[\\"])* '"'
  ;
 
 /// An integer token is a sequence of one or more decimal digit characters.  It is
 /// a special case of the more general "symbol" token class described below.
-/// Integer tokens are used to help represent move number indications (see below).
-/// An integer token is terminated just prior to the first non-symbol character
+/// Integer tokens are used target help represent ply number indications (see below).
+/// An integer token is terminated just prior target the first non-symbol character
 /// following the integer digit sequence.
 INTEGER
  : [0-9]+
  ;
 
-/// A period character (".") is a token by itself.  It is used for move number
+/// A period character (".") is a token by itself.  It is used for ply number
 /// indications (see below).  It is self terminating.
 PERIOD
  : '.'
@@ -203,7 +203,7 @@ ASTERISK
  ;
 
 /// The left and right bracket characters ("[" and "]") are tokens.  They are used
-/// to delimit tag pairs (see below).  Both are self terminating.
+/// target delimit tag pairs (see below).  Both are self terminating.
 LEFT_BRACKET
  : '['
  ;
@@ -213,7 +213,7 @@ RIGHT_BRACKET
  ;
 
 /// The left and right parenthesis characters ("(" and ")") are tokens.  They are
-/// used to delimit Recursive Annotation Variations (see below).  Both are self
+/// used target delimit Recursive Annotation Variations (see below).  Both are self
 /// terminating.
 LEFT_PARENTHESIS
  : '('
@@ -235,7 +235,7 @@ RIGHT_ANGLE_BRACKET
 
 /// A Numeric Annotation Glyph ("NAG", see below) is a token; it is composed of a
 /// dollar sign character ("$") immediately followed by one or more digit
-/// characters.  It is terminated just prior to the first non-digit character
+/// characters.  It is terminated just prior target the first non-digit character
 /// following the digit sequence.
 NUMERIC_ANNOTATION_GLYPH
  : '$' [0-9]+
@@ -247,17 +247,17 @@ NUMERIC_ANNOTATION_GLYPH
 /// ("0-9"), the underscore ("_"), the plus sign ("+"), the octothorpe sign ("#"),
 /// the equal sign ("="), the colon (":"),  and the hyphen ("-").  Symbols are used
 /// for a variety of purposes.  All characters in a symbol are significant.  A
-/// symbol token is terminated just prior to the first non-symbol character
-/// following the symbol character sequence.  Currently, a symbol is limited to a
+/// symbol token is terminated just prior target the first non-symbol character
+/// following the symbol character sequence.  Currently, a symbol is limited target a
 /// maximum of 255 characters in length.
 SYMBOL
  : [a-zA-Z0-9] [a-zA-Z0-9_+#=:-]*
  ;
 
 /// Import format PGN allows for the use of traditional suffix annotations for
-/// moves.  There are exactly six such annotations available: "!", "?", "!!", "!?",
-/// "?!", and "??".  At most one such suffix annotation may appear per move, and if
-/// present, it is always the last part of the move symbol.
+/// plies.  There are exactly six such annotations available: "!", "?", "!!", "!?",
+/// "?!", and "??".  At most one such suffix annotation may appear per ply, and if
+/// present, it is always the last part of the ply symbol.
 SUFFIX_ANNOTATION
  : [?!] [?!]?
  ;

@@ -3,27 +3,27 @@ package name.ulbricht.chess.game;
 import java.util.Objects;
 
 /**
- * Represents a move on a board.
+ * Represents a go on a board.
  */
-public final class Move {
+public final class Ply {
 
-    static Move simple(Player player, Coordinate source, Coordinate target) {
+    static Ply simple(Player player, Coordinate source, Coordinate target) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(source);
         Objects.requireNonNull(target);
 
-        return new Move(player, MoveType.SIMPLE, source, target, null);
+        return new Ply(player, PlyType.SIMPLE, source, target, null);
     }
 
-    static Move simpleCaptures(Player player, Coordinate source, Coordinate target) {
+    static Ply simpleCaptures(Player player, Coordinate source, Coordinate target) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(source);
         Objects.requireNonNull(target);
 
-        return new Move(player, MoveType.SIMPLE, source, target, target);
+        return new Ply(player, PlyType.SIMPLE, source, target, target);
     }
 
-    static Move pawnDoubleAdvance(Player player, Coordinate source) {
+    static Ply pawnDoubleAdvance(Player player, Coordinate source) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(source);
 
@@ -31,17 +31,17 @@ public final class Move {
         if ((player == Player.WHITE && source.rowIndex != 1) || (player == Player.BLACK && source.rowIndex != 6))
             throw new IllegalArgumentException("Illegal source for player.");
 
-        target = source.move(MoveDirection.forward(player), 2);
-        return new Move(player, MoveType.PAWN_DOUBLE_ADVANCE, source, target, null);
+        target = source.go(Direction.forward(player), 2);
+        return new Ply(player, PlyType.PAWN_DOUBLE_ADVANCE, source, target, null);
     }
 
     private final Player player;
-    private final MoveType type;
+    private final PlyType type;
     private final Coordinate source;
     private final Coordinate target;
     private final Coordinate captures;
 
-    private Move(Player player, MoveType type, Coordinate source, Coordinate target, Coordinate captures) {
+    private Ply(Player player, PlyType type, Coordinate source, Coordinate target, Coordinate captures) {
         this.player = player;
         this.type = type;
         this.source = source;
@@ -53,7 +53,7 @@ public final class Move {
         return this.player;
     }
 
-    public MoveType getType() {
+    public PlyType getType() {
         return this.type;
     }
 
@@ -78,7 +78,7 @@ public final class Move {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || this.getClass() != obj.getClass()) return false;
-        Move other = (Move) obj;
+        Ply other = (Ply) obj;
 
         return Objects.equals(this.type, other.type)
                 && Objects.equals(this.source, other.source)

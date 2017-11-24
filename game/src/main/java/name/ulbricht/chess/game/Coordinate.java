@@ -43,11 +43,11 @@ public enum Coordinate {
      * Returns the coordinate that can be reached by moving the specified offset from this coordinate. If there is no
      * such square (because the board ends here) the return value will be {@code null}..
      *
-     * @param columnOffset positive offset will move right, negative offset will move left
-     * @param rowOffset    positive offset will move up, negative offset will move down
+     * @param columnOffset positive offset will go right, negative offset will go left
+     * @param rowOffset    positive offset will go up, negative offset will go down
      * @return the coordinate or {@code null}.
      */
-    public Coordinate move(int columnOffset, int rowOffset) {
+    public Coordinate go(int columnOffset, int rowOffset) {
         int newColumn = this.columnIndex + columnOffset;
         int newRow = this.rowIndex + rowOffset;
 
@@ -56,12 +56,12 @@ public enum Coordinate {
         else return null;
     }
 
-    public Coordinate move(MoveDirection direction) {
-        return move(direction, 1);
+    public Coordinate go(Direction direction) {
+        return go(direction, 1);
     }
 
-    public Coordinate move(MoveDirection direction, int steps) {
-        return move(steps * direction.columnOffset, steps * direction.rowOffset);
+    public Coordinate go(Direction direction, int steps) {
+        return go(steps * direction.columnOffset, steps * direction.rowOffset);
     }
 
     /**

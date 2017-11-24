@@ -71,50 +71,38 @@ final class CoordinateTest {
     }
 
     @Test
-    void testMoveLeft() {
-        assertEquals(Coordinate.g1, Coordinate.h1.move(MoveDirection.LEFT));
-        assertEquals(Coordinate.d5, Coordinate.e5.move(MoveDirection.LEFT));
-        assertEquals(Coordinate.a8, Coordinate.b8.move(MoveDirection.LEFT));
+    void testGoLeft() {
+        assertEquals(Coordinate.g1, Coordinate.h1.go(Direction.LEFT));
+        assertEquals(Coordinate.d5, Coordinate.e5.go(Direction.LEFT));
+        assertEquals(Coordinate.a8, Coordinate.b8.go(Direction.LEFT));
+
+        assertNull(Coordinate.a5.go(Direction.LEFT));
     }
 
     @Test
-    void testMoveLeft_Fail() {
-        assertNull(Coordinate.a5.move(MoveDirection.LEFT));
+    void testGoRight() {
+        assertEquals(Coordinate.b1, Coordinate.a1.go(Direction.RIGHT));
+        assertEquals(Coordinate.f5, Coordinate.e5.go(Direction.RIGHT));
+        assertEquals(Coordinate.h8, Coordinate.g8.go(Direction.RIGHT));
+
+        assertNull(Coordinate.h5.go(Direction.RIGHT));
     }
 
     @Test
-    void testMoveRight() {
-        assertEquals(Coordinate.b1, Coordinate.a1.move(MoveDirection.RIGHT));
-        assertEquals(Coordinate.f5, Coordinate.e5.move(MoveDirection.RIGHT));
-        assertEquals(Coordinate.h8, Coordinate.g8.move(MoveDirection.RIGHT));
-    }
+    void testGoUp() {
+        assertEquals(Coordinate.a2, Coordinate.a1.go(Direction.UP));
+        assertEquals(Coordinate.e6, Coordinate.e5.go(Direction.UP));
+        assertEquals(Coordinate.h8, Coordinate.h7.go(Direction.UP));
 
-    @Test
-    void testMoveRight_Fail() {
-        assertNull(Coordinate.h5.move(MoveDirection.RIGHT));
-    }
-
-    @Test
-    void testMoveUp() {
-        assertEquals(Coordinate.a2, Coordinate.a1.move(MoveDirection.UP));
-        assertEquals(Coordinate.e6, Coordinate.e5.move(MoveDirection.UP));
-        assertEquals(Coordinate.h8, Coordinate.h7.move(MoveDirection.UP));
-    }
-
-    @Test
-    void testMoveUp_Fail() {
-        assertNull(Coordinate.d8.move(MoveDirection.UP));
+        assertNull(Coordinate.d8.go(Direction.UP));
     }
 
     @Test
     void testMoveDown() {
-        assertEquals(Coordinate.a7, Coordinate.a8.move(MoveDirection.DOWN));
-        assertEquals(Coordinate.e4, Coordinate.e5.move(MoveDirection.DOWN));
-        assertEquals(Coordinate.h1, Coordinate.h2.move(MoveDirection.DOWN));
-    }
+        assertEquals(Coordinate.a7, Coordinate.a8.go(Direction.DOWN));
+        assertEquals(Coordinate.e4, Coordinate.e5.go(Direction.DOWN));
+        assertEquals(Coordinate.h1, Coordinate.h2.go(Direction.DOWN));
 
-    @Test
-    void testMoveDown_Fail() {
-        assertNull(Coordinate.e1.move(MoveDirection.DOWN));
+        assertNull(Coordinate.e1.go(Direction.DOWN));
     }
 }

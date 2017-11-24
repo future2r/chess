@@ -58,7 +58,7 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
             gc.drawImage(image, (size - scaledImageWidth) / 2, (size - scaledImageHeight) / 2, scaledImageWidth, scaledImageHeight);
         }
 
-        // captured or move target
+        // captured or go target
         if (indicator == SquareIndicator.CAPTURED) {
             gc.setFill(COLOR_CAPTURED);
             double circleInset = 0.25 * size;

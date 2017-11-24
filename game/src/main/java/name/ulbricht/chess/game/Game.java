@@ -11,7 +11,7 @@ public final class Game {
 
     private final Piece[] board;
     private Player activePlayer;
-    private final List<Move> legalMoves = new ArrayList<>();
+    private final List<Ply> legalPlies = new ArrayList<>();
 
     /**
      * Creates a new game. This game will have a new board with the initial positions of the pieces.
@@ -71,7 +71,7 @@ public final class Game {
 
     private void movePiece(Coordinate source, Coordinate target) {
         Piece piece = getPiece(source);
-        if (piece == null) throw new IllegalStateException("No piece to move");
+        if (piece == null) throw new IllegalStateException("No piece to go");
         removePiece(source);
         setPiece(target, piece);
     }
@@ -81,56 +81,56 @@ public final class Game {
     }
 
     /**
-     * Returns a list with legal move for the current player.
+     * Returns a list with legal go for the current player.
      *
      * @return a list of legal moves
      */
-    public List<Move> getLegalMoves() {
-        return Collections.unmodifiableList(this.legalMoves);
+    public List<Ply> getLegalPlies() {
+        return Collections.unmodifiableList(this.legalPlies);
     }
 
-    public List<Move> getLegalMoves(Coordinate source) {
-        return this.legalMoves.stream().filter(m -> m.getSource() == source).collect(Collectors.toList());
+    public List<Ply> getLegalMoves(Coordinate source) {
+        return this.legalPlies.stream().filter(m -> m.getSource() == source).collect(Collectors.toList());
     }
 
     private void findLegalMoves() {
-        this.legalMoves.clear();
+        this.legalPlies.clear();
 
         for (Coordinate coordinate : Coordinate.values()) {
             Piece piece = getPiece(coordinate);
             if (piece != null && piece.player == this.activePlayer) {
-                this.legalMoves.addAll(findLegalMoves(coordinate));
+                this.legalPlies.addAll(findLegalMoves(coordinate));
             }
         }
     }
 
     /**
-     * Performs the specified move in this game. The piece will be moved and the the current player is switched.
+     * Performs the specified ply in this game. The piece will be moved and the the current player is switched.
      *
-     * @param move the move to perform
+     * @param ply the ply to perform
      */
-    public void performMove(Move move) {
-        if (!this.legalMoves.contains(move))
-            throw new IllegalArgumentException("Not a legal move");
+    public void performMove(Ply ply) {
+        if (!this.legalPlies.contains(ply))
+            throw new IllegalArgumentException("Not a legal ply");
 
-        switch (move.getType()) {
+        switch (ply.getType()) {
             case SIMPLE:
-                if (move.getCaptures() != null) removePiece(move.getCaptures());
-                movePiece(move.getSource(), move.getTarget());
+                if (ply.getCaptures() != null) removePiece(ply.getCaptures());
+                movePiece(ply.getSource(), ply.getTarget());
                 break;
             case PAWN_DOUBLE_ADVANCE:
-                movePiece(move.getSource(), move.getTarget());
+                movePiece(ply.getSource(), ply.getTarget());
                 // TODO set en passant target
                 break;
             default:
-                throw new IllegalArgumentException("Unsupported move type: " + move.getType());
+                throw new IllegalArgumentException("Unsupported ply type: " + ply.getType());
         }
 
         this.activePlayer = this.activePlayer == Player.WHITE ? Player.BLACK : Player.WHITE;
         findLegalMoves();
     }
 
-    private List<Move> findLegalMoves(Coordinate source) {
+    private List<Ply> findLegalMoves(Coordinate source) {
         Piece piece = getPiece(source);
         if (piece != null) {
             switch (piece.type) {
@@ -138,90 +138,90 @@ public final class Game {
                     return findPawnMoves(source);
                 case ROOK:
                     return findDirectionalMoves(source, Integer.MAX_VALUE,
-                            MoveDirection.UP, MoveDirection.RIGHT, MoveDirection.DOWN, MoveDirection.LEFT);
+                            Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT);
                 case KNIGHT:
                     return findKnightMoves(source);
                 case BISHOP:
                     return findDirectionalMoves(source, Integer.MAX_VALUE,
-                            MoveDirection.UP_LEFT, MoveDirection.UP_RIGHT, MoveDirection.DOWN_RIGHT, MoveDirection.DOWN_LEFT);
+                            Direction.UP_LEFT, Direction.UP_RIGHT, Direction.DOWN_RIGHT, Direction.DOWN_LEFT);
                 case QUEEN:
-                    return findDirectionalMoves(source, Integer.MAX_VALUE, MoveDirection.values());
+                    return findDirectionalMoves(source, Integer.MAX_VALUE, Direction.values());
                 case KING:
-                    return findDirectionalMoves(source, 1, MoveDirection.values());
+                    return findDirectionalMoves(source, 1, Direction.values());
             }
         }
         return Collections.emptyList();
     }
 
-    private List<Move> findPawnMoves(Coordinate source) {
+    private List<Ply> findPawnMoves(Coordinate source) {
         expectPiece(source, this.activePlayer, PieceType.PAWN);
-        List<Move> moves = new ArrayList<>();
-        MoveDirection direction = MoveDirection.forward(this.activePlayer);
+        List<Ply> plies = new ArrayList<>();
+        Direction direction = Direction.forward(this.activePlayer);
         int startRow = this.activePlayer == Player.WHITE ? 1 : 6;
 
         // one step forward
-        Coordinate target = source.move(direction);
+        Coordinate target = source.go(direction);
         if (target != null) {
-            if (getPiece(target) == null) moves.add(Move.simple(this.activePlayer, source, target));
+            if (getPiece(target) == null) plies.add(Ply.simple(this.activePlayer, source, target));
 
             // two steps forward (if not yet moved)
             if (source.rowIndex == startRow && getPiece(target) == null) {
-                target = source.move(direction, 2);
+                target = source.go(direction, 2);
                 if (target != null && getPiece(target) == null)
-                    moves.add(Move.pawnDoubleAdvance(this.activePlayer, source));
+                    plies.add(Ply.pawnDoubleAdvance(this.activePlayer, source));
             }
         }
 
         // check captures
-        for (MoveDirection captures : new MoveDirection[]{MoveDirection.forwardLeft(this.activePlayer), MoveDirection.forwardRight(this.activePlayer)}) {
-            target = source.move(captures);
+        for (Direction captures : new Direction[]{Direction.forwardLeft(this.activePlayer), Direction.forwardRight(this.activePlayer)}) {
+            target = source.go(captures);
             if (target != null) {
                 Piece piece = getPiece(target);
                 if (piece != null && piece.player.isOpponent(getActivePlayer()))
-                    moves.add(Move.simpleCaptures(this.activePlayer, source, target));
+                    plies.add(Ply.simpleCaptures(this.activePlayer, source, target));
             }
         }
 
-        return moves;
+        return plies;
     }
 
-    private List<Move> findKnightMoves(Coordinate source) {
+    private List<Ply> findKnightMoves(Coordinate source) {
         expectPiece(source, this.activePlayer, PieceType.KNIGHT);
-        List<Move> moves = new ArrayList<>();
+        List<Ply> plies = new ArrayList<>();
         int[][] jumps = new int[][]{{-1, 2}, {1, 2}, {-2, 1}, {-2, -1}, {2, 1}, {2, -1}, {-1, -2}, {1, -2}};
         for (int[] jump : jumps) {
-            Coordinate target = source.move(jump[0], jump[1]);
+            Coordinate target = source.go(jump[0], jump[1]);
             if (target != null) {
                 Piece piece = getPiece(target);
                 if (piece == null)
-                    moves.add(Move.simple(this.activePlayer, source, target));
+                    plies.add(Ply.simple(this.activePlayer, source, target));
                 else if (piece.player.isOpponent(this.activePlayer))
-                    moves.add(Move.simpleCaptures(this.activePlayer, source, target));
+                    plies.add(Ply.simpleCaptures(this.activePlayer, source, target));
             }
         }
-        return moves;
+        return plies;
     }
 
-    private List<Move> findDirectionalMoves(Coordinate source, int maxSteps, MoveDirection... directions) {
+    private List<Ply> findDirectionalMoves(Coordinate source, int maxSteps, Direction... directions) {
         expectPiece(source, this.activePlayer, PieceType.ROOK, PieceType.BISHOP, PieceType.QUEEN, PieceType.KING);
-        List<Move> moves = new ArrayList<>();
-        for (MoveDirection direction : directions) {
+        List<Ply> plies = new ArrayList<>();
+        for (Direction direction : directions) {
             Coordinate target;
             int step = 1;
             do {
-                target = source.move(direction, step);
+                target = source.go(direction, step);
                 if (target != null) {
                     Piece piece = getPiece(target);
-                    if (piece == null) moves.add(Move.simple(this.activePlayer, source, target));
+                    if (piece == null) plies.add(Ply.simple(this.activePlayer, source, target));
                     else if (piece.player.isOpponent(this.activePlayer)) {
-                        moves.add(Move.simpleCaptures(this.activePlayer, source, target));
+                        plies.add(Ply.simpleCaptures(this.activePlayer, source, target));
                         break;
                     } else break;
                 }
                 step++;
             } while (step <= maxSteps && target != null);
         }
-        return moves;
+        return plies;
     }
 
     private void expectPiece(Coordinate coordinate, Player player, PieceType... pieceTypes) {

@@ -51,7 +51,7 @@ final class BoardCanvas extends Canvas {
     private final ReadOnlyObjectWrapper<Player> currentPlayerProperty = new ReadOnlyObjectWrapper<>();
     private final ObjectProperty<Coordinate> selectedSquareProperty = new SimpleObjectProperty<>();
     private final ObjectProperty<Coordinate> focusedSquareProperty = new SimpleObjectProperty<>();
-    private final ReadOnlyListWrapper<Move> displayedMovesProperty = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
+    private final ReadOnlyListWrapper<Ply> displayedMovesProperty = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
 
     BoardCanvas() {
         this.game = new Game();
@@ -138,7 +138,7 @@ final class BoardCanvas extends Canvas {
         switch (e.getCode()) {
             case LEFT:
                 if (focused != null) {
-                    Coordinate left = focused.move(MoveDirection.LEFT);
+                    Coordinate left = focused.go(Direction.LEFT);
                     if (left != null) this.focusedSquareProperty.set(left);
                     else
                         this.focusedSquareProperty.set(Coordinate.valueOf(Coordinate.COLUMNS - 1, focused.rowIndex));
@@ -147,7 +147,7 @@ final class BoardCanvas extends Canvas {
                 break;
             case RIGHT:
                 if (focused != null) {
-                    Coordinate right = focused.move(MoveDirection.RIGHT);
+                    Coordinate right = focused.go(Direction.RIGHT);
                     if (right != null) this.focusedSquareProperty.set(right);
                     else this.focusedSquareProperty.set(Coordinate.valueOf(0, focused.rowIndex));
                 } else this.focusedSquareProperty.set(Coordinate.a1);
@@ -155,7 +155,7 @@ final class BoardCanvas extends Canvas {
                 break;
             case UP:
                 if (focused != null) {
-                    Coordinate up = focused.move(MoveDirection.UP);
+                    Coordinate up = focused.go(Direction.UP);
                     if (up != null) this.focusedSquareProperty.set(up);
                     else this.focusedSquareProperty.set(Coordinate.valueOf(focused.columnIndex, 0));
                 } else this.focusedSquareProperty.set(Coordinate.a1);
@@ -163,7 +163,7 @@ final class BoardCanvas extends Canvas {
                 break;
             case DOWN:
                 if (focused != null) {
-                    Coordinate down = focused.move(MoveDirection.DOWN);
+                    Coordinate down = focused.go(Direction.DOWN);
                     if (down != null) this.focusedSquareProperty.set(down);
                     else
                         this.focusedSquareProperty.set(Coordinate.valueOf(focused.columnIndex, Coordinate.ROWS - 1));
@@ -184,8 +184,8 @@ final class BoardCanvas extends Canvas {
     }
 
     private void selectSquare(Coordinate coordinate) {
-        // check if we can execute a move
-        Optional<Move> move = this.displayedMovesProperty.stream()
+        // check if we can execute a go
+        Optional<Ply> move = this.displayedMovesProperty.stream()
                 .filter(m -> coordinate.equals(m.getTarget()) || coordinate.equals(m.getCaptures()))
                 .findFirst();
 
@@ -196,12 +196,12 @@ final class BoardCanvas extends Canvas {
         }
     }
 
-    private void performMove(Move move) {
-        this.game.performMove(move);
+    private void performMove(Ply ply) {
+        this.game.performMove(ply);
 
         this.currentPlayerProperty.set(this.game.getActivePlayer());
         this.selectedSquareProperty.set(null);
-        this.focusedSquareProperty.set(move.getTarget());
+        this.focusedSquareProperty.set(ply.getTarget());
     }
 
 
@@ -325,8 +325,8 @@ final class BoardCanvas extends Canvas {
         this.displayedMovesProperty.clear();
         Coordinate selected = this.selectedSquareProperty.get();
         if (selected != null) {
-            List<Move> legalMoves = this.game.getLegalMoves(selected);
-            if (!legalMoves.isEmpty()) this.displayedMovesProperty.addAll(legalMoves);
+            List<Ply> legalPlies = this.game.getLegalMoves(selected);
+            if (!legalPlies.isEmpty()) this.displayedMovesProperty.addAll(legalPlies);
         }
     }
 }

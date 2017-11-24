@@ -61,7 +61,7 @@ final class DefaultBoardRenderer extends AbstractBoardRenderer {
             gc.drawImage(image, (size - scaledImageWidth) / 2, (size - scaledImageHeight) / 2, scaledImageWidth, scaledImageHeight);
         }
 
-        // captured or move target
+        // captured or go target
         if (indicator == SquareIndicator.CAPTURED) drawInnerHighlight(gc, size, COLOR_CAPTURED);
         else if (indicator == SquareIndicator.TARGET) drawInnerHighlight(gc, size, COLOR_TO);
     }

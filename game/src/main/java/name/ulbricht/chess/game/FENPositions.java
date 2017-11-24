@@ -173,20 +173,20 @@ public final class FENPositions {
     private void parseHalfMoveClock(String s) {
         try {
             int value = Integer.parseInt(s);
-            if (value < 0) throw new IllegalArgumentException("Illegal value for half move clock: " + value);
+            if (value < 0) throw new IllegalArgumentException("Illegal value for half go clock: " + value);
             this.halfMoveClock = value;
         } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException("Illegal value for half move clock: " + s);
+            throw new IllegalArgumentException("Illegal value for half go clock: " + s);
         }
     }
 
     private void parseFullMoveNumber(String s) {
         try {
             int value = Integer.parseInt(s);
-            if (value < 1) throw new IllegalArgumentException("Illegal value for full move number: " + value);
+            if (value < 1) throw new IllegalArgumentException("Illegal value for full go number: " + value);
             this.fullMoveNumber = value;
         } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException("Illegal value for full move number: " + s);
+            throw new IllegalArgumentException("Illegal value for full go number: " + s);
         }
     }
 

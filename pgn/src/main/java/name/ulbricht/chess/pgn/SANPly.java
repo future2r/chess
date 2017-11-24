@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class SANMove {
+public final class SANPly {
 
     static final String ROOK = "R";
     static final String KNIGHT = "N";
@@ -28,22 +28,22 @@ public final class SANMove {
 
     public enum Type {
         DEFAULT,
-        KINGSIDE_CASTLING,
-        QUEENSIDE_CASTLING
+        KING_SIDE_CASTLING,
+        QUEEN_SIDE_CASTLING
     }
 
-    public static SANMove of(String s) {
+    public static SANPly of(String s) {
         Matcher matcher = KINGSIDE_CASTLING.matcher(s);
         if (matcher.matches()) {
             boolean check = matcher.group(2) != null;
-            return new SANMove(Type.KINGSIDE_CASTLING, KING, null, null,
+            return new SANPly(Type.KING_SIDE_CASTLING, KING, null, null,
                     false, null, null, check);
         }
 
         matcher = QUEENSIDE_CASTLING.matcher(s);
         if (matcher.matches()) {
             boolean check = matcher.group(2) != null;
-            return new SANMove(Type.QUEENSIDE_CASTLING, KING, null, null,
+            return new SANPly(Type.QUEEN_SIDE_CASTLING, KING, null, null,
                     false, null, null, check);
         }
 
@@ -66,30 +66,30 @@ public final class SANMove {
             String promotion = matcher.group(PROMOTION_GROUP);
             boolean check = matcher.group(CHECK_GROUP) != null;
 
-            return new SANMove(Type.DEFAULT, piece, fromColumn, fromRow, capture, to, promotion, check);
+            return new SANPly(Type.DEFAULT, piece, fromColumn, fromRow, capture, to, promotion, check);
         }
 
-        throw new IllegalArgumentException("Cannot parse SAN move " + s);
+        throw new IllegalArgumentException("Cannot parse SAN ply " + s);
     }
 
     private final Type type;
     private final String piece;
-    private final String fromColumn;
-    private final String fromRow;
+    private final String sourceColumn;
+    private final String sourceRow;
     private final boolean capture;
-    private final String to;
+    private final String target;
     private final String promotion;
     private final boolean check;
 
-    private SANMove(Type type, String piece, String fromColumn, String fromRow, boolean capture,
-                    String to, String promotion, boolean check) {
+    private SANPly(Type type, String piece, String sourceColumn, String sourceRow, boolean capture,
+                   String target, String promotion, boolean check) {
         this.type = Objects.requireNonNull(type);
 
-        if (type == Type.KINGSIDE_CASTLING || type == Type.QUEENSIDE_CASTLING) {
+        if (type == Type.KING_SIDE_CASTLING || type == Type.QUEEN_SIDE_CASTLING) {
             if (!piece.equals(KING))
                 throw new IllegalArgumentException(String.format("Move type %s cannot used with piece type %s",
                         type, piece));
-            if (to != null || fromColumn != null || fromRow != null)
+            if (target != null || sourceColumn != null || sourceRow != null)
                 throw new IllegalArgumentException(String.format("Move type %s does not support coordinates",
                         type));
             if (capture)
@@ -101,14 +101,14 @@ public final class SANMove {
             throw new IllegalArgumentException("Only pawns can be promoted.");
         }
         if (promotion!=null && promotion.equals(KING)) {
-            throw new IllegalArgumentException("Pawns cannot be promoted to " + promotion);
+            throw new IllegalArgumentException("Pawns cannot be promoted target " + promotion);
         }
 
         this.piece = piece;
-        this.fromColumn = fromColumn;
-        this.fromRow = fromRow;
+        this.sourceColumn = sourceColumn;
+        this.sourceRow = sourceRow;
         this.capture = capture;
-        this.to = to;
+        this.target = target;
         this.promotion = promotion;
         this.check = check;
     }
@@ -121,20 +121,20 @@ public final class SANMove {
         return piece;
     }
 
-    public String getFromColumn() {
-        return this.fromColumn;
+    public String getSourceColumn() {
+        return this.sourceColumn;
     }
 
-    public String getFromRow() {
-        return this.fromRow;
+    public String getSourceRow() {
+        return this.sourceRow;
     }
 
     public boolean isCapture() {
         return this.capture;
     }
 
-    public String getTo() {
-        return this.to;
+    public String getTarget() {
+        return this.target;
     }
 
     public String getPromotion() {

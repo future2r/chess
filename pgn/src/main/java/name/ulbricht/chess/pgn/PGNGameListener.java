@@ -71,8 +71,8 @@ final class PGNGameListener extends PGNBaseListener implements PGNDatabaseListen
     @Override
     public void enterSan_move(PGNParser.San_moveContext ctx) {
         if (this.currentGame != null) {
-            SANMove move = SANMove.of(ctx.SYMBOL().getText());
-            this.currentGame.getMoves().add(move);
+            SANPly move = SANPly.of(ctx.SYMBOL().getText());
+            this.currentGame.getPlies().add(move);
         }
     }
 }
