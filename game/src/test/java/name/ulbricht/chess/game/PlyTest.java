@@ -10,7 +10,7 @@ final class PlyTest {
     @Test
     void testSimpleNoCapture() {
         Game game = new Game();
-        game.setup(FENPositions.of("8/8/8/8/3P4/8/8/8 w KQkq - 0 1"));
+        game.setup(FENSetup.of("8/8/8/8/3P4/8/8/8 w KQkq - 0 1"));
 
         Ply ply = Ply.simple(Piece.WHITE_PAWN, Coordinate.d4, Coordinate.d5);
 
@@ -24,7 +24,7 @@ final class PlyTest {
     @Test
     void testSimpleCaptures() {
         Game game = new Game();
-        game.setup(FENPositions.of("8/8/8/3p4/3Q4/8/8/8 w KQkq - 0 1"));
+        game.setup(FENSetup.of("8/8/8/3p4/3Q4/8/8/8 w KQkq - 0 1"));
 
         Ply ply = Ply.simpleCaptures(Piece.WHITE_QUEEN, Coordinate.d4, Coordinate.d5, Piece.BLACK_PAWN);
 
@@ -38,7 +38,7 @@ final class PlyTest {
     @Test
     void testPawnDoubleAdvance() {
         Game game = new Game();
-        game.setup(FENPositions.of("8/8/8/8/8/8/3P4/8 w KQkq - 0 1"));
+        game.setup(FENSetup.of("8/8/8/8/8/8/3P4/8 w KQkq - 0 1"));
 
         Ply ply = Ply.pawnDoubleAdvance(Piece.WHITE_PAWN, Coordinate.d2);
 

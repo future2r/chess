@@ -10,12 +10,18 @@ public enum Player {
     /**
      * The white player.
      */
-    WHITE,
+    WHITE('w'),
 
     /**
      * The black player.
      */
-    BLACK;
+    BLACK('b');
+
+    public final char san;
+
+    Player(char san) {
+        this.san = san;
+    }
 
     /**
      * Returns the localized display name for this player.
@@ -38,5 +44,12 @@ public enum Player {
 
     public Player opponent() {
         return this == WHITE ? BLACK : WHITE;
+    }
+
+    public static Player ofSan(char c) {
+        for (Player player : values()) {
+            if (player.san == c) return player;
+        }
+        throw new IllegalArgumentException("Not a SAN player character: " + c);
     }
 }

@@ -15,7 +15,7 @@ final class GameTest {
 
     private static Stream<Arguments> createSetupArguments() {
         Collection<Arguments> arguments = new ArrayList<>();
-        FENPositions fen = FENPositions.ofDefault();
+        FENSetup fen = FENSetup.standard();
         for (Coordinate coordinate : Coordinate.values()) {
             arguments.add(Arguments.of(coordinate, fen.getPiece(coordinate)));
         }

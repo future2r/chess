@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -122,12 +123,12 @@ public final class MainController implements Initializable {
                     List<String> lines = Files.readAllLines(file);
                     if (lines.isEmpty()) throw new IOException();
 
-                    FENPositions fen = FENPositions.of(lines.get(0));
+                    FENSetup fen = FENSetup.of(lines.get(0));
                     Game game = new Game();
                     game.setup(fen);
                     this.canvas.setGame(game);
-                } catch (IOException | IllegalArgumentException ex) {
-                    GUIUtils.showError(this.root, Messages.getString("alert.openBoard.error.contentText") + "\n" + ex.getMessage());
+                } catch (IOException | IllegalArgumentException e) {
+                    GUIUtils.showError(this.root, Messages.getString("alert.openBoard.error.contentText") + "\n" + e.getMessage());
                 }
             }
         }
@@ -135,7 +136,16 @@ public final class MainController implements Initializable {
 
     @FXML
     private void saveBoard() {
+        FENSetup fen = this.canvas.getGame().getSetup();
 
+        Path file = FileChoosers.saveFile(this.root, FileChoosers.Category.BOARDS);
+        if (file != null) {
+            try {
+                Files.write(file, Arrays.asList(fen.toString()));
+            } catch (IOException e) {
+                GUIUtils.showError(this.root, Messages.getString("alert.saveBoard.error.contentText") + "\n" + e.getMessage());
+            }
+        }
     }
 
     @FXML

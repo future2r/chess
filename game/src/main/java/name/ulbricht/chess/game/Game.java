@@ -14,12 +14,18 @@ public final class Game {
     private final List<Ply> legalPlies = new ArrayList<>();
     private final List<Ply> plyHistory = new ArrayList<>();
 
+    private boolean whiteKingSideCastlingAvailable = true;
+    private boolean whiteQueenSideCastlingAvailable = true;
+    private boolean blackKingSideCastlingAvailable = true;
+    private boolean blackQueenSideCastlingAvailable = true;
+    private Coordinate enPassantTarget;
+
     /**
      * Creates a new game. This game will have a new board with the initial positions of the pieces.
      */
     public Game() {
         this.board = new Piece[Coordinate.COLUMNS * Coordinate.ROWS];
-        setupDefault();
+        setup();
     }
 
     /**
@@ -31,7 +37,7 @@ public final class Game {
         return activePlayer;
     }
 
-    public void setup(FENPositions positions) {
+    public void setup(FENSetup positions) {
         Arrays.fill(this.board, null);
         for (Coordinate coordinate : Coordinate.values()) {
             setPiece(coordinate, positions.getPiece(coordinate));
@@ -40,8 +46,29 @@ public final class Game {
         findLegalMoves();
     }
 
-    public void setupDefault() {
-        setup(FENPositions.ofDefault());
+    public void setup() {
+        setup(FENSetup.standard());
+    }
+
+    public FENSetup getSetup() {
+        FENSetup fen = FENSetup.empty();
+
+        for (Coordinate coordinate : Coordinate.values()) {
+            fen.setPiece(coordinate, getPiece(coordinate));
+        }
+        fen.setActivePlayer(this.activePlayer);
+
+        fen.setWhiteKingSideCastlingAvailable(this.whiteKingSideCastlingAvailable);
+        fen.setWhiteQueenSideCastlingAvailable(this.whiteQueenSideCastlingAvailable);
+        fen.setBlackKingSideCastlingAvailable(this.blackKingSideCastlingAvailable);
+        fen.setBlackQueenSideCastlingAvailable(this.blackQueenSideCastlingAvailable);
+
+        fen.setEnPassantTarget(this.enPassantTarget);
+
+        // TODO half move clock
+        // TODO full move number
+
+        return fen;
     }
 
     /**
