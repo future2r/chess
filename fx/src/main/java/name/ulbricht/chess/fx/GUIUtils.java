@@ -13,16 +13,24 @@ import java.util.stream.Stream;
 
 final class GUIUtils {
 
-    static void showInfoAlert(Node ownerNode, String titleResourceName, String contentTextResourceName) {
+    static void showInfo(Node ownerNode, String contentText) {
+        showAlert(ownerNode, Messages.getString("GUIUtils.infoAlert.title"), contentText);
+    }
+
+    static void showError(Node ownerNode, String contentText) {
+        showAlert(ownerNode, Messages.getString("GUIUtils.errorAlert.title"), contentText);
+    }
+
+    static void showAlert(Node ownerNode, String title, String contentText) {
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.getButtonTypes().add(ButtonType.OK);
         alert.initOwner(ownerNode.getScene().getWindow());
-        alert.setTitle(Messages.getString(titleResourceName));
-        alert.setContentText(Messages.getString(contentTextResourceName));
+        alert.setTitle(title);
+        alert.setContentText(contentText);
         alert.showAndWait();
     }
 
-    static Optional<ButtonType> showQuestionAlert(Node ownerNode, String titleResourceName, String contentTextResourceName) {
+    static Optional<ButtonType> showQuestion(Node ownerNode, String title, String contentText) {
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
 
@@ -30,8 +38,8 @@ final class GUIUtils {
         ((Button) alert.getDialogPane().lookupButton(ButtonType.NO)).setDefaultButton(true);
 
         alert.initOwner(ownerNode.getScene().getWindow());
-        alert.setTitle(Messages.getString(titleResourceName));
-        alert.setContentText(Messages.getString(contentTextResourceName));
+        alert.setTitle(title);
+        alert.setContentText(contentText);
         return alert.showAndWait();
     }
 

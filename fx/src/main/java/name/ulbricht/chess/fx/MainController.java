@@ -13,12 +13,13 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import name.ulbricht.chess.fx.design.BoardDesign;
-import name.ulbricht.chess.game.Coordinate;
-import name.ulbricht.chess.game.Piece;
-import name.ulbricht.chess.game.Player;
+import name.ulbricht.chess.game.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public final class MainController implements Initializable {
@@ -103,10 +104,38 @@ public final class MainController implements Initializable {
 
     @FXML
     private void newGame() {
-        if (GUIUtils.showQuestionAlert(this.root, "alert.newGame.title", "alert.newGame.contentText")
+        if (GUIUtils.showQuestion(this.root, Messages.getString("alert.newGame.title"),
+                Messages.getString("alert.newGame.contentText"))
                 .orElse(ButtonType.CANCEL) == ButtonType.YES) {
-            this.canvas.newGame();
+            this.canvas.setGame(new Game());
         }
+    }
+
+    @FXML
+    private void openBoard() {
+        if (GUIUtils.showQuestion(this.root, Messages.getString("alert.openBoard.title"),
+                Messages.getString("alert.openBoard.question.contentText"))
+                .orElse(ButtonType.CANCEL) == ButtonType.YES) {
+            Path file = FileChoosers.openFile(this.root, FileChoosers.Category.BOARDS);
+            if (file != null) {
+                try {
+                    List<String> lines = Files.readAllLines(file);
+                    if (lines.isEmpty()) throw new IOException();
+
+                    FENPositions fen = FENPositions.of(lines.get(0));
+                    Game game = new Game();
+                    game.setup(fen);
+                    this.canvas.setGame(game);
+                } catch (IOException | IllegalArgumentException ex) {
+                    GUIUtils.showError(this.root, Messages.getString("alert.openBoard.error.contentText") + "\n" + ex.getMessage());
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void saveBoard() {
+
     }
 
     @FXML
@@ -116,7 +145,7 @@ public final class MainController implements Initializable {
 
     @FXML
     private void showAbout() {
-        GUIUtils.showInfoAlert(this.root, "alert.about.title", "alert.about.contentText");
+        GUIUtils.showInfo(this.root, Messages.getString("alert.about.contentText"));
     }
 
     private Scene getScene() {

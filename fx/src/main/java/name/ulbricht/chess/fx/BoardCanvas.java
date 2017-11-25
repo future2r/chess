@@ -82,16 +82,17 @@ final class BoardCanvas extends Canvas {
         return this.game;
     }
 
-    void setDesign(BoardDesign design) {
-        this.renderer = design.createRenderer();
-        draw();
-    }
-
-    void newGame() {
-        this.game.setupDefault();
+    void setGame(Game game) {
+        this.game = game;
         this.currentPlayerProperty.set(this.game.getActivePlayer());
         this.focusedSquareProperty.set(null);
         this.selectedSquareProperty.set(null);
+        draw();
+    }
+
+    void setDesign(BoardDesign design) {
+        this.renderer = design.createRenderer();
+        draw();
     }
 
     ReadOnlyObjectProperty<Player> currentPlayerProperty() {
