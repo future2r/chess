@@ -23,8 +23,16 @@
                                 <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                             </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#openBoard" text="%main.openBoardMenuItem.text" />
-                        <MenuItem mnemonicParsing="false" onAction="#saveBoard" text="%main.saveBoardMenuItem.text" />
+                        <MenuItem mnemonicParsing="false" onAction="#openBoard" text="%main.openBoardMenuItem.text" >
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                            </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#saveBoard" text="%main.saveBoardMenuItem.text" >
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                            </accelerator>
+                        </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="%main.exitMenuItem.text" />
                     </items>

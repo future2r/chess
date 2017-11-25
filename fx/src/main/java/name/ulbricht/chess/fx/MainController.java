@@ -117,7 +117,7 @@ public final class MainController implements Initializable {
         if (GUIUtils.showQuestion(this.root, Messages.getString("alert.openBoard.title"),
                 Messages.getString("alert.openBoard.question.contentText"))
                 .orElse(ButtonType.CANCEL) == ButtonType.YES) {
-            Path file = FileChoosers.openFile(this.root, FileChoosers.Category.BOARDS);
+            Path file = FileChoosers.openFile(this.root, FileChoosers.Category.BOARDS, FileChoosers.Format.FEN);
             if (file != null) {
                 try {
                     List<String> lines = Files.readAllLines(file);
@@ -138,7 +138,7 @@ public final class MainController implements Initializable {
     private void saveBoard() {
         FENSetup fen = this.canvas.getGame().getSetup();
 
-        Path file = FileChoosers.saveFile(this.root, FileChoosers.Category.BOARDS);
+        Path file = FileChoosers.saveFile(this.root, FileChoosers.Category.BOARDS, FileChoosers.Format.FEN);
         if (file != null) {
             try {
                 Files.write(file, Arrays.asList(fen.toString()));
