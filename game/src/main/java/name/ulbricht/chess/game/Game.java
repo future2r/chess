@@ -2,7 +2,6 @@ package name.ulbricht.chess.game;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Represents a game on the board.
@@ -14,40 +13,36 @@ public final class Game {
     private final List<Ply> legalPlies = new ArrayList<>();
     private final List<Ply> plyHistory = new ArrayList<>();
 
-    private boolean whiteKingSideCastlingAvailable = true;
-    private boolean whiteQueenSideCastlingAvailable = true;
-    private boolean blackKingSideCastlingAvailable = true;
-    private boolean blackQueenSideCastlingAvailable = true;
+    private boolean whiteKingSideCastlingAvailable;
+    private boolean whiteQueenSideCastlingAvailable;
+    private boolean blackKingSideCastlingAvailable;
+    private boolean blackQueenSideCastlingAvailable;
     private Coordinate enPassantTarget;
 
     /**
      * Creates a new game. This game will have a new board with the initial positions of the pieces.
      */
     public Game() {
-        this.board = new Piece[Coordinate.COLUMNS * Coordinate.ROWS];
-        setup();
+        this(FENSetup.standard());
     }
 
     /**
-     * Returns the current player.
-     *
-     * @return the current player
+     * Creates a new game. This game will have a new board with the initial positions of the pieces.
      */
-    public Player getActivePlayer() {
-        return activePlayer;
-    }
+    public Game(GameSetup setup) {
+        this.board = new Piece[Coordinate.COLUMNS * Coordinate.ROWS];
 
-    public void setup(FENSetup positions) {
-        Arrays.fill(this.board, null);
         for (Coordinate coordinate : Coordinate.values()) {
-            setPiece(coordinate, positions.getPiece(coordinate));
+            setPiece(coordinate, setup.getPiece(coordinate));
         }
-        this.activePlayer = positions.getActivePlayer();
-        findLegalMoves();
-    }
+        this.activePlayer = setup.getActivePlayer();
 
-    public void setup() {
-        setup(FENSetup.standard());
+        this.whiteKingSideCastlingAvailable = setup.isWhiteKingSideCastlingAvailable();
+        this.whiteQueenSideCastlingAvailable = setup.isWhiteQueenSideCastlingAvailable();
+        this.blackKingSideCastlingAvailable = setup.isBlackKingSideCastlingAvailable();
+        this.blackQueenSideCastlingAvailable = setup.isBlackQueenSideCastlingAvailable();
+
+        updateLegalPlies();
     }
 
     public FENSetup getSetup() {
@@ -72,15 +67,12 @@ public final class Game {
     }
 
     /**
-     * Returns a map with all pieces on the board. The keys are the coordinates and the values are the pieces. Empty
-     * square will not be returned.
+     * Returns the current player.
      *
-     * @return a map with coordinates and pieces
+     * @return the current player
      */
-    public Map<Coordinate, Piece> pieces() {
-        return Stream.of(Coordinate.values())
-                .filter(c -> this.board[c.ordinal()] != null)
-                .collect(Collectors.toMap(c -> c, c -> this.board[c.ordinal()]));
+    public Player getActivePlayer() {
+        return activePlayer;
     }
 
     /**
@@ -117,17 +109,17 @@ public final class Game {
         return Collections.unmodifiableList(this.legalPlies);
     }
 
-    public List<Ply> getLegalMoves(Coordinate source) {
+    public List<Ply> getLegalPlies(Coordinate source) {
         return this.legalPlies.stream().filter(m -> m.getSource() == source).collect(Collectors.toList());
     }
 
-    private void findLegalMoves() {
+    private void updateLegalPlies() {
         this.legalPlies.clear();
 
         for (Coordinate coordinate : Coordinate.values()) {
             Piece piece = getPiece(coordinate);
             if (piece != null && piece.player == this.activePlayer) {
-                this.legalPlies.addAll(findLegalMoves(coordinate));
+                this.legalPlies.addAll(findLegalPlies(coordinate));
             }
         }
     }
@@ -137,10 +129,12 @@ public final class Game {
      *
      * @param ply the ply to perform
      */
-    public void performMove(Ply ply) {
+    public void performPly(Ply ply) {
+        // must be a known legal ply
         if (!this.legalPlies.contains(ply))
             throw new IllegalArgumentException("Not a legal ply");
 
+        // move the pieces
         switch (ply.getType()) {
             case SIMPLE:
                 if (ply.getCaptures() != null) removePiece(ply.getCaptures());
@@ -150,39 +144,87 @@ public final class Game {
                 movePiece(ply.getSource(), ply.getTarget());
                 // TODO set en passant target
                 break;
+            case KING_SIDE_CASTLING: {
+                movePiece(ply.getSource(), ply.getTarget());
+                int row = this.activePlayer == Player.WHITE ? 0 : 7;
+                movePiece(Coordinate.valueOf(7, row), Coordinate.valueOf(5, row));
+            }
+            break;
+            case QUEEN_SIDE_CASTLING: {
+                movePiece(ply.getSource(), ply.getTarget());
+                int row = this.activePlayer == Player.WHITE ? 0 : 7;
+                movePiece(Coordinate.valueOf(0, row), Coordinate.valueOf(2, row));
+            }
+            break;
             default:
                 throw new IllegalArgumentException("Unsupported ply type: " + ply.getType());
         }
 
+        // update castling availability
+        switch (ply.getPiece()) {
+            case WHITE_ROOK:
+                if (ply.getSource() == Coordinate.a1) this.whiteQueenSideCastlingAvailable = false;
+                if (ply.getSource() == Coordinate.h1) this.whiteKingSideCastlingAvailable = false;
+                break;
+            case BLACK_ROOK:
+                if (ply.getSource() == Coordinate.a8) this.blackQueenSideCastlingAvailable = false;
+                if (ply.getSource() == Coordinate.h8) this.blackKingSideCastlingAvailable = false;
+                break;
+            case WHITE_KING:
+                if (ply.getSource() == Coordinate.e1) {
+                    this.whiteQueenSideCastlingAvailable = false;
+                    this.whiteKingSideCastlingAvailable = false;
+                }
+                break;
+            case BLACK_KING:
+                if (ply.getSource() == Coordinate.d8) {
+                    this.blackQueenSideCastlingAvailable = false;
+                    this.blackKingSideCastlingAvailable = false;
+                }
+                break;
+        }
+        if (ply.getCapturedPiece() != null) {
+            switch (ply.getCapturedPiece()) {
+                case WHITE_ROOK:
+                    if (ply.getSource() == Coordinate.a1) this.whiteQueenSideCastlingAvailable = false;
+                    if (ply.getSource() == Coordinate.h1) this.whiteKingSideCastlingAvailable = false;
+                    break;
+                case BLACK_ROOK:
+                    if (ply.getSource() == Coordinate.a8) this.blackQueenSideCastlingAvailable = false;
+                    if (ply.getSource() == Coordinate.h8) this.blackKingSideCastlingAvailable = false;
+                    break;
+            }
+        }
+
         this.plyHistory.add(ply);
         this.activePlayer = this.activePlayer.opponent();
-        findLegalMoves();
+        updateLegalPlies();
     }
 
-    private List<Ply> findLegalMoves(Coordinate source) {
+    private List<Ply> findLegalPlies(Coordinate source) {
         Piece piece = getPiece(source);
         if (piece != null) {
             switch (piece.type) {
                 case PAWN:
-                    return findPawnMoves(source);
+                    return findPawnPlies(source);
                 case ROOK:
-                    return findDirectionalMoves(source, Integer.MAX_VALUE,
+                    return findDirectionalPlies(source, Integer.MAX_VALUE,
                             MoveDirection.UP, MoveDirection.RIGHT, MoveDirection.DOWN, MoveDirection.LEFT);
                 case KNIGHT:
-                    return findKnightMoves(source);
+                    return findKnightPlies(source);
                 case BISHOP:
-                    return findDirectionalMoves(source, Integer.MAX_VALUE,
+                    return findDirectionalPlies(source, Integer.MAX_VALUE,
                             MoveDirection.UP_LEFT, MoveDirection.UP_RIGHT, MoveDirection.DOWN_RIGHT, MoveDirection.DOWN_LEFT);
                 case QUEEN:
-                    return findDirectionalMoves(source, Integer.MAX_VALUE, MoveDirection.values());
+                    return findDirectionalPlies(source, Integer.MAX_VALUE, MoveDirection.values());
                 case KING:
-                    return findDirectionalMoves(source, 1, MoveDirection.values());
+                    return findKingPlies(source);
             }
         }
         return Collections.emptyList();
     }
 
-    private List<Ply> findPawnMoves(Coordinate source) {
+    private List<Ply> findPawnPlies(Coordinate source) {
         Piece piece = expectPiece(source, this.activePlayer, PieceType.PAWN);
         List<Ply> plies = new ArrayList<>();
         MoveDirection moveDirection = MoveDirection.forward(this.activePlayer);
@@ -214,7 +256,7 @@ public final class Game {
         return plies;
     }
 
-    private List<Ply> findKnightMoves(Coordinate source) {
+    private List<Ply> findKnightPlies(Coordinate source) {
         Piece piece = expectPiece(source, this.activePlayer, PieceType.KNIGHT);
         List<Ply> plies = new ArrayList<>();
         for (KnightJump jump : KnightJump.values()) {
@@ -230,7 +272,37 @@ public final class Game {
         return plies;
     }
 
-    private List<Ply> findDirectionalMoves(Coordinate source, int maxSteps, MoveDirection... directions) {
+    private List<Ply> findKingPlies(Coordinate source) {
+        List<Ply> plies = new ArrayList<>();
+        plies.addAll(findDirectionalPlies(source, 1, MoveDirection.values()));
+
+        boolean kingSideAvailable = this.activePlayer == Player.WHITE ? this.whiteKingSideCastlingAvailable : this.blackKingSideCastlingAvailable;
+        boolean queenSideAvailable = this.activePlayer == Player.WHITE ? this.whiteQueenSideCastlingAvailable : this.blackQueenSideCastlingAvailable;
+        if (!kingSideAvailable && !queenSideAvailable) return plies;
+
+        int row = this.activePlayer == Player.WHITE ? 0 : 7;
+        if (source.rowIndex != row || source.columnIndex != 4) return plies;
+
+        Piece piece = expectPiece(source, this.activePlayer, PieceType.KING);
+
+        Piece rook = this.activePlayer == Player.WHITE ? Piece.WHITE_ROOK : Piece.BLACK_ROOK;
+        if (kingSideAvailable
+                && getPiece(Coordinate.valueOf(5, row)) == null
+                && getPiece(Coordinate.valueOf(6, row)) == null
+                && getPiece(Coordinate.valueOf(7, row)) == rook) {
+            plies.add(Ply.kingSideCastling(piece));
+        }
+        if (queenSideAvailable
+                && getPiece(Coordinate.valueOf(3, row)) == null
+                && getPiece(Coordinate.valueOf(2, row)) == null
+                && getPiece(Coordinate.valueOf(1, row)) == null
+                && getPiece(Coordinate.valueOf(0, row)) == rook) {
+            plies.add(Ply.queenSideCastling(piece));
+        }
+        return plies;
+    }
+
+    private List<Ply> findDirectionalPlies(Coordinate source, int maxSteps, MoveDirection... directions) {
         Piece piece = expectPiece(source, this.activePlayer, PieceType.ROOK, PieceType.BISHOP, PieceType.QUEEN, PieceType.KING);
         List<Ply> plies = new ArrayList<>();
         for (MoveDirection moveDirection : directions) {

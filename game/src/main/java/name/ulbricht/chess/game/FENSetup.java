@@ -7,7 +7,7 @@ import java.util.Objects;
  * <p>
  * https://www.chessclub.com/user/help/PGN-spec (chapter 16.1)
  */
-public final class FENSetup {
+public final class FENSetup implements GameSetup {
 
     public static FENSetup of(String s) {
         return new FENSetup(Objects.requireNonNull(s));
@@ -142,6 +142,7 @@ public final class FENSetup {
         }
     }
 
+    @Override
     public Piece getPiece(Coordinate coordinate) {
         return this.board[coordinate.ordinal()];
     }
@@ -150,6 +151,7 @@ public final class FENSetup {
         this.board[coordinate.ordinal()] = piece;
     }
 
+    @Override
     public Player getActivePlayer() {
         return this.activePlayer;
     }
@@ -158,6 +160,7 @@ public final class FENSetup {
         this.activePlayer = Objects.requireNonNull(activePlayer);
     }
 
+    @Override
     public boolean isWhiteKingSideCastlingAvailable() {
         return this.whiteKingSideCastlingAvailable;
     }
@@ -166,6 +169,7 @@ public final class FENSetup {
         this.whiteKingSideCastlingAvailable = whiteKingSideCastlingAvailable;
     }
 
+    @Override
     public boolean isWhiteQueenSideCastlingAvailable() {
         return this.whiteQueenSideCastlingAvailable;
     }
@@ -174,6 +178,7 @@ public final class FENSetup {
         this.whiteQueenSideCastlingAvailable = whiteQueenSideCastlingAvailable;
     }
 
+    @Override
     public boolean isBlackKingSideCastlingAvailable() {
         return this.blackKingSideCastlingAvailable;
     }
@@ -182,6 +187,7 @@ public final class FENSetup {
         this.blackKingSideCastlingAvailable = blackKingSideCastlingAvailable;
     }
 
+    @Override
     public boolean isBlackQueenSideCastlingAvailable() {
         return this.blackQueenSideCastlingAvailable;
     }
@@ -190,6 +196,7 @@ public final class FENSetup {
         this.blackQueenSideCastlingAvailable = blackQueenSideCastlingAvailable;
     }
 
+    @Override
     public Coordinate getEnPassantTarget() {
         return this.enPassantTarget;
     }
@@ -198,10 +205,12 @@ public final class FENSetup {
         this.enPassantTarget = enPassantTarget;
     }
 
+    @Override
     public int getHalfMoveClock() {
         return this.halfMoveClock;
     }
 
+    @Override
     public int getFullMoveNumber() {
         return this.fullMoveNumber;
     }

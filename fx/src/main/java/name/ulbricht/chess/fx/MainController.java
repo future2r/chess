@@ -93,7 +93,7 @@ public final class MainController implements Initializable {
         if (selected != null) {
             Piece piece = this.canvas.getGame().getPiece(selected);
             if (piece != null)
-                this.selectedSquareValueLabel.setText(selected.toString() + ' ' + piece.type.getDisplayName() + ' ' + piece.type.getDisplayName());
+                this.selectedSquareValueLabel.setText(selected.toString() + ' ' + piece.type.getDisplayName() + ' ' + piece.player.getDisplayName());
             else this.selectedSquareValueLabel.setText(selected.toString());
         } else
             this.selectedSquareValueLabel.setText("");
@@ -124,10 +124,10 @@ public final class MainController implements Initializable {
                     if (lines.isEmpty()) throw new IOException();
 
                     FENSetup fen = FENSetup.of(lines.get(0));
-                    Game game = new Game();
-                    game.setup(fen);
+                    Game game = new Game(fen);
                     this.canvas.setGame(game);
                 } catch (IOException | IllegalArgumentException e) {
+                    e.printStackTrace();
                     GUIUtils.showError(this.root, Messages.getString("alert.openBoard.error.contentText") + "\n" + e.getMessage());
                 }
             }

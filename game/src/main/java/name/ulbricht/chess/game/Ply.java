@@ -38,21 +38,21 @@ public final class Ply {
     }
 
     static Ply kingSideCastling(Piece piece) {
-        requirePieceType(piece, PieceType.PAWN);
+        requirePieceType(piece, PieceType.KING);
 
         int row = piece.player == Player.WHITE ? 0 : 7;
         Coordinate source = Coordinate.valueOf(4, row);
-        Coordinate target = Coordinate.valueOf(1, row);
+        Coordinate target = Coordinate.valueOf(6, row);
 
         return new Ply(PlyType.KING_SIDE_CASTLING, piece, source, target, null, null);
     }
 
     static Ply queenSideCastling(Piece piece) {
-        requirePieceType(piece, PieceType.PAWN);
+        requirePieceType(piece, PieceType.KING);
 
         int row = piece.player == Player.WHITE ? 0 : 7;
         Coordinate source = Coordinate.valueOf(4, row);
-        Coordinate target = Coordinate.valueOf(6, row);
+        Coordinate target = Coordinate.valueOf(1, row);
 
         return new Ply(PlyType.QUEEN_SIDE_CASTLING, piece, source, target, null, null);
     }

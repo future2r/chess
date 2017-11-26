@@ -71,7 +71,7 @@ final class BoardCanvas extends Canvas {
         focusedProperty().addListener((observable, oldValue, newValue) -> draw());
 
         this.selectedSquareProperty.addListener((observable, oldValue, newValue) -> draw());
-        this.selectedSquareProperty.addListener((observable, oldValue, newValue) -> updateDisplayedMoves());
+        this.selectedSquareProperty.addListener((observable, oldValue, newValue) -> updateDisplayedPlies());
         this.focusedSquareProperty.addListener((observable, oldValue, newValue) -> draw());
         this.displayedMovesProperty.addListener((observable, oldValue, newValue) -> draw());
 
@@ -198,7 +198,7 @@ final class BoardCanvas extends Canvas {
     }
 
     private void performMove(Ply ply) {
-        this.game.performMove(ply);
+        this.game.performPly(ply);
 
         this.currentPlayerProperty.set(this.game.getActivePlayer());
         this.selectedSquareProperty.set(null);
@@ -322,11 +322,11 @@ final class BoardCanvas extends Canvas {
         }
     }
 
-    private void updateDisplayedMoves() {
+    private void updateDisplayedPlies() {
         this.displayedMovesProperty.clear();
         Coordinate selected = this.selectedSquareProperty.get();
         if (selected != null) {
-            List<Ply> legalPlies = this.game.getLegalMoves(selected);
+            List<Ply> legalPlies = this.game.getLegalPlies(selected);
             if (!legalPlies.isEmpty()) this.displayedMovesProperty.addAll(legalPlies);
         }
     }
