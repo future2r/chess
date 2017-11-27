@@ -8,21 +8,21 @@ import java.util.Objects;
  */
 public final class Ply {
 
-    static Ply simple(Piece piece, Coordinate source, Coordinate target) {
+    static Ply move(Piece piece, Coordinate source, Coordinate target) {
         requirePieceType(piece, PieceType.values());
         Objects.requireNonNull(source);
         Objects.requireNonNull(target);
 
-        return new Ply(PlyType.SIMPLE, piece, source, target, null, null);
+        return new Ply(PlyType.MOVE, piece, source, target, null, null);
     }
 
-    static Ply simpleCaptures(Piece piece, Coordinate source, Coordinate target, Piece capturedPiece) {
+    static Ply captures(Piece piece, Coordinate source, Coordinate target, Piece capturedPiece) {
         requirePieceType(piece, PieceType.values());
         Objects.requireNonNull(source);
         Objects.requireNonNull(target);
         Objects.requireNonNull(capturedPiece);
 
-        return new Ply(PlyType.SIMPLE, piece, source, target, target, capturedPiece);
+        return new Ply(PlyType.CAPTURES, piece, source, target, target, capturedPiece);
     }
 
     static Ply pawnDoubleAdvance(Piece piece, Coordinate source) {
@@ -120,5 +120,33 @@ public final class Ply {
                 && Objects.equals(this.target, other.target)
                 && Objects.equals(this.captures, other.captures)
                 && Objects.equals(this.capturedPiece, other.capturedPiece);
+    }
+
+    public String getDisplayName() {
+        String key = "PlyType." + this.type.name() + ".displayNamePattern";
+        switch (this.type) {
+            case MOVE:
+                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source, this.target);
+            case CAPTURES:
+                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
+                        this.target, this.capturedPiece.getDisplayName());
+            case QUEEN_SIDE_CASTLING:
+                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source, this.target);
+            case KING_SIDE_CASTLING:
+                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source, this.target);
+            case PAWN_DOUBLE_ADVANCE:
+                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source, this.target);
+            case PAWN_EN_PASSANT:
+                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
+                        this.target, this.capturedPiece.getDisplayName(), this.captures);
+            case PAWN_PROMOTION:
+                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
+                        this.target);
+            case PAWN_PROMOTION_CAPTURES:
+                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
+                        this.target, this.capturedPiece.getDisplayName());
+            default:
+                return null;
+        }
     }
 }

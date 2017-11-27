@@ -93,7 +93,7 @@ public final class MainController implements Initializable {
         if (selected != null) {
             Piece piece = this.canvas.getGame().getPiece(selected);
             if (piece != null)
-                this.selectedSquareValueLabel.setText(selected.toString() + ' ' + piece.type.getDisplayName() + ' ' + piece.player.getDisplayName());
+                this.selectedSquareValueLabel.setText(selected.toString() + ' ' + piece.getDisplayName());
             else this.selectedSquareValueLabel.setText(selected.toString());
         } else
             this.selectedSquareValueLabel.setText("");

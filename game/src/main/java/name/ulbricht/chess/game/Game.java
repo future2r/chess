@@ -136,7 +136,10 @@ public final class Game {
 
         // move the pieces
         switch (ply.getType()) {
-            case SIMPLE:
+            case MOVE:
+                movePiece(ply.getSource(), ply.getTarget());
+                break;
+            case CAPTURES:
                 if (ply.getCaptures() != null) removePiece(ply.getCaptures());
                 movePiece(ply.getSource(), ply.getTarget());
                 break;
@@ -233,7 +236,7 @@ public final class Game {
         // one step forward
         Coordinate target = source.go(moveDirection);
         if (target != null) {
-            if (getPiece(target) == null) plies.add(Ply.simple(piece, source, target));
+            if (getPiece(target) == null) plies.add(Ply.move(piece, source, target));
 
             // two steps forward (if not yet moved)
             if (source.rowIndex == startRow && getPiece(target) == null) {
@@ -249,7 +252,7 @@ public final class Game {
             if (target != null) {
                 Piece capturedPiece = getPiece(target);
                 if (capturedPiece != null && capturedPiece.player.isOpponent(getActivePlayer()))
-                    plies.add(Ply.simpleCaptures(piece, source, target, capturedPiece));
+                    plies.add(Ply.captures(piece, source, target, capturedPiece));
             }
         }
 
@@ -264,14 +267,23 @@ public final class Game {
             if (target != null) {
                 Piece capturedPiece = getPiece(target);
                 if (capturedPiece == null)
-                    plies.add(Ply.simple(piece, source, target));
+                    plies.add(Ply.move(piece, source, target));
                 else if (capturedPiece.player.isOpponent(this.activePlayer))
-                    plies.add(Ply.simpleCaptures(piece, source, target, capturedPiece));
+                    plies.add(Ply.captures(piece, source, target, capturedPiece));
             }
         }
         return plies;
     }
 
+    /*
+     * // TODO check these rules!
+     * Eine Rochade kann nur dann ausgeführt werden, wenn
+     * 1. der König noch nicht gezogen wurde,
+     * 2. der beteiligte Turm noch nicht gezogen wurde,
+     * 3. zwischen dem König und dem beteiligten Turm keine andere Figur steht,
+     * 4. der König über kein Feld ziehen muss, das durch eine feindliche Figur bedroht wird,
+     * 5. der König vor und nach Ausführung der Rochade nicht im Schach steht.
+     */
     private List<Ply> findKingPlies(Coordinate source) {
         List<Ply> plies = new ArrayList<>();
         plies.addAll(findDirectionalPlies(source, 1, MoveDirection.values()));
@@ -312,9 +324,9 @@ public final class Game {
                 target = source.go(moveDirection, step);
                 if (target != null) {
                     Piece capturedPiece = getPiece(target);
-                    if (capturedPiece == null) plies.add(Ply.simple(piece, source, target));
+                    if (capturedPiece == null) plies.add(Ply.move(piece, source, target));
                     else if (capturedPiece.player.isOpponent(this.activePlayer)) {
-                        plies.add(Ply.simpleCaptures(piece, source, target, capturedPiece));
+                        plies.add(Ply.captures(piece, source, target, capturedPiece));
                         break;
                     } else break;
                 }

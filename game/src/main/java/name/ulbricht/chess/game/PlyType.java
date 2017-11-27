@@ -1,7 +1,9 @@
 package name.ulbricht.chess.game;
 
 public enum PlyType {
-    SIMPLE,
+    MOVE,
+
+    CAPTURES,
 
     QUEEN_SIDE_CASTLING,
 
@@ -11,5 +13,7 @@ public enum PlyType {
 
     PAWN_EN_PASSANT,
 
-    PAWN_PROMOTION
+    PAWN_PROMOTION,
+
+    PAWN_PROMOTION_CAPTURES
 }

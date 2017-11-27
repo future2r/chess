@@ -28,8 +28,7 @@ public enum Piece {
         this.san = san;
     }
 
-    @Override
-    public String toString() {
+    public String getDisplayName(){
         return String.format("%s (%s)", this.type.getDisplayName(), this.player.getDisplayName());
     }
 

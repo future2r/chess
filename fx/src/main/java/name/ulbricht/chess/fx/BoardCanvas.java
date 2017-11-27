@@ -51,7 +51,7 @@ final class BoardCanvas extends Canvas {
     private final ReadOnlyObjectWrapper<Player> currentPlayerProperty = new ReadOnlyObjectWrapper<>();
     private final ObjectProperty<Coordinate> selectedSquareProperty = new SimpleObjectProperty<>();
     private final ObjectProperty<Coordinate> focusedSquareProperty = new SimpleObjectProperty<>();
-    private final ReadOnlyListWrapper<Ply> displayedMovesProperty = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
+    private final ReadOnlyListWrapper<Ply> displayedPliesProperty = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
 
     BoardCanvas() {
         this.game = new Game();
@@ -73,7 +73,7 @@ final class BoardCanvas extends Canvas {
         this.selectedSquareProperty.addListener((observable, oldValue, newValue) -> draw());
         this.selectedSquareProperty.addListener((observable, oldValue, newValue) -> updateDisplayedPlies());
         this.focusedSquareProperty.addListener((observable, oldValue, newValue) -> draw());
-        this.displayedMovesProperty.addListener((observable, oldValue, newValue) -> draw());
+        this.displayedPliesProperty.addListener((observable, oldValue, newValue) -> draw());
 
         this.currentPlayerProperty.set(this.game.getActivePlayer());
     }
@@ -112,11 +112,16 @@ final class BoardCanvas extends Canvas {
     private void mouseMoved(MouseEvent e) {
         Coordinate coordinate = getSquareAt(e.getX(), e.getY());
         if (coordinate != null) {
-            Piece piece = this.game.getPiece(coordinate);
-            if (piece != null)
-                tooltip.setText(coordinate.toString() + ' ' + piece.type.getDisplayName() + ' ' + piece.player.getDisplayName());
-            else tooltip.setText(coordinate.toString());
-            Tooltip.install(this, tooltip);
+            Optional<Ply> ply = this.displayedPliesProperty.stream()
+                    .filter(m -> coordinate.equals(m.getTarget()) || coordinate.equals(m.getCaptures()))
+                    .findFirst();
+            if (ply.isPresent()) {
+                tooltip.setText(ply.get().getDisplayName());
+                Tooltip.install(this, tooltip);
+            } else {
+                this.tooltip.setText("");
+                Tooltip.uninstall(this, tooltip);
+            }
             this.focusedSquareProperty.set(coordinate);
         } else {
             this.tooltip.setText("");
@@ -186,12 +191,12 @@ final class BoardCanvas extends Canvas {
 
     private void selectSquare(Coordinate coordinate) {
         // check if we can execute a go
-        Optional<Ply> move = this.displayedMovesProperty.stream()
+        Optional<Ply> ply = this.displayedPliesProperty.stream()
                 .filter(m -> coordinate.equals(m.getTarget()) || coordinate.equals(m.getCaptures()))
                 .findFirst();
 
-        if (move.isPresent()) {
-            performMove(move.get());
+        if (ply.isPresent()) {
+            performMove(ply.get());
         } else {
             this.selectedSquareProperty.set(coordinate);
         }
@@ -306,9 +311,9 @@ final class BoardCanvas extends Canvas {
             gc.translate(squareXOffset, squareYOffset);
 
             BoardRenderer.SquareIndicator squareIndicator;
-            if (this.displayedMovesProperty.stream().anyMatch(m -> coordinate.equals(m.getCaptures()))) {
+            if (this.displayedPliesProperty.stream().anyMatch(m -> coordinate.equals(m.getCaptures()))) {
                 squareIndicator = BoardRenderer.SquareIndicator.CAPTURED;
-            } else if (this.displayedMovesProperty.stream().anyMatch(m -> coordinate.equals(m.getTarget()))) {
+            } else if (this.displayedPliesProperty.stream().anyMatch(m -> coordinate.equals(m.getTarget()))) {
                 squareIndicator = BoardRenderer.SquareIndicator.TARGET;
             } else {
                 squareIndicator = null;
@@ -323,11 +328,11 @@ final class BoardCanvas extends Canvas {
     }
 
     private void updateDisplayedPlies() {
-        this.displayedMovesProperty.clear();
+        this.displayedPliesProperty.clear();
         Coordinate selected = this.selectedSquareProperty.get();
         if (selected != null) {
             List<Ply> legalPlies = this.game.getLegalPlies(selected);
-            if (!legalPlies.isEmpty()) this.displayedMovesProperty.addAll(legalPlies);
+            if (!legalPlies.isEmpty()) this.displayedPliesProperty.addAll(legalPlies);
         }
     }
 }
