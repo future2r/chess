@@ -19,8 +19,8 @@ final class PlyTest {
     }
 
     @Test
-    void testSimpleCaptures() {
-        Ply ply = Ply.captures(Piece.WHITE_QUEEN, Coordinate.d4, Coordinate.d5, Piece.BLACK_PAWN);
+    void testMoveAndCaptures() {
+        Ply ply = Ply.moveAndCaptures(Piece.WHITE_QUEEN, Coordinate.d4, Coordinate.d5, Piece.BLACK_PAWN);
 
         assertEquals(Piece.WHITE_QUEEN, ply.getPiece());
         assertEquals(Coordinate.d4, ply.getSource());
@@ -31,8 +31,6 @@ final class PlyTest {
 
     @Test
     void testPawnDoubleAdvance() {
-        Game game = new Game(FENSetup.of("8/8/8/8/8/8/3P4/8 w KQkq - 0 1"));
-
         Ply ply = Ply.pawnDoubleAdvance(Piece.WHITE_PAWN, Coordinate.d2);
 
         assertEquals(Piece.WHITE_PAWN, ply.getPiece());

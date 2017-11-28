@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * Represents a go on a board.
+ * Represents a ply (half move) on a board.
  */
 public final class Ply {
 
@@ -16,13 +16,13 @@ public final class Ply {
         return new Ply(PlyType.MOVE, piece, source, target, null, null);
     }
 
-    static Ply captures(Piece piece, Coordinate source, Coordinate target, Piece capturedPiece) {
+    static Ply moveAndCaptures(Piece piece, Coordinate source, Coordinate target, Piece capturedPiece) {
         requirePieceType(piece, PieceType.values());
         Objects.requireNonNull(source);
         Objects.requireNonNull(target);
         Objects.requireNonNull(capturedPiece);
 
-        return new Ply(PlyType.CAPTURES, piece, source, target, target, capturedPiece);
+        return new Ply(PlyType.MOVE, piece, source, target, target, capturedPiece);
     }
 
     static Ply pawnDoubleAdvance(Piece piece, Coordinate source) {
@@ -123,13 +123,13 @@ public final class Ply {
     }
 
     public String getDisplayName() {
-        String key = "PlyType." + this.type.name() + ".displayNamePattern";
+        String key = "Ply." + this.type.name() + (this.capturedPiece != null ? ".captures" : "") + ".displayNamePattern";
         switch (this.type) {
             case MOVE:
+                if (this.capturedPiece != null)
+                    return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
+                            this.target, this.capturedPiece.getDisplayName());
                 return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source, this.target);
-            case CAPTURES:
-                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
-                        this.target, this.capturedPiece.getDisplayName());
             case QUEEN_SIDE_CASTLING:
                 return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source, this.target);
             case KING_SIDE_CASTLING:
@@ -140,11 +140,11 @@ public final class Ply {
                 return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
                         this.target, this.capturedPiece.getDisplayName(), this.captures);
             case PAWN_PROMOTION:
+                if (this.capturedPiece != null)
+                    return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
+                            this.target, this.capturedPiece.getDisplayName());
                 return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
                         this.target);
-            case PAWN_PROMOTION_CAPTURES:
-                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
-                        this.target, this.capturedPiece.getDisplayName());
             default:
                 return null;
         }

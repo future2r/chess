@@ -137,9 +137,6 @@ public final class Game {
         // move the pieces
         switch (ply.getType()) {
             case MOVE:
-                movePiece(ply.getSource(), ply.getTarget());
-                break;
-            case CAPTURES:
                 if (ply.getCaptures() != null) removePiece(ply.getCaptures());
                 movePiece(ply.getSource(), ply.getTarget());
                 break;
@@ -246,13 +243,13 @@ public final class Game {
             }
         }
 
-        // check captures
+        // check moveAndCaptures
         for (MoveDirection captures : new MoveDirection[]{MoveDirection.forwardLeft(this.activePlayer), MoveDirection.forwardRight(this.activePlayer)}) {
             target = source.go(captures);
             if (target != null) {
                 Piece capturedPiece = getPiece(target);
                 if (capturedPiece != null && capturedPiece.player.isOpponent(getActivePlayer()))
-                    plies.add(Ply.captures(piece, source, target, capturedPiece));
+                    plies.add(Ply.moveAndCaptures(piece, source, target, capturedPiece));
             }
         }
 
@@ -269,7 +266,7 @@ public final class Game {
                 if (capturedPiece == null)
                     plies.add(Ply.move(piece, source, target));
                 else if (capturedPiece.player.isOpponent(this.activePlayer))
-                    plies.add(Ply.captures(piece, source, target, capturedPiece));
+                    plies.add(Ply.moveAndCaptures(piece, source, target, capturedPiece));
             }
         }
         return plies;
@@ -326,7 +323,7 @@ public final class Game {
                     Piece capturedPiece = getPiece(target);
                     if (capturedPiece == null) plies.add(Ply.move(piece, source, target));
                     else if (capturedPiece.player.isOpponent(this.activePlayer)) {
-                        plies.add(Ply.captures(piece, source, target, capturedPiece));
+                        plies.add(Ply.moveAndCaptures(piece, source, target, capturedPiece));
                         break;
                     } else break;
                 }
