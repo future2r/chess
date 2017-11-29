@@ -5,6 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Implemenation of the Forsyth-Edwards Notation.
@@ -32,24 +35,70 @@ public final class FEN {
 
     public static final String STANDARD = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
+    private static final Logger log = Logger.getLogger(FEN.class.getPackage().getName());
+
+    private static final String GROUP_ROW_PREFIX = "row";
+    private static final String GROUP_PLAYER = "ply";
+    private static final String GROUP_CASTLING = "cas";
+    private static final String GROUP_EN_PASSANT_TARGET = "ept";
+    private static final String GROUP_HALF_MOVE_CLOCK = "hmc";
+    private static final String GROUP_FULL_MOVE_NUMBER = "fmn";
+
+    private static final Pattern pattern = Pattern.compile(
+            "(?<row8>[prnbqkPRNBQK1-8]{1,8})" +
+                    "\\/(?<row7>[prnbqkPRNBQK1-8]{1,8})" +
+                    "\\/(?<row6>[prnbqkPRNBQK1-8]{1,8})" +
+                    "\\/(?<row5>[prnbqkPRNBQK1-8]{1,8})" +
+                    "\\/(?<row4>[prnbqkPRNBQK1-8]{1,8})" +
+                    "\\/(?<row3>[prnbqkPRNBQK1-8]{1,8})" +
+                    "\\/(?<row2>[prnbqkPRNBQK1-8]{1,8})" +
+                    "\\/(?<row1>[prnbqkPRNBQK1-8]{1,8})" +
+                    " (?<ply>w|b)" +
+                    " (?<cas>-|[KQkq]{1,4})" +
+                    " (?<ept>-|[a-h][1-8])" +
+                    " (?<hmc>[0-9]{1,3})" +
+                    " (?<fmn>[0-9]{1,3})");
+
     private static final char ROW_SEPARATOR = '/';
     private static final char FIELD_SEPARATOR = ' ';
     private static final String EMPTY_FIELD = "-";
 
     public static Setup createSetup(String s) {
+        log.info(() -> "Parsing " + s);
+
+        Matcher matcher = pattern.matcher(s);
+        if (!matcher.matches()) throw new IllegalArgumentException("Illegal FEN: " + s);
+
+        log.fine(() -> createLog(matcher));
+
         Setup setup = Setup.empty();
-
-        String[] fields = s.split("" + FIELD_SEPARATOR);
-        if (fields.length != 6) throw new IllegalArgumentException("Invalid number of data fields");
-
-        parsePositions(setup, checkField(fields[0]));
-        parseActivePlayer(setup, checkField(fields[1]));
-        parseCastling(setup, checkField(fields[2]));
-        parseEnPassantTarget(setup, checkField(fields[3]));
-        parseHalfMoveClock(setup, checkField(fields[4]));
-        parseFullMoveNumber(setup, checkField(fields[5]));
+        for (int row = 0; row < Coordinate.ROWS; row++) {
+            parseRow(setup, row, matcher.group(GROUP_ROW_PREFIX + (row + 1)));
+            parseActivePlayer(setup, matcher.group(GROUP_PLAYER));
+            parseCastling(setup, matcher.group(GROUP_CASTLING));
+            parseEnPassantTarget(setup, matcher.group(GROUP_EN_PASSANT_TARGET));
+            parseHalfMoveClock(setup, matcher.group(GROUP_HALF_MOVE_CLOCK));
+            parseFullMoveNumber(setup, matcher.group(GROUP_FULL_MOVE_NUMBER));
+        }
 
         return setup;
+    }
+
+    private static String createLog(Matcher matcher) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Parsed ");
+        sb.append(matcher.group(0));
+        sb.append('\n');
+        for (String group : new String[]{
+                GROUP_ROW_PREFIX + '8', GROUP_ROW_PREFIX + '7', GROUP_ROW_PREFIX + '6', GROUP_ROW_PREFIX + '5',
+                GROUP_ROW_PREFIX + '4', GROUP_ROW_PREFIX + '3', GROUP_ROW_PREFIX + '2', GROUP_ROW_PREFIX + '1',
+                GROUP_PLAYER, GROUP_CASTLING, GROUP_EN_PASSANT_TARGET, GROUP_HALF_MOVE_CLOCK, GROUP_FULL_MOVE_NUMBER}) {
+            sb.append(group);
+            sb.append(':');
+            sb.append(matcher.group(group));
+            sb.append('\n');
+        }
+        return sb.toString();
     }
 
     public static String toString(Setup setup) {
@@ -129,37 +178,19 @@ public final class FEN {
         Files.write(file, Arrays.asList(toString(setup)));
     }
 
-    private static String checkField(String s) {
-        if (s == null || s.isEmpty()) throw new IllegalArgumentException("Invalid field: " + s);
-        return s;
-    }
-
-    private static void parsePositions(Setup setup, String s) {
-        int rowIndex = 7;
+    private static void parseRow(Setup setup, int rowIndex, String s) {
         int columnIndex = -1;
         for (char c : s.toCharArray()) {
-
-            Piece piece;
-            try {
-                piece = piece(c);
-            } catch (IllegalArgumentException ex) {
-                piece = null;
-            }
-            if (piece != null) {
+            if (c >= '1' && c <= '8') {
+                columnIndex += (c - '0');
+                if (columnIndex > Coordinate.COLUMNS)
+                    throw new IllegalArgumentException("To many pieces in row " + Coordinate.toRowName(rowIndex));
+            } else {
+                Piece piece = piece(c);
                 columnIndex++;
                 if (columnIndex > Coordinate.COLUMNS)
                     throw new IllegalArgumentException("To many pieces in row " + Coordinate.toRowName(rowIndex));
                 setup.setPiece(Coordinate.valueOf(columnIndex, rowIndex), piece);
-            } else if (c >= '1' && c <= '8') {
-                columnIndex += (c - '0');
-                if (columnIndex > Coordinate.COLUMNS)
-                    throw new IllegalArgumentException("To many pieces in row " + Coordinate.toRowName(rowIndex));
-            } else if (c == ROW_SEPARATOR) {
-                rowIndex--;
-                if (rowIndex > Coordinate.ROWS) throw new IllegalArgumentException("To many rows");
-                columnIndex = -1;
-            } else {
-                throw new IllegalArgumentException("Illegal character: " + c);
             }
         }
     }

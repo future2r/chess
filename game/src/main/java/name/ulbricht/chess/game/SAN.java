@@ -121,7 +121,7 @@ public final class SAN {
                 GROUP_MOVE, GROUP_PIECE, GROUP_SOURCE_COLUMN, GROUP_SOURCE_ROW, GROUP_CAPTURES, GROUP_TARGET,
                 GROUP_PROMOTION, GROUP_CHECK,
                 GROUP_KING_SIDE_CASTLING, GROUP_KING_SIDE_CASTLING_CHECK,
-                GROUP_QUEEN_SIDE_CASTLING, GROUP_QUEEN_SIDE_CASTLING_CHECK,}) {
+                GROUP_QUEEN_SIDE_CASTLING, GROUP_QUEEN_SIDE_CASTLING_CHECK}) {
             sb.append(group);
             sb.append(':');
             sb.append(matcher.group(group));
