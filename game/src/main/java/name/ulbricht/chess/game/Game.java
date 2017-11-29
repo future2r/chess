@@ -23,13 +23,13 @@ public final class Game {
      * Creates a new game. This game will have a new board with the initial positions of the pieces.
      */
     public Game() {
-        this(FENSetup.standard());
+        this(Setup.standard());
     }
 
     /**
      * Creates a new game. This game will have a new board with the initial positions of the pieces.
      */
-    public Game(GameSetup setup) {
+    public Game(Setup setup) {
         this.board = new Piece[Coordinate.COLUMNS * Coordinate.ROWS];
 
         for (Coordinate coordinate : Coordinate.values()) {
@@ -45,25 +45,25 @@ public final class Game {
         updateLegalPlies();
     }
 
-    public FENSetup getSetup() {
-        FENSetup fen = FENSetup.empty();
+    public Setup getSetup() {
+        Setup setup = Setup.empty();
 
         for (Coordinate coordinate : Coordinate.values()) {
-            fen.setPiece(coordinate, getPiece(coordinate));
+            setup.setPiece(coordinate, getPiece(coordinate));
         }
-        fen.setActivePlayer(this.activePlayer);
+        setup.setActivePlayer(this.activePlayer);
 
-        fen.setWhiteKingSideCastlingAvailable(this.whiteKingSideCastlingAvailable);
-        fen.setWhiteQueenSideCastlingAvailable(this.whiteQueenSideCastlingAvailable);
-        fen.setBlackKingSideCastlingAvailable(this.blackKingSideCastlingAvailable);
-        fen.setBlackQueenSideCastlingAvailable(this.blackQueenSideCastlingAvailable);
+        setup.setWhiteKingSideCastlingAvailable(this.whiteKingSideCastlingAvailable);
+        setup.setWhiteQueenSideCastlingAvailable(this.whiteQueenSideCastlingAvailable);
+        setup.setBlackKingSideCastlingAvailable(this.blackKingSideCastlingAvailable);
+        setup.setBlackQueenSideCastlingAvailable(this.blackQueenSideCastlingAvailable);
 
-        fen.setEnPassantTarget(this.enPassantTarget);
+        setup.setEnPassantTarget(this.enPassantTarget);
 
         // TODO half move clock
         // TODO full move number
 
-        return fen;
+        return setup;
     }
 
     /**

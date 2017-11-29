@@ -17,10 +17,7 @@ import name.ulbricht.chess.game.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public final class MainController implements Initializable {
@@ -120,11 +117,8 @@ public final class MainController implements Initializable {
             Path file = FileChoosers.openFile(this.root, FileChoosers.Category.BOARDS, FileChoosers.Format.FEN);
             if (file != null) {
                 try {
-                    List<String> lines = Files.readAllLines(file);
-                    if (lines.isEmpty()) throw new IOException();
-
-                    FENSetup fen = FENSetup.of(lines.get(0));
-                    Game game = new Game(fen);
+                    Setup setup = FEN.fromFile(file);
+                    Game game = new Game(setup);
                     this.canvas.setGame(game);
                 } catch (IOException | IllegalArgumentException e) {
                     e.printStackTrace();
@@ -136,12 +130,12 @@ public final class MainController implements Initializable {
 
     @FXML
     private void saveBoard() {
-        FENSetup fen = this.canvas.getGame().getSetup();
+        Setup setup = this.canvas.getGame().getSetup();
 
         Path file = FileChoosers.saveFile(this.root, FileChoosers.Category.BOARDS, FileChoosers.Format.FEN);
         if (file != null) {
             try {
-                Files.write(file, Arrays.asList(fen.toString()));
+                FEN.toFile(file, setup);
             } catch (IOException e) {
                 GUIUtils.showError(this.root, Messages.getString("alert.saveBoard.error.contentText") + "\n" + e.getMessage());
             }
