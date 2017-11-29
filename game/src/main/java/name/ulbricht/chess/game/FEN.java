@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Implemenation of the Forsyth-Edwards Notation.
@@ -11,6 +12,23 @@ import java.util.Arrays;
  * https://www.chessclub.com/user/help/PGN-spec (chapter 16.1)
  */
 public final class FEN {
+
+    private static final char WHITE_PLAYER = 'w';
+    private static final char BLACK_PLAYER = 'b';
+
+    private static final char WHITE_PAWN = 'P';
+    private static final char WHITE_ROOK = SAN.ROOK;
+    private static final char WHITE_KNIGHT = SAN.KNIGHT;
+    private static final char WHITE_BISHOP = SAN.BISHOP;
+    private static final char WHITE_QUEEN = SAN.QUEEN;
+    private static final char WHITE_KING = SAN.KING;
+
+    private static final char BLACK_PAWN = 'p';
+    private static final char BLACK_ROOK = 'r';
+    private static final char BLACK_KNIGHT = 'n';
+    private static final char BLACK_BISHOP = 'b';
+    private static final char BLACK_QUEEN = 'q';
+    private static final char BLACK_KING = 'k';
 
     public static final String STANDARD = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -47,7 +65,7 @@ public final class FEN {
                         sb.append(emptyCounter);
                         emptyCounter = 0;
                     }
-                    sb.append(piece.san);
+                    sb.append(symbol(piece));
                 } else {
                     emptyCounter++;
                 }
@@ -60,25 +78,25 @@ public final class FEN {
         sb.append(FIELD_SEPARATOR);
 
         // player
-        sb.append(setup.getActivePlayer().san);
+        sb.append(symbol(setup.getActivePlayer()));
         sb.append(FIELD_SEPARATOR);
 
         // castling
         boolean available = false;
         if (setup.isWhiteKingSideCastlingAvailable()) {
-            sb.append(Piece.WHITE_KING.san);
+            sb.append(WHITE_KING);
             available = true;
         }
         if (setup.isWhiteQueenSideCastlingAvailable()) {
-            sb.append(Piece.WHITE_QUEEN.san);
+            sb.append(WHITE_QUEEN);
             available = true;
         }
         if (setup.isBlackKingSideCastlingAvailable()) {
-            sb.append(Piece.BLACK_KING.san);
+            sb.append(BLACK_KING);
             available = true;
         }
         if (setup.isBlackQueenSideCastlingAvailable()) {
-            sb.append(Piece.BLACK_QUEEN.san);
+            sb.append(BLACK_QUEEN);
             available = true;
         }
         if (!available) sb.append(EMPTY_FIELD);
@@ -123,7 +141,7 @@ public final class FEN {
 
             Piece piece;
             try {
-                piece = Piece.ofSan(c);
+                piece = piece(c);
             } catch (IllegalArgumentException ex) {
                 piece = null;
             }
@@ -148,7 +166,7 @@ public final class FEN {
 
     private static void parseActivePlayer(Setup setup, String s) {
         if (s.length() == 1) {
-            setup.setActivePlayer(Player.ofSan(s.charAt(0)));
+            setup.setActivePlayer(player(s.charAt(0)));
         } else
             throw new IllegalArgumentException("Invalid active player field: " + s);
     }
@@ -161,10 +179,10 @@ public final class FEN {
 
         if (!s.equals(EMPTY_FIELD)) {
             for (char c : s.toCharArray()) {
-                if (c == Piece.WHITE_KING.san) setup.setWhiteKingSideCastlingAvailable(true);
-                else if (c == Piece.WHITE_QUEEN.san) setup.setWhiteQueenSideCastlingAvailable(true);
-                else if (c == Piece.BLACK_KING.san) setup.setBlackKingSideCastlingAvailable(true);
-                else if (c == Piece.BLACK_QUEEN.san) setup.setBlackQueenSideCastlingAvailable(true);
+                if (c == WHITE_KING) setup.setWhiteKingSideCastlingAvailable(true);
+                else if (c == WHITE_QUEEN) setup.setWhiteQueenSideCastlingAvailable(true);
+                else if (c == BLACK_KING) setup.setBlackKingSideCastlingAvailable(true);
+                else if (c == BLACK_QUEEN) setup.setBlackQueenSideCastlingAvailable(true);
                 else throw new IllegalArgumentException("Illegal character: " + c);
             }
         }
@@ -197,6 +215,90 @@ public final class FEN {
             setup.setFullMoveNumber(value);
         } catch (NumberFormatException ex) {
             throw new IllegalArgumentException("Illegal value for full go number: " + s);
+        }
+    }
+
+    public static char symbol(Player player) {
+        switch (Objects.requireNonNull(player, "player cannot be null")) {
+            case WHITE:
+                return WHITE_PLAYER;
+            case BLACK:
+                return BLACK_PLAYER;
+            default:
+                throw new InternalError("Unexpected player enum value" + player);
+        }
+    }
+
+    public static char symbol(Piece piece) {
+        switch (Objects.requireNonNull(piece, "piece cannot be null")) {
+            case WHITE_PAWN:
+                return WHITE_PAWN;
+            case WHITE_ROOK:
+                return WHITE_ROOK;
+            case WHITE_KNIGHT:
+                return WHITE_KNIGHT;
+            case WHITE_BISHOP:
+                return WHITE_BISHOP;
+            case WHITE_QUEEN:
+                return WHITE_QUEEN;
+            case WHITE_KING:
+                return WHITE_KING;
+            case BLACK_PAWN:
+                return BLACK_PAWN;
+            case BLACK_ROOK:
+                return BLACK_ROOK;
+            case BLACK_KNIGHT:
+                return BLACK_KNIGHT;
+            case BLACK_BISHOP:
+                return BLACK_BISHOP;
+            case BLACK_QUEEN:
+                return BLACK_QUEEN;
+            case BLACK_KING:
+                return BLACK_KING;
+            default:
+                throw new InternalError("Unexpected piece enum value" + piece);
+        }
+    }
+
+    public static Player player(char symbol) {
+        switch (symbol) {
+            case WHITE_PLAYER:
+                return Player.WHITE;
+            case BLACK_PLAYER:
+                return Player.BLACK;
+            default:
+                throw new IllegalArgumentException("Unknown player symbol " + symbol);
+        }
+    }
+
+    public static Piece piece(char symbol) {
+        switch (symbol) {
+            case WHITE_PAWN:
+                return Piece.WHITE_PAWN;
+            case WHITE_ROOK:
+                return Piece.WHITE_ROOK;
+            case WHITE_KNIGHT:
+                return Piece.WHITE_KNIGHT;
+            case WHITE_BISHOP:
+                return Piece.WHITE_BISHOP;
+            case WHITE_QUEEN:
+                return Piece.WHITE_QUEEN;
+            case WHITE_KING:
+                return Piece.WHITE_KING;
+            case BLACK_PAWN:
+                return Piece.BLACK_PAWN;
+            case BLACK_ROOK:
+                return Piece.BLACK_ROOK;
+            case BLACK_KNIGHT:
+                return Piece.BLACK_KNIGHT;
+            case BLACK_BISHOP:
+                return Piece.BLACK_BISHOP;
+            case BLACK_QUEEN:
+                return Piece.BLACK_QUEEN;
+            case BLACK_KING:
+                return Piece.BLACK_KING;
+            default:
+                throw new IllegalArgumentException("Unknown piece symbol " + symbol);
         }
     }
 

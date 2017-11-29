@@ -28,6 +28,11 @@
             <groupId>org.apiguardian </groupId>
             <artifactId>apiguardian-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>name.ulbricht.chess</groupId>
+            <artifactId>game</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

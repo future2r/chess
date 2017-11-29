@@ -12,6 +12,6 @@ public final class PieceTest {
     public void testToString() {
         Piece piece = Piece.WHITE_KING;
 
-        assertEquals(String.format("%s (%s)", PieceType.KING.getDisplayName(), Player.WHITE.getDisplayName()), piece.toString());
+        assertEquals(String.format("%s (%s)", PieceType.KING.getDisplayName(), Player.WHITE.getDisplayName()), piece.getDisplayName());
     }
 }

@@ -72,6 +72,15 @@ public enum Coordinate {
         return Character.valueOf((char) (97 + checkColumnIndex(columnIndex))).toString();
     }
 
+    public static int toColumnIndex(String s) {
+        if (s != null && s.length() == 1) return toColumnIndex(s.charAt(0));
+        throw new IllegalArgumentException("Illegal column name: " + s);
+    }
+
+    public static int toColumnIndex(char c) {
+        return checkColumnIndex(c - 97);
+    }
+
     /**
      * Returns the row name for the given row index. This method can be used by the application to display row names
      * when drawing a board.
@@ -82,6 +91,15 @@ public enum Coordinate {
      */
     public static String toRowName(int rowIndex) {
         return Character.valueOf((char) (49 + checkRowIndex(rowIndex))).toString();
+    }
+
+    public static int toRowIndex(String s) {
+        if (s != null && s.length() == 1) return toRowIndex(s.charAt(0));
+        throw new IllegalArgumentException("Illegal row name: " + s);
+    }
+
+    public static int toRowIndex(char c) {
+        return checkRowIndex(c + 49);
     }
 
     /**

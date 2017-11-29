@@ -5,37 +5,28 @@ package name.ulbricht.chess.game;
  */
 public enum Piece {
 
-    WHITE_PAWN(PieceType.PAWN, Player.WHITE, 'P'),
-    WHITE_ROOK(PieceType.ROOK, Player.WHITE, 'R'),
-    WHITE_KNIGHT(PieceType.KNIGHT, Player.WHITE, 'N'),
-    WHITE_BISHOP(PieceType.BISHOP, Player.WHITE, 'B'),
-    WHITE_QUEEN(PieceType.QUEEN, Player.WHITE, 'Q'),
-    WHITE_KING(PieceType.KING, Player.WHITE, 'K'),
-    BLACK_PAWN(PieceType.PAWN, Player.BLACK, 'p'),
-    BLACK_ROOK(PieceType.ROOK, Player.BLACK, 'r'),
-    BLACK_KNIGHT(PieceType.KNIGHT, Player.BLACK, 'n'),
-    BLACK_BISHOP(PieceType.BISHOP, Player.BLACK, 'b'),
-    BLACK_QUEEN(PieceType.QUEEN, Player.BLACK, 'q'),
-    BLACK_KING(PieceType.KING, Player.BLACK, 'k');
+    WHITE_PAWN(PieceType.PAWN, Player.WHITE),
+    WHITE_ROOK(PieceType.ROOK, Player.WHITE),
+    WHITE_KNIGHT(PieceType.KNIGHT, Player.WHITE),
+    WHITE_BISHOP(PieceType.BISHOP, Player.WHITE),
+    WHITE_QUEEN(PieceType.QUEEN, Player.WHITE),
+    WHITE_KING(PieceType.KING, Player.WHITE),
+    BLACK_PAWN(PieceType.PAWN, Player.BLACK),
+    BLACK_ROOK(PieceType.ROOK, Player.BLACK),
+    BLACK_KNIGHT(PieceType.KNIGHT, Player.BLACK),
+    BLACK_BISHOP(PieceType.BISHOP, Player.BLACK),
+    BLACK_QUEEN(PieceType.QUEEN, Player.BLACK),
+    BLACK_KING(PieceType.KING, Player.BLACK);
 
     public final PieceType type;
     public final Player player;
-    public final char san;
 
-    Piece(PieceType type, Player player, char san) {
+    Piece(PieceType type, Player player) {
         this.type = type;
         this.player = player;
-        this.san = san;
     }
 
-    public String getDisplayName(){
+    public String getDisplayName() {
         return String.format("%s (%s)", this.type.getDisplayName(), this.player.getDisplayName());
-    }
-
-    public static Piece ofSan(char c) {
-        for (Piece piece : values()) {
-            if (piece.san == c) return piece;
-        }
-        throw new IllegalArgumentException("Not a SAN piece character: " + c);
     }
 }
