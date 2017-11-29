@@ -331,8 +331,8 @@ final class BoardCanvas extends Canvas {
         this.displayedPliesProperty.clear();
         Coordinate selected = this.selectedSquareProperty.get();
         if (selected != null) {
-            List<Ply> legalPlies = this.game.getLegalPlies(selected);
-            if (!legalPlies.isEmpty()) this.displayedPliesProperty.addAll(legalPlies);
+            List<Ply> plies = this.game.getActivePlayerPlies(selected);
+            if (!plies.isEmpty()) this.displayedPliesProperty.addAll(plies);
         }
     }
 }
