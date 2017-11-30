@@ -122,6 +122,18 @@ public final class Ply {
                 && Objects.equals(this.capturedPiece, other.capturedPiece);
     }
 
+    @Override
+    public String toString() {
+        return "{"
+                + "type=" + this.type
+                + ", piece=" + this.piece
+                + ", source=" + this.source
+                + ", target=" + this.target
+                + ", captures=" + this.captures
+                + ", capturedPiece=" + this.capturedPiece
+                + "}";
+    }
+
     public String getDisplayName() {
         String key = "Ply." + this.type.name() + (this.capturedPiece != null ? ".captures" : "") + ".displayNamePattern";
         switch (this.type) {
