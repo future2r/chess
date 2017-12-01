@@ -52,7 +52,7 @@ final class KnightPlyTest extends AbstractPlyTest {
 
     @Test
     void whiteCaptures() {
-        Game game = white("ke8", "pc6", "pe6", "pf5", "rf3", "ne2", "nc2", "rb3", "pb5", "Nd4", "Ke1");
+        Game game = white("ke8", "pc6", "pe6", "pf5", "rf3", "ne2", "nc2", "rb3", "pb5", "Nd4", "Kd1");
         expectPlyNumber(game, "Nd4", 8);
         expectMoveAndCaptures(game, "Nd4", "pc6");
         expectMoveAndCaptures(game, "Nd4", "pe6");

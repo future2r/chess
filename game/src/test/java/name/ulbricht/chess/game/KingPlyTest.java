@@ -56,8 +56,111 @@ final class KingPlyTest extends AbstractPlyTest {
 
     @Test
     void whiteSelfBlocking() {
-        Game game = white();
+        Game game = whiteStandard();
         expectPlyNumber(game, "ke1", 0);
+    }
+
+    @Test
+    void whiteCastling() {
+        Game game = whiteCastlingAvailable("ke8", "Ra1", "Ke1", "Rh1");
+        expectPlyNumber(game, "Ke1", 7);
+        expectMove(game, "Ke1", "d1");
+        expectMove(game, "Ke1", "d2");
+        expectMove(game, "Ke1", "e2");
+        expectMove(game, "Ke1", "f2");
+        expectMove(game, "Ke1", "f1");
+        expectKingSideCastling(game, "Ke1");
+        expectQueenSideCastling(game, "Ke1");
+    }
+
+    @Test
+    void whiteCastling_KingCheck() {
+        Game game = whiteCastlingAvailable("ke8", "re7", "Ra1", "Ke1", "Rh1");
+        expectPlyNumber(game, "Ke1", 4);
+        expectMove(game, "Ke1", "d1");
+        expectMove(game, "Ke1", "d2");
+        expectMove(game, "Ke1", "f2");
+        expectMove(game, "Ke1", "f1");
+    }
+
+    @Test
+    void whiteCastling_KingSide_EmptyCheck() {
+        Game game = whiteCastlingAvailable("ke8", "rf7", "Ra1", "Ke1", "Rh1");
+        expectPlyNumber(game, "Ke1", 4);
+        expectMove(game, "Ke1", "d1");
+        expectMove(game, "Ke1", "d2");
+        expectMove(game, "Ke1", "e2");
+        expectQueenSideCastling(game, "Ke1");
+    }
+
+    @Test
+    void whiteCastling_KingSide_TargetCheck() {
+        Game game = whiteCastlingAvailable("ke8", "rg7", "Ra1", "Ke1", "Rh1");
+        expectPlyNumber(game, "Ke1", 6);
+        expectMove(game, "Ke1", "d1");
+        expectMove(game, "Ke1", "d2");
+        expectMove(game, "Ke1", "e2");
+        expectMove(game, "Ke1", "f2");
+        expectMove(game, "Ke1", "f1");
+        expectQueenSideCastling(game, "Ke1");
+    }
+
+    @Test
+    void whiteCastling_KingSide_RookCheck() {
+        Game game = whiteCastlingAvailable("ke8", "rh7", "Ra1", "Ke1", "Rh1");
+        expectPlyNumber(game, "Ke1", 6);
+        expectMove(game, "Ke1", "d1");
+        expectMove(game, "Ke1", "d2");
+        expectMove(game, "Ke1", "e2");
+        expectMove(game, "Ke1", "f2");
+        expectMove(game, "Ke1", "f1");
+        expectQueenSideCastling(game, "Ke1");
+    }
+
+    @Test
+    void whiteCastling_QueenSide_Empty1Check() {
+        Game game = whiteCastlingAvailable("ke8", "rd7", "Ra1", "Ke1", "Rh1");
+        expectPlyNumber(game, "Ke1", 4);
+        expectMove(game, "Ke1", "e2");
+        expectMove(game, "Ke1", "f2");
+        expectMove(game, "Ke1", "f1");
+        expectKingSideCastling(game, "Ke1");
+    }
+
+    @Test
+    void whiteCastling_QueenSide_Empty2Check() {
+        Game game = whiteCastlingAvailable("ke8", "rc7", "Ra1", "Ke1", "Rh1");
+        expectPlyNumber(game, "Ke1", 6);
+        expectMove(game, "Ke1", "d1");
+        expectMove(game, "Ke1", "d2");
+        expectMove(game, "Ke1", "e2");
+        expectMove(game, "Ke1", "f2");
+        expectMove(game, "Ke1", "f1");
+        expectKingSideCastling(game, "Ke1");
+    }
+
+    @Test
+    void whiteCastling_QueenSide_TargetCheck() {
+        Game game = whiteCastlingAvailable("ke8", "rb7", "Ra1", "Ke1", "Rh1");
+        expectPlyNumber(game, "Ke1", 6);
+        expectMove(game, "Ke1", "d1");
+        expectMove(game, "Ke1", "d2");
+        expectMove(game, "Ke1", "e2");
+        expectMove(game, "Ke1", "f2");
+        expectMove(game, "Ke1", "f1");
+        expectKingSideCastling(game, "Ke1");
+    }
+
+    @Test
+    void whiteCastling_QueenSide_RookCheck() {
+        Game game = whiteCastlingAvailable("ke8", "ra7", "Ra1", "Ke1", "Rh1");
+        expectPlyNumber(game, "Ke1", 6);
+        expectMove(game, "Ke1", "d1");
+        expectMove(game, "Ke1", "d2");
+        expectMove(game, "Ke1", "e2");
+        expectMove(game, "Ke1", "f2");
+        expectMove(game, "Ke1", "f1");
+        expectKingSideCastling(game, "Ke1");
     }
 
     @Test
@@ -112,7 +215,110 @@ final class KingPlyTest extends AbstractPlyTest {
 
     @Test
     void blackSelfBlocking() {
-        Game game = black();
+        Game game = blackStandard();
         expectPlyNumber(game, "ke8", 0);
+    }
+
+    @Test
+    void blackCastling() {
+        Game game = blackCastlingAvailable("Ke1", "ra8", "ke8", "rh8");
+        expectPlyNumber(game, "ke8", 7);
+        expectMove(game, "ke8", "f8");
+        expectMove(game, "ke8", "f7");
+        expectMove(game, "ke8", "e7");
+        expectMove(game, "ke8", "d7");
+        expectMove(game, "ke8", "d8");
+        expectKingSideCastling(game, "ke8");
+        expectQueenSideCastling(game, "ke8");
+    }
+
+    @Test
+    void blackCastling_KingCheck() {
+        Game game = blackCastlingAvailable("Ke1", "Re2", "ra8", "ke8", "rh8");
+        expectPlyNumber(game, "ke8", 4);
+        expectMove(game, "ke8", "f8");
+        expectMove(game, "ke8", "f7");
+        expectMove(game, "ke8", "d7");
+        expectMove(game, "ke8", "d8");
+    }
+
+    @Test
+    void blackCastling_KingSide_EmptyCheck() {
+        Game game = blackCastlingAvailable("Ke1", "Rf2", "ra8", "ke8", "rh8");
+        expectPlyNumber(game, "ke8", 4);
+        expectMove(game, "ke8", "e7");
+        expectMove(game, "ke8", "d7");
+        expectMove(game, "ke8", "d8");
+        expectQueenSideCastling(game, "ke8");
+    }
+
+    @Test
+    void blackCastling_KingSide_TargetCheck() {
+        Game game = blackCastlingAvailable("Ke1", "Rg2", "ra8", "ke8", "rh8");
+        expectPlyNumber(game, "ke8", 6);
+        expectMove(game, "ke8", "f8");
+        expectMove(game, "ke8", "f7");
+        expectMove(game, "ke8", "e7");
+        expectMove(game, "ke8", "d7");
+        expectMove(game, "ke8", "d8");
+        expectQueenSideCastling(game, "ke8");
+    }
+
+    @Test
+    void blackCastling_KingSide_RookCheck() {
+        Game game = blackCastlingAvailable("Ke1", "Rh2", "ra8", "ke8", "rh8");
+        expectPlyNumber(game, "ke8", 6);
+        expectMove(game, "ke8", "f8");
+        expectMove(game, "ke8", "f7");
+        expectMove(game, "ke8", "e7");
+        expectMove(game, "ke8", "d7");
+        expectMove(game, "ke8", "d8");
+        expectQueenSideCastling(game, "ke8");
+    }
+
+    @Test
+    void blackCastling_QueenSide_Empty1Check() {
+        Game game = blackCastlingAvailable("Ke1", "Rd2", "ra8", "ke8", "rh8");
+        expectPlyNumber(game, "ke8", 4);
+        expectMove(game, "ke8", "f8");
+        expectMove(game, "ke8", "f7");
+        expectMove(game, "ke8", "e7");
+        expectKingSideCastling(game, "ke8");
+    }
+
+    @Test
+    void blackCastling_QueenSide_Empty2Check() {
+        Game game = blackCastlingAvailable("Ke1", "Rc2", "ra8", "ke8", "rh8");
+        expectPlyNumber(game, "ke8", 6);
+        expectMove(game, "ke8", "f8");
+        expectMove(game, "ke8", "f7");
+        expectMove(game, "ke8", "e7");
+        expectMove(game, "ke8", "d7");
+        expectMove(game, "ke8", "d8");
+        expectKingSideCastling(game, "ke8");
+    }
+
+    @Test
+    void blackCastling_QueenSide_TargetCheck() {
+        Game game = blackCastlingAvailable("Ke1", "Rb2", "ra8", "ke8", "rh8");
+        expectPlyNumber(game, "ke8", 6);
+        expectMove(game, "ke8", "f8");
+        expectMove(game, "ke8", "f7");
+        expectMove(game, "ke8", "e7");
+        expectMove(game, "ke8", "d7");
+        expectMove(game, "ke8", "d8");
+        expectKingSideCastling(game, "ke8");
+    }
+
+    @Test
+    void blackCastling_QueenSide_RookCheck() {
+        Game game = blackCastlingAvailable("Ke1", "Ra2", "ra8", "ke8", "rh8");
+        expectPlyNumber(game, "ke8", 6);
+        expectMove(game, "ke8", "f8");
+        expectMove(game, "ke8", "f7");
+        expectMove(game, "ke8", "e7");
+        expectMove(game, "ke8", "d7");
+        expectMove(game, "ke8", "d8");
+        expectKingSideCastling(game, "ke8");
     }
 }
