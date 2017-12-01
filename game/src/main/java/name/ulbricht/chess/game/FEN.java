@@ -64,7 +64,7 @@ public final class FEN {
     private static final String EMPTY_FIELD = "-";
 
     public static Setup createSetup(String s) {
-        log.info(() -> "Parsing " + s);
+        log.fine(() -> "Parsing " + s);
 
         Matcher matcher = pattern.matcher(s);
         if (!matcher.matches()) throw new IllegalArgumentException("Illegal FEN: " + s);
