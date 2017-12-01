@@ -62,4 +62,12 @@ abstract class AbstractPlyTest {
         List<Ply> plies = game.getActivePlayerPlies(Coordinate.valueOf(sourcePiece.substring(1)));
         assertTrue(plies.contains(ply), "Expected ply not found: " + ply);
     }
+
+    static void expectPawnDoubleAdvance(Game game, String sourcePiece) {
+        Ply ply = Ply.pawnDoubleAdvance(FEN.piece(sourcePiece.charAt(0)),
+                Coordinate.valueOf(sourcePiece.substring(1)));
+
+        List<Ply> plies = game.getActivePlayerPlies(Coordinate.valueOf(sourcePiece.substring(1)));
+        assertTrue(plies.contains(ply), "Expected ply not found: " + ply);
+    }
 }
