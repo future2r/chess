@@ -60,6 +60,7 @@ final class Rules {
                     squares.add(target);
                 } else if (targetPiece.player.isOpponent(piece.player)) {
                     squares.add(target);
+                    break;
                 } else {
                     break;
                 }
