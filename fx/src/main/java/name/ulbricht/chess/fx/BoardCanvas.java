@@ -48,7 +48,8 @@ final class BoardCanvas extends Canvas {
     private Game game;
     private BoardRenderer renderer;
 
-    private final ReadOnlyObjectWrapper<Player> currentPlayerProperty = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<Player> activePlayerProperty = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyObjectWrapper<CheckState> checkStateProperty = new ReadOnlyObjectWrapper<>();
     private final ObjectProperty<Coordinate> selectedSquareProperty = new SimpleObjectProperty<>();
     private final ObjectProperty<Coordinate> focusedSquareProperty = new SimpleObjectProperty<>();
     private final ReadOnlyListWrapper<Ply> displayedPliesProperty = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
@@ -75,7 +76,8 @@ final class BoardCanvas extends Canvas {
         this.focusedSquareProperty.addListener((observable, oldValue, newValue) -> draw());
         this.displayedPliesProperty.addListener((observable, oldValue, newValue) -> draw());
 
-        this.currentPlayerProperty.set(this.game.getActivePlayer());
+        this.activePlayerProperty.set(this.game.getActivePlayer());
+        this.checkStateProperty.set(this.game.getCheckState());
     }
 
     Game getGame() {
@@ -84,7 +86,7 @@ final class BoardCanvas extends Canvas {
 
     void setGame(Game game) {
         this.game = game;
-        this.currentPlayerProperty.set(this.game.getActivePlayer());
+        this.activePlayerProperty.set(this.game.getActivePlayer());
         this.focusedSquareProperty.set(null);
         this.selectedSquareProperty.set(null);
         draw();
@@ -95,8 +97,12 @@ final class BoardCanvas extends Canvas {
         draw();
     }
 
-    ReadOnlyObjectProperty<Player> currentPlayerProperty() {
-        return this.currentPlayerProperty.getReadOnlyProperty();
+    ReadOnlyObjectProperty<Player> activePlayerProperty() {
+        return this.activePlayerProperty.getReadOnlyProperty();
+    }
+
+    ReadOnlyObjectProperty<CheckState> checkStateProperty() {
+        return this.checkStateProperty.getReadOnlyProperty();
     }
 
     ObjectProperty<Coordinate> selectedSquareProperty() {
@@ -205,7 +211,8 @@ final class BoardCanvas extends Canvas {
     private void performMove(Ply ply) {
         this.game.performPly(ply);
 
-        this.currentPlayerProperty.set(this.game.getActivePlayer());
+        this.activePlayerProperty.set(this.game.getActivePlayer());
+        this.checkStateProperty.set(this.game.getCheckState());
         this.selectedSquareProperty.set(null);
         this.focusedSquareProperty.set(ply.getTarget());
     }

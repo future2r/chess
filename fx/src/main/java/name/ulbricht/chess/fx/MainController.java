@@ -42,6 +42,8 @@ public final class MainController implements Initializable {
     private Label selectedSquareValueLabel;
     @FXML
     private Label currentPlayerValueLabel;
+    @FXML
+    private Label checkLabel;
 
     private BoardCanvas canvas;
 
@@ -54,10 +56,11 @@ public final class MainController implements Initializable {
         this.canvas.heightProperty().bind(this.boardPane.heightProperty());
 
         this.canvas.selectedSquareProperty().addListener((observable, oldValue, newValue) -> updateSelectedSquareLabel(newValue));
-        this.canvas.currentPlayerProperty().addListener((observable, oldValue, newValue) -> updateCurrentPlayer(newValue));
+        this.canvas.activePlayerProperty().addListener((observable, oldValue, newValue) -> updateCurrentPlayer(newValue));
+        this.canvas.checkStateProperty().addListener((observable, oldValue, newValue) -> updateCheckState(newValue));
 
         createDesignMenuItems();
-        updateCurrentPlayer(this.canvas.currentPlayerProperty().get());
+        updateCurrentPlayer(this.canvas.activePlayerProperty().get());
 
         Platform.runLater(() -> this.canvas.requestFocus());
     }
@@ -93,11 +96,19 @@ public final class MainController implements Initializable {
                 this.selectedSquareValueLabel.setText(selected.toString() + ' ' + piece.getDisplayName());
             else this.selectedSquareValueLabel.setText(selected.toString());
         } else
-            this.selectedSquareValueLabel.setText("");
+            this.selectedSquareValueLabel.setText(Messages.getString("main.selectedSquareValueLabel.text.none"));
     }
 
     private void updateCurrentPlayer(Player player) {
         this.currentPlayerValueLabel.setText(player.getDisplayName());
+    }
+
+    private void updateCheckState(CheckState checkState) {
+        if (checkState != CheckState.NONE) {
+            this.checkLabel.setText(checkState.getDisplayName());
+        } else {
+            this.checkLabel.setText(null);
+        }
     }
 
     @FXML

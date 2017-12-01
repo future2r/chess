@@ -70,6 +70,12 @@
                         <Insets left="2.0" right="2.0" />
                     </padding>
                 </Label>
+                <Separator orientation="VERTICAL" />
+                <Label fx:id="checkLabel" style="-fx-font-weight: bold; -fx-text-fill: red;">
+                    <padding>
+                        <Insets left="2.0" right="2.0" />
+                    </padding>
+                </Label>
             </children>
             <padding>
                 <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />

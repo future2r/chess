@@ -12,6 +12,7 @@ public final class Game {
 
     private final Piece[] board;
     private Player activePlayer;
+    private CheckState checkState;
     private final List<Ply> validPlies = new ArrayList<>();
 
     private boolean whiteKingSideCastlingAvailable;
@@ -37,6 +38,7 @@ public final class Game {
             setPiece(coordinate, setup.getPiece(coordinate));
         }
         this.activePlayer = setup.getActivePlayer();
+        this.checkState = CheckState.NONE;
 
         this.whiteKingSideCastlingAvailable = setup.isWhiteKingSideCastlingAvailable();
         this.whiteQueenSideCastlingAvailable = setup.isWhiteQueenSideCastlingAvailable();
@@ -76,6 +78,10 @@ public final class Game {
         return activePlayer;
     }
 
+    public CheckState getCheckState() {
+        return this.checkState;
+    }
+
     /**
      * Returns the piece at the given coordinate. If the square is empty the returned value will be {@code null}.
      *
@@ -105,10 +111,15 @@ public final class Game {
      * </ol>
      */
     private void updateValidPlies() {
+        this.checkState = CheckState.NONE;
         this.validPlies.clear();
 
         // find the squares attacked by the opponent
         List<Coordinate> attacked = Rules.attacks(this.board, this.activePlayer.opponent());
+
+        // check if the king is in check
+        Coordinate kingPosition = Rules.king(this.board, this.activePlayer);
+        if (attacked.contains(kingPosition)) this.checkState = CheckState.CHECK;
 
         // find legal plies
         List<Ply> plies = new ArrayList<>();
@@ -167,7 +178,7 @@ public final class Game {
             Rules.performPly(simBoard, ply);
 
             // find the king of this player (may have moved) for check test
-            Coordinate kingPosition = Rules.king(simBoard, this.activePlayer);
+            kingPosition = Rules.king(simBoard, this.activePlayer);
 
             // check if the king is in check after this move
             List<Coordinate> simAttacked = Rules.attacks(simBoard, this.activePlayer.opponent());
@@ -176,6 +187,8 @@ public final class Game {
             }
         }
 
+        // if there are no valid move, this should be checkmate!
+        if (this.validPlies.isEmpty()) this.checkState = CheckState.CHECKMATE;
     }
 
     /**
