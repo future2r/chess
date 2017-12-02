@@ -133,7 +133,7 @@ final class Rules {
                     Coordinate captures = Coordinate.valueOf(target.columnIndex, piece.player == Player.WHITE ? 4 : 3);
                     capturedPiece = board[captures.ordinal()];
                     if (capturedPiece.type == PieceType.PAWN && capturedPiece.player.isOpponent(piece.player)) {
-                        plies.add(Ply.pawnEnPassant(piece, source, target, captures, capturedPiece));
+                        plies.add(Ply.pawnEnPassant(piece, source, target));
                     }
                 }
             }
@@ -185,32 +185,32 @@ final class Rules {
     }
 
     static void performPly(Piece[] board, Ply ply) {
-        switch (ply.getType()) {
+        switch (ply.type) {
             case MOVE:
-                if (ply.getCaptures() != null) board[ply.getCaptures().ordinal()] = null;
-                move(board, ply.getSource(), ply.getTarget());
+                if (ply.captures != null) board[ply.captures.ordinal()] = null;
+                move(board, ply.source, ply.target);
                 break;
             case PAWN_DOUBLE_ADVANCE:
-                move(board, ply.getSource(), ply.getTarget());
+                move(board, ply.source, ply.target);
                 break;
             case PAWN_EN_PASSANT:
-                board[ply.getCaptures().ordinal()] = null;
-                move(board, ply.getSource(), ply.getTarget());
+                board[ply.captures.ordinal()] = null;
+                move(board, ply.source, ply.target);
                 break;
             case KING_SIDE_CASTLING: {
-                move(board, ply.getSource(), ply.getTarget());
-                int row = ply.getPiece().player == Player.WHITE ? 0 : 7;
+                move(board, ply.source, ply.target);
+                int row = ply.piece.player == Player.WHITE ? 0 : 7;
                 move(board, Coordinate.valueOf(7, row), Coordinate.valueOf(5, row));
             }
             break;
             case QUEEN_SIDE_CASTLING: {
-                move(board, ply.getSource(), ply.getTarget());
-                int row = ply.getPiece().player == Player.WHITE ? 0 : 7;
+                move(board, ply.source, ply.target);
+                int row = ply.piece.player == Player.WHITE ? 0 : 7;
                 move(board, Coordinate.valueOf(0, row), Coordinate.valueOf(2, row));
             }
             break;
             default:
-                throw new IllegalArgumentException("Unsupported ply type: " + ply.getType());
+                throw new IllegalArgumentException("Unsupported ply type: " + ply.type);
         }
     }
 

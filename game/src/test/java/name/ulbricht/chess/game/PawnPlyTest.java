@@ -34,7 +34,7 @@ final class PawnPlyTest extends AbstractPlyTest {
 
         // black pawn double advances
         Ply ply = game.getValidPlies(Coordinate.e7).stream()
-                .filter(p -> p.getTarget() == Coordinate.e5)
+                .filter(p -> p.target == Coordinate.e5)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Expected ply not found"));
         game.performPly(ply);
@@ -42,6 +42,7 @@ final class PawnPlyTest extends AbstractPlyTest {
         // check plies for white pawn
         expectPlyNumber(game, "Pf5", 2);
         expectMove(game, "Pf5", "f6");
+        expectPawnEnPassant(game, "Pf5","e6");
     }
 
     @Test
@@ -66,5 +67,22 @@ final class PawnPlyTest extends AbstractPlyTest {
         expectMove(game, "pc6", "c5");
         expectMoveAndCaptures(game, "pc6", "Rb5");
         expectMoveAndCaptures(game, "pc6", "Rd5");
+    }
+
+    @Test
+    void blackEnPassant() {
+        Game game = white("ke8", "pf4", "Pe2", "Ke1");
+
+        // white pawn double advances
+        Ply ply = game.getValidPlies(Coordinate.e2).stream()
+                .filter(p -> p.target == Coordinate.e4)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Expected ply not found"));
+        game.performPly(ply);
+
+        // check plies for black pawn
+        expectPlyNumber(game, "pf4", 2);
+        expectMove(game, "pf4", "f3");
+        expectPawnEnPassant(game, "pf4","e3");
     }
 }

@@ -101,7 +101,7 @@ public final class Game {
     }
 
     public List<Ply> getValidPlies(Coordinate source) {
-        return this.validPlies.stream().filter(m -> m.getSource() == source).collect(Collectors.toList());
+        return this.validPlies.stream().filter(m -> m.source == source).collect(Collectors.toList());
     }
 
     /**
@@ -208,45 +208,45 @@ public final class Game {
         Rules.performPly(this.board, ply);
 
         // set en passant target
-        if (ply.getType() == PlyType.PAWN_DOUBLE_ADVANCE) {
-            Coordinate target = ply.getTarget();
-            this.enPassantTarget = Coordinate.valueOf(target.columnIndex, ply.getPiece().player == Player.WHITE ? 2 : 5);
+        if (ply.type == PlyType.PAWN_DOUBLE_ADVANCE) {
+            Coordinate target = ply.target;
+            this.enPassantTarget = Coordinate.valueOf(target.columnIndex, ply.piece.player == Player.WHITE ? 2 : 5);
         } else {
             this.enPassantTarget = null;
         }
 
         // update castling availability
-        switch (ply.getPiece()) {
+        switch (ply.piece) {
             case WHITE_ROOK:
-                if (ply.getSource() == Coordinate.a1) this.whiteQueenSideCastlingAvailable = false;
-                if (ply.getSource() == Coordinate.h1) this.whiteKingSideCastlingAvailable = false;
+                if (ply.source == Coordinate.a1) this.whiteQueenSideCastlingAvailable = false;
+                if (ply.source == Coordinate.h1) this.whiteKingSideCastlingAvailable = false;
                 break;
             case BLACK_ROOK:
-                if (ply.getSource() == Coordinate.a8) this.blackQueenSideCastlingAvailable = false;
-                if (ply.getSource() == Coordinate.h8) this.blackKingSideCastlingAvailable = false;
+                if (ply.source == Coordinate.a8) this.blackQueenSideCastlingAvailable = false;
+                if (ply.source == Coordinate.h8) this.blackKingSideCastlingAvailable = false;
                 break;
             case WHITE_KING:
-                if (ply.getSource() == Coordinate.e1) {
+                if (ply.source == Coordinate.e1) {
                     this.whiteQueenSideCastlingAvailable = false;
                     this.whiteKingSideCastlingAvailable = false;
                 }
                 break;
             case BLACK_KING:
-                if (ply.getSource() == Coordinate.d8) {
+                if (ply.source == Coordinate.d8) {
                     this.blackQueenSideCastlingAvailable = false;
                     this.blackKingSideCastlingAvailable = false;
                 }
                 break;
         }
-        if (ply.getCapturedPiece() != null) {
-            switch (ply.getCapturedPiece()) {
+        if (ply.capturedPiece != null) {
+            switch (ply.capturedPiece) {
                 case WHITE_ROOK:
-                    if (ply.getSource() == Coordinate.a1) this.whiteQueenSideCastlingAvailable = false;
-                    if (ply.getSource() == Coordinate.h1) this.whiteKingSideCastlingAvailable = false;
+                    if (ply.source == Coordinate.a1) this.whiteQueenSideCastlingAvailable = false;
+                    if (ply.source == Coordinate.h1) this.whiteKingSideCastlingAvailable = false;
                     break;
                 case BLACK_ROOK:
-                    if (ply.getSource() == Coordinate.a8) this.blackQueenSideCastlingAvailable = false;
-                    if (ply.getSource() == Coordinate.h8) this.blackKingSideCastlingAvailable = false;
+                    if (ply.source == Coordinate.a8) this.blackQueenSideCastlingAvailable = false;
+                    if (ply.source == Coordinate.h8) this.blackKingSideCastlingAvailable = false;
                     break;
             }
         }

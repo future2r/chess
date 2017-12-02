@@ -119,7 +119,7 @@ final class BoardCanvas extends Canvas {
         Coordinate coordinate = getSquareAt(e.getX(), e.getY());
         if (coordinate != null) {
             Optional<Ply> ply = this.displayedPliesProperty.stream()
-                    .filter(m -> coordinate.equals(m.getTarget()) || coordinate.equals(m.getCaptures()))
+                    .filter(m -> coordinate.equals(m.target) || coordinate.equals(m.captures))
                     .findFirst();
             if (ply.isPresent()) {
                 tooltip.setText(ply.get().getDisplayName());
@@ -198,7 +198,7 @@ final class BoardCanvas extends Canvas {
     private void selectSquare(Coordinate coordinate) {
         // check if we can execute a go
         Optional<Ply> ply = this.displayedPliesProperty.stream()
-                .filter(m -> coordinate.equals(m.getTarget()) || coordinate.equals(m.getCaptures()))
+                .filter(m -> coordinate.equals(m.target) || coordinate.equals(m.captures))
                 .findFirst();
 
         if (ply.isPresent()) {
@@ -214,7 +214,7 @@ final class BoardCanvas extends Canvas {
         this.activePlayerProperty.set(this.game.getActivePlayer());
         this.checkStateProperty.set(this.game.getCheckState());
         this.selectedSquareProperty.set(null);
-        this.focusedSquareProperty.set(ply.getTarget());
+        this.focusedSquareProperty.set(ply.target);
     }
 
 
@@ -318,9 +318,9 @@ final class BoardCanvas extends Canvas {
             gc.translate(squareXOffset, squareYOffset);
 
             BoardRenderer.SquareIndicator squareIndicator;
-            if (this.displayedPliesProperty.stream().anyMatch(m -> coordinate.equals(m.getCaptures()))) {
+            if (this.displayedPliesProperty.stream().anyMatch(m -> coordinate.equals(m.captures))) {
                 squareIndicator = BoardRenderer.SquareIndicator.CAPTURED;
-            } else if (this.displayedPliesProperty.stream().anyMatch(m -> coordinate.equals(m.getTarget()))) {
+            } else if (this.displayedPliesProperty.stream().anyMatch(m -> coordinate.equals(m.target))) {
                 squareIndicator = BoardRenderer.SquareIndicator.TARGET;
             } else {
                 squareIndicator = null;

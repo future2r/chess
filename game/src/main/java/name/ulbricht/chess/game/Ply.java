@@ -39,13 +39,12 @@ public final class Ply {
         return new Ply(PlyType.PAWN_DOUBLE_ADVANCE, piece, source, target, null, null);
     }
 
-    static Ply pawnEnPassant(Piece piece, Coordinate source, Coordinate target, Coordinate captures, Piece capturedPiece) {
+    static Ply pawnEnPassant(Piece piece, Coordinate source, Coordinate target) {
         requirePieceType(piece, PieceType.PAWN);
         Objects.requireNonNull(source);
         Objects.requireNonNull(target);
-        Objects.requireNonNull(captures);
-        requirePieceType(capturedPiece, PieceType.PAWN);
-        if (piece.player == capturedPiece.player) throw new IllegalStateException("Cannot capture own piece");
+        Coordinate captures = target.go(MoveDirection.forward(piece.player.opponent()));
+        Piece capturedPiece = piece.player == Player.WHITE ? Piece.BLACK_PAWN : Piece.WHITE_PAWN;
 
         return new Ply(PlyType.PAWN_EN_PASSANT, piece, source, target, captures, capturedPiece);
     }
@@ -76,12 +75,12 @@ public final class Ply {
             throw new IllegalArgumentException("Illegal piece type: " + piece.type);
     }
 
-    private final PlyType type;
-    private final Piece piece;
-    private final Coordinate source;
-    private final Coordinate target;
-    private final Coordinate captures;
-    private final Piece capturedPiece;
+    public final PlyType type;
+    public final Piece piece;
+    public final Coordinate source;
+    public final Coordinate target;
+    public final Coordinate captures;
+    public final Piece capturedPiece;
 
     private Ply(PlyType type, Piece piece, Coordinate source, Coordinate target, Coordinate captures, Piece capturedPiece) {
         this.type = type;
@@ -90,30 +89,6 @@ public final class Ply {
         this.target = target;
         this.captures = captures;
         this.capturedPiece = capturedPiece;
-    }
-
-    public PlyType getType() {
-        return this.type;
-    }
-
-    public Piece getPiece() {
-        return this.piece;
-    }
-
-    public Coordinate getSource() {
-        return this.source;
-    }
-
-    public Coordinate getTarget() {
-        return this.target;
-    }
-
-    public Coordinate getCaptures() {
-        return this.captures;
-    }
-
-    public Piece getCapturedPiece() {
-        return this.capturedPiece;
     }
 
     @Override

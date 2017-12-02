@@ -99,6 +99,15 @@ abstract class AbstractPlyTest {
         assertTrue(plies.contains(ply), "Expected ply not found: " + ply);
     }
 
+    static void expectPawnEnPassant(Game game, String sourcePiece, String target) {
+        Ply ply = Ply.pawnEnPassant(FEN.piece(sourcePiece.charAt(0)),
+                Coordinate.valueOf(sourcePiece.substring(1)),
+                Coordinate.valueOf(target));
+
+        List<Ply> plies = game.getValidPlies(Coordinate.valueOf(sourcePiece.substring(1)));
+        assertTrue(plies.contains(ply), "Expected ply not found: " + ply);
+    }
+
     static void expectKingSideCastling(Game game, String sourcePiece) {
         Ply ply = Ply.kingSideCastling(FEN.piece(sourcePiece.charAt(0)));
 
@@ -112,4 +121,4 @@ abstract class AbstractPlyTest {
         List<Ply> plies = game.getValidPlies(Coordinate.valueOf(sourcePiece.substring(1)));
         assertTrue(plies.contains(ply), "Expected ply not found: " + ply);
     }
- }
+}
