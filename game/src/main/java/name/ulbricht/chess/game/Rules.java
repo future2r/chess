@@ -90,7 +90,7 @@ final class Rules {
         return plies;
     }
 
-    static List<Ply> pawnPlies(Piece[] board, Coordinate source) {
+    static List<Ply> pawnPlies(Piece[] board, Coordinate source, Coordinate enPassantTarget) {
         List<Ply> plies = new ArrayList<>();
         Piece piece = Objects.requireNonNull(board[Objects.requireNonNull(source).ordinal()]);
 
@@ -127,6 +127,13 @@ final class Rules {
                         //plies.add(Ply.pawnPromotionAndCaptures(piece, source, target, capturedPiece));
                     } else {
                         plies.add(Ply.moveAndCaptures(piece, source, target, capturedPiece));
+                    }
+                }
+                if (target == enPassantTarget) {
+                    Coordinate captures = Coordinate.valueOf(target.columnIndex, piece.player == Player.WHITE ? 4 : 3);
+                    capturedPiece = board[captures.ordinal()];
+                    if (capturedPiece.type == PieceType.PAWN && capturedPiece.player.isOpponent(piece.player)) {
+                        plies.add(Ply.pawnEnPassant(piece, source, target, captures, capturedPiece));
                     }
                 }
             }
@@ -184,6 +191,10 @@ final class Rules {
                 move(board, ply.getSource(), ply.getTarget());
                 break;
             case PAWN_DOUBLE_ADVANCE:
+                move(board, ply.getSource(), ply.getTarget());
+                break;
+            case PAWN_EN_PASSANT:
+                board[ply.getCaptures().ordinal()] = null;
                 move(board, ply.getSource(), ply.getTarget());
                 break;
             case KING_SIDE_CASTLING: {

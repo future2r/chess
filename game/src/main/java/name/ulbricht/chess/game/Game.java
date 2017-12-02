@@ -34,16 +34,20 @@ public final class Game {
     public Game(Setup setup) {
         this.board = new Piece[Coordinate.COLUMNS * Coordinate.ROWS];
 
+        // TODO we should check if there is a king for each side
         for (Coordinate coordinate : Coordinate.values()) {
             setPiece(coordinate, setup.getPiece(coordinate));
         }
+
         this.activePlayer = setup.getActivePlayer();
-        this.checkState = CheckState.NONE;
 
         this.whiteKingSideCastlingAvailable = setup.isWhiteKingSideCastlingAvailable();
         this.whiteQueenSideCastlingAvailable = setup.isWhiteQueenSideCastlingAvailable();
         this.blackKingSideCastlingAvailable = setup.isBlackKingSideCastlingAvailable();
         this.blackQueenSideCastlingAvailable = setup.isBlackQueenSideCastlingAvailable();
+
+        // TODO we should check if this can be valid
+        this.enPassantTarget = setup.getEnPassantTarget();
 
         updateValidPlies();
     }
@@ -164,7 +168,7 @@ public final class Game {
                         plies.addAll(Rules.plies(this.board, source, 1, KnightJump.values()));
                         break;
                     case PAWN:
-                        plies.addAll(Rules.pawnPlies(this.board, source));
+                        plies.addAll(Rules.pawnPlies(this.board, source, this.enPassantTarget));
                         break;
                 }
             }
@@ -203,7 +207,13 @@ public final class Game {
 
         Rules.performPly(this.board, ply);
 
-        // TODO set en passant target
+        // set en passant target
+        if (ply.getType() == PlyType.PAWN_DOUBLE_ADVANCE) {
+            Coordinate target = ply.getTarget();
+            this.enPassantTarget = Coordinate.valueOf(target.columnIndex, ply.getPiece().player == Player.WHITE ? 2 : 5);
+        } else {
+            this.enPassantTarget = null;
+        }
 
         // update castling availability
         switch (ply.getPiece()) {

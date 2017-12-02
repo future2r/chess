@@ -20,7 +20,9 @@ public final class Ply {
         requirePieceType(piece, PieceType.values());
         Objects.requireNonNull(source);
         Objects.requireNonNull(target);
+
         Objects.requireNonNull(capturedPiece);
+        if (piece.player == capturedPiece.player) throw new IllegalStateException("Cannot capture own piece");
 
         return new Ply(PlyType.MOVE, piece, source, target, target, capturedPiece);
     }
@@ -35,6 +37,17 @@ public final class Ply {
         target = source.go(MoveDirection.forward(piece.player), 2);
 
         return new Ply(PlyType.PAWN_DOUBLE_ADVANCE, piece, source, target, null, null);
+    }
+
+    static Ply pawnEnPassant(Piece piece, Coordinate source, Coordinate target, Coordinate captures, Piece capturedPiece) {
+        requirePieceType(piece, PieceType.PAWN);
+        Objects.requireNonNull(source);
+        Objects.requireNonNull(target);
+        Objects.requireNonNull(captures);
+        requirePieceType(capturedPiece, PieceType.PAWN);
+        if (piece.player == capturedPiece.player) throw new IllegalStateException("Cannot capture own piece");
+
+        return new Ply(PlyType.PAWN_EN_PASSANT, piece, source, target, captures, capturedPiece);
     }
 
     static Ply kingSideCastling(Piece piece) {
