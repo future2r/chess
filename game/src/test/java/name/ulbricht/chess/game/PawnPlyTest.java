@@ -42,7 +42,15 @@ final class PawnPlyTest extends AbstractPlyTest {
         // check plies for white pawn
         expectPlyNumber(game, "Pf5", 2);
         expectMove(game, "Pf5", "f6");
-        expectPawnEnPassant(game, "Pf5","e6");
+        expectPawnEnPassant(game, "Pf5", "e6");
+    }
+
+    @Test
+    void whitePromotion() {
+        Game game = white("ke8", "rh8", "Pg7", "pb2", "Ra1", "Ke1");
+        expectPlyNumber(game, "Pg7", 2);
+        expectPawnPromotion(game, "Pg7", "g8");
+        expectPawnPromotionAndCaptures(game, "Pg7", "rh8");
     }
 
     @Test
@@ -83,6 +91,14 @@ final class PawnPlyTest extends AbstractPlyTest {
         // check plies for black pawn
         expectPlyNumber(game, "pf4", 2);
         expectMove(game, "pf4", "f3");
-        expectPawnEnPassant(game, "pf4","e3");
+        expectPawnEnPassant(game, "pf4", "e3");
+    }
+
+    @Test
+    void blackPromotion() {
+        Game game = black("ke8", "rh8", "Pg7", "pb2", "Ra1", "Ke1");
+        expectPlyNumber(game, "pb2", 2);
+        expectPawnPromotion(game, "pb2", "b1");
+        expectPawnPromotionAndCaptures(game, "pb2", "Ra1");
     }
 }

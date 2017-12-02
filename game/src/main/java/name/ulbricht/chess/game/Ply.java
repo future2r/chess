@@ -49,6 +49,32 @@ public final class Ply {
         return new Ply(PlyType.PAWN_EN_PASSANT, piece, source, target, captures, capturedPiece);
     }
 
+    static Ply pawnPromotion(Piece piece, Coordinate source, Coordinate target) {
+        requirePieceType(piece, PieceType.PAWN);
+        Objects.requireNonNull(source);
+
+        Objects.requireNonNull(target);
+        int promotionRow = piece.player == Player.WHITE ? 7 : 0;
+        if (target.rowIndex != promotionRow)
+            throw new IllegalArgumentException("Illegal promotion row: " + target.rowIndex);
+
+        return new Ply(PlyType.PAWN_PROMOTION, piece, source, target, null, null);
+    }
+
+    static Ply pawnPromotionAndCaptures(Piece piece, Coordinate source, Coordinate target, Piece capturedPiece) {
+        requirePieceType(piece, PieceType.PAWN);
+        Objects.requireNonNull(source);
+
+        Objects.requireNonNull(target);
+        int promotionRow = piece.player == Player.WHITE ? 7 : 0;
+        if (target.rowIndex != promotionRow)
+            throw new IllegalArgumentException("Illegal promotion row: " + target.rowIndex);
+
+        Objects.requireNonNull(capturedPiece);
+
+        return new Ply(PlyType.PAWN_PROMOTION, piece, source, target, target, capturedPiece);
+    }
+
     static Ply kingSideCastling(Piece piece) {
         requirePieceType(piece, PieceType.KING);
 
@@ -81,6 +107,7 @@ public final class Ply {
     public final Coordinate target;
     public final Coordinate captures;
     public final Piece capturedPiece;
+    public PieceType promotion;
 
     private Ply(PlyType type, Piece piece, Coordinate source, Coordinate target, Coordinate captures, Piece capturedPiece) {
         this.type = type;

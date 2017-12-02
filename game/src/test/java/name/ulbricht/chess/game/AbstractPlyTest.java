@@ -108,6 +108,25 @@ abstract class AbstractPlyTest {
         assertTrue(plies.contains(ply), "Expected ply not found: " + ply);
     }
 
+    static void expectPawnPromotion(Game game, String sourcePiece, String target) {
+        Ply ply = Ply.pawnPromotion(FEN.piece(sourcePiece.charAt(0)),
+                Coordinate.valueOf(sourcePiece.substring(1)),
+                Coordinate.valueOf(target));
+
+        List<Ply> plies = game.getValidPlies(Coordinate.valueOf(sourcePiece.substring(1)));
+        assertTrue(plies.contains(ply), "Expected ply not found: " + ply);
+    }
+
+    static void expectPawnPromotionAndCaptures(Game game, String sourcePiece, String capturedPiece) {
+        Ply ply = Ply.pawnPromotionAndCaptures(FEN.piece(sourcePiece.charAt(0)),
+                Coordinate.valueOf(sourcePiece.substring(1)),
+                Coordinate.valueOf(capturedPiece.substring(1)),
+                FEN.piece(capturedPiece.charAt(0)));
+
+        List<Ply> plies = game.getValidPlies(Coordinate.valueOf(sourcePiece.substring(1)));
+        assertTrue(plies.contains(ply), "Expected ply not found: " + ply);
+    }
+
     static void expectKingSideCastling(Game game, String sourcePiece) {
         Ply ply = Ply.kingSideCastling(FEN.piece(sourcePiece.charAt(0)));
 

@@ -102,7 +102,7 @@ final class Rules {
         Coordinate target = source.go(direction);
         if (target != null && board[target.ordinal()] == null) {
             if (target.rowIndex == promotionRow) {
-                //plies.add(Ply.pawnPromotion(piece, source, target));
+                plies.add(Ply.pawnPromotion(piece, source, target));
             } else {
                 plies.add(Ply.move(piece, source, target));
             }
@@ -124,7 +124,7 @@ final class Rules {
                 Piece capturedPiece = board[target.ordinal()];
                 if (capturedPiece != null && capturedPiece.player.isOpponent(piece.player)) {
                     if (target.rowIndex == promotionRow) {
-                        //plies.add(Ply.pawnPromotionAndCaptures(piece, source, target, capturedPiece));
+                        plies.add(Ply.pawnPromotionAndCaptures(piece, source, target, capturedPiece));
                     } else {
                         plies.add(Ply.moveAndCaptures(piece, source, target, capturedPiece));
                     }
@@ -196,6 +196,12 @@ final class Rules {
             case PAWN_EN_PASSANT:
                 board[ply.captures.ordinal()] = null;
                 move(board, ply.source, ply.target);
+                break;
+            case PAWN_PROMOTION:
+                if (ply.captures != null) board[ply.captures.ordinal()] = null;
+                board[ply.source.ordinal()] = null;
+                board[ply.target.ordinal()] = Piece.valueOf(
+                        ply.promotion != null ? ply.promotion : PieceType.QUEEN, ply.piece.player);
                 break;
             case KING_SIDE_CASTLING: {
                 move(board, ply.source, ply.target);

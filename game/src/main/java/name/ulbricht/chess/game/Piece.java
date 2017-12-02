@@ -1,5 +1,7 @@
 package name.ulbricht.chess.game;
 
+import java.util.Objects;
+
 /**
  * Represents a piece on a board. A piece is defined by a piece type and the player that owns this piece.
  */
@@ -28,5 +30,16 @@ public enum Piece {
 
     public String getDisplayName() {
         return String.format("%s (%s)", this.type.getDisplayName(), this.player.getDisplayName());
+    }
+
+    public static Piece valueOf(PieceType type, Player player) {
+        Objects.requireNonNull(type);
+        Objects.requireNonNull(player);
+
+        for (Piece piece : values()) {
+            if (piece.type == type && piece.player == player) return piece;
+        }
+
+        throw new IllegalStateException("Piece " + type + " not found for player " + player);
     }
 }
