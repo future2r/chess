@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class SANTest {
+final class SANTest {
 
     @Test
-    public void pawnMove() {
+    void pawnMove() {
         SAN.Ply ply = SAN.ply("e4");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -21,7 +21,7 @@ public final class SANTest {
     }
 
     @Test
-    public void pawnMove_Check() {
+    void pawnMove_Check() {
         SAN.Ply ply = SAN.ply("c6+");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -35,7 +35,7 @@ public final class SANTest {
     }
 
     @Test
-    public void pawnMove_Promotion() {
+    void pawnMove_Promotion() {
         SAN.Ply ply = SAN.ply("b8=Q");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -49,7 +49,7 @@ public final class SANTest {
     }
 
     @Test
-    public void pawnMove_Promotion_Check() {
+    void pawnMove_Promotion_Check() {
         SAN.Ply ply = SAN.ply("a1=Q+");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -63,7 +63,7 @@ public final class SANTest {
     }
 
     @Test
-    public void pawnCapture() {
+    void pawnCapture() {
         SAN.Ply ply = SAN.ply("dxe4");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -77,7 +77,7 @@ public final class SANTest {
     }
 
     @Test
-    public void pawnCapture_Check() {
+    void pawnCapture_Check() {
         SAN.Ply ply = SAN.ply("cxf8+");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -91,7 +91,7 @@ public final class SANTest {
     }
 
     @Test
-    public void pawnCapture_Promotion() {
+    void pawnCapture_Promotion() {
         SAN.Ply ply = SAN.ply("axb1=R");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -105,7 +105,7 @@ public final class SANTest {
     }
 
     @Test
-    public void pawnCapture_Promotion_Check() {
+    void pawnCapture_Promotion_Check() {
         SAN.Ply ply = SAN.ply("fxg8=N+");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -119,7 +119,7 @@ public final class SANTest {
     }
 
     @Test
-    public void pieceMove() {
+    void pieceMove() {
         SAN.Ply ply = SAN.ply("Nd2");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -133,7 +133,7 @@ public final class SANTest {
     }
 
     @Test
-    public void pieceMove_Check() {
+    void pieceMove_Check() {
         SAN.Ply ply = SAN.ply("Bc2+");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -147,7 +147,7 @@ public final class SANTest {
     }
 
     @Test
-    public void pieceMove_Column() {
+    void pieceMove_Column() {
         SAN.Ply ply = SAN.ply("Rae1");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -161,7 +161,7 @@ public final class SANTest {
     }
 
     @Test
-    public void pieceMove_Row() {
+    void pieceMove_Row() {
         SAN.Ply ply = SAN.ply("N5f3");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -175,7 +175,7 @@ public final class SANTest {
     }
 
     @Test
-    public void pieceCapture() {
+    void pieceCapture() {
         SAN.Ply ply = SAN.ply("Qxe7");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -189,7 +189,7 @@ public final class SANTest {
     }
 
     @Test
-    public void pieceCapture_Check() {
+    void pieceCapture_Check() {
         SAN.Ply ply = SAN.ply("Rxd5+");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
@@ -203,7 +203,7 @@ public final class SANTest {
     }
 
     @Test
-    public void kingSideCastling() {
+    void kingSideCastling() {
         SAN.Ply ply = SAN.ply("O-O");
 
         assertEquals(SAN.PlyType.KING_SIDE_CASTLING, ply.type);
@@ -217,7 +217,7 @@ public final class SANTest {
     }
 
     @Test
-    public void kingSideCastling_Check() {
+    void kingSideCastling_Check() {
         SAN.Ply ply = SAN.ply("O-O+");
 
         assertEquals(SAN.PlyType.KING_SIDE_CASTLING, ply.type);
@@ -231,7 +231,7 @@ public final class SANTest {
     }
 
     @Test
-    public void queenSideCastling() {
+    void queenSideCastling() {
         SAN.Ply ply = SAN.ply("O-O-O");
 
         assertEquals(SAN.PlyType.QUEEN_SIDE_CASTLING, ply.type);
@@ -245,7 +245,7 @@ public final class SANTest {
     }
 
     @Test
-    public void queenSideCastling_Check() {
+    void queenSideCastling_Check() {
         SAN.Ply ply = SAN.ply("O-O-O+");
 
         assertEquals(SAN.PlyType.QUEEN_SIDE_CASTLING, ply.type);

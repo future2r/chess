@@ -16,7 +16,7 @@ public final class SAN {
     public static final char KING = 'K';
 
     public enum PlyType {
-        MOVE, KING_SIDE_CASTLING, QUEEN_SIDE_CASTLING;
+        MOVE, KING_SIDE_CASTLING, QUEEN_SIDE_CASTLING
     }
 
     public static final class Ply {

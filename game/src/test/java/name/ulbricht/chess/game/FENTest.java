@@ -6,10 +6,10 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FENTest {
+final class FENTest {
 
     @Test
-    public void testDefault() {
+    void testDefault() {
         Setup setup = FEN.createSetup(FEN.STANDARD);
 
         assertEquals(Piece.BLACK_ROOK, setup.getPiece(Coordinate.a8));
@@ -50,7 +50,7 @@ public class FENTest {
     }
 
     @Test
-    public void testSpecial() {
+    void testSpecial() {
         Setup setup = FEN.createSetup("4k3/8/8/8/8/8/4P3/4K3 w - - 5 39");
 
         assertEmpty(setup, Coordinate.a8, Coordinate.d8);
@@ -75,7 +75,7 @@ public class FENTest {
     }
 
     @Test
-    public void testPieces() {
+    void testPieces() {
         assertEquals(Piece.WHITE_PAWN, FEN.createSetup("P7/8/8/8/8/8/8/8 w - - 0 1").getPiece(Coordinate.a8));
         assertEquals(Piece.WHITE_ROOK, FEN.createSetup("R7/8/8/8/8/8/8/8 w - - 0 1").getPiece(Coordinate.a8));
         assertEquals(Piece.WHITE_KNIGHT, FEN.createSetup("N7/8/8/8/8/8/8/8 w - - 0 1").getPiece(Coordinate.a8));
@@ -92,13 +92,13 @@ public class FENTest {
     }
 
     @Test
-    public void testPlayer() {
+    void testPlayer() {
         assertEquals(Player.WHITE, FEN.createSetup("8/8/8/8/8/8/8/8 w - - 0 1").getActivePlayer());
         assertEquals(Player.BLACK, FEN.createSetup("8/8/8/8/8/8/8/8 b - - 0 1").getActivePlayer());
     }
 
     @Test
-    public void testCastling() {
+    void testCastling() {
         assertCastling(FEN.createSetup("8/8/8/8/8/8/8/8 w - - 0 1"), false, false, false, false);
         assertCastling(FEN.createSetup("8/8/8/8/8/8/8/8 w KQkq - 0 1"), true, true, true, true);
 
@@ -114,7 +114,7 @@ public class FENTest {
     }
 
     @Test
-    public void testEnPassant() {
+    void testEnPassant() {
         assertNull(FEN.createSetup("8/8/8/8/8/8/8/8 w - - 0 1").getEnPassantTarget());
 
         assertEquals(Coordinate.c3, FEN.createSetup("8/8/8/8/8/8/8/8 b - c3 0 1").getEnPassantTarget());
@@ -125,7 +125,7 @@ public class FENTest {
     }
 
     @Test
-    public void testHalfMoveClock() {
+    void testHalfMoveClock() {
         assertEquals(0, FEN.createSetup("8/8/8/8/8/8/8/8 w - - 0 1").getHalfMoveClock());
         assertEquals(42, FEN.createSetup("8/8/8/8/8/8/8/8 w - - 42 1").getHalfMoveClock());
 
@@ -134,7 +134,7 @@ public class FENTest {
     }
 
     @Test
-    public void testFullMoveNumber() {
+    void testFullMoveNumber() {
         assertEquals(1, FEN.createSetup("8/8/8/8/8/8/8/8 w - - 0 1").getFullMoveNumber());
         assertEquals(42, FEN.createSetup("8/8/8/8/8/8/8/8 w - - 0 42").getFullMoveNumber());
 
@@ -165,13 +165,13 @@ public class FENTest {
     }
 
     @Test
-    public void assertToString_Standard() {
+    void assertToString_Standard() {
         Setup setup = Setup.standard();
         assertEquals(FEN.STANDARD, FEN.toString(setup));
     }
 
     @Test
-    public void assertToString_Empty() {
+    void assertToString_Empty() {
         Setup setup = Setup.empty();
         assertEquals("8/8/8/8/8/8/8/8 w KQkq - 0 1", FEN.toString(setup));
     }

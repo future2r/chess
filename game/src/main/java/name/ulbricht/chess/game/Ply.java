@@ -150,28 +150,34 @@ public final class Ply {
     }
 
     public String getDisplayName() {
-        String key = "Ply." + this.type.name() + (this.capturedPiece != null ? ".captures" : "") + ".displayNamePattern";
         switch (this.type) {
             case MOVE:
                 if (this.capturedPiece != null)
-                    return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
-                            this.target, this.capturedPiece.getDisplayName());
-                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source, this.target);
+                    return String.format(Messages.getString("Ply.MOVE.displayNamePattern"),
+                            this.piece.getDisplayName(), this.source, this.target,
+                            this.capturedPiece.getDisplayName());
+                return String.format(Messages.getString("Ply.MOVE.captures.displayNamePattern"),
+                        this.piece.getDisplayName(), this.source, this.target);
             case QUEEN_SIDE_CASTLING:
-                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source, this.target);
+                return String.format(Messages.getString("Ply.QUEEN_SIDE_CASTLING.displayNamePattern"),
+                        this.piece.getDisplayName(), this.source, this.target);
             case KING_SIDE_CASTLING:
-                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source, this.target);
+                return String.format(Messages.getString("Ply.KING_SIDE_CASTLING.displayNamePattern"),
+                        this.piece.getDisplayName(), this.source, this.target);
             case PAWN_DOUBLE_ADVANCE:
-                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source, this.target);
+                return String.format(Messages.getString("Ply.PAWN_DOUBLE_ADVANCE.displayNamePattern"),
+                        this.piece.getDisplayName(), this.source, this.target);
             case PAWN_EN_PASSANT:
-                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
-                        this.target, this.capturedPiece.getDisplayName(), this.captures);
+                return String.format(Messages.getString("Ply.PAWN_EN_PASSANT.displayNamePattern"),
+                        this.piece.getDisplayName(), this.source, this.target,
+                        this.capturedPiece.getDisplayName(), this.captures);
             case PAWN_PROMOTION:
                 if (this.capturedPiece != null)
-                    return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
-                            this.target, this.capturedPiece.getDisplayName());
-                return String.format(Messages.getString(key), this.piece.getDisplayName(), this.source,
-                        this.target);
+                    return String.format(Messages.getString("Ply.PAWN_PROMOTION.captures.displayNamePattern"),
+                            this.piece.getDisplayName(), this.source, this.target,
+                            this.capturedPiece.getDisplayName());
+                return String.format(Messages.getString("Ply.PAWN_PROMOTION.displayNamePattern"),
+                        this.piece.getDisplayName(), this.source, this.target);
             default:
                 return null;
         }
