@@ -48,7 +48,7 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.apiguardian </groupId>
+                <groupId>org.apiguardian</groupId>
                 <artifactId>apiguardian-api</artifactId>
                 <version>${apiguardian.version}</version>
             </dependency>
