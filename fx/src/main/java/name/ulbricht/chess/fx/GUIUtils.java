@@ -21,7 +21,7 @@ final class GUIUtils {
         showAlert(ownerNode, Messages.getString("GUIUtils.errorAlert.title"), contentText);
     }
 
-    static void showAlert(Node ownerNode, String title, String contentText) {
+    private static void showAlert(Node ownerNode, String title, String contentText) {
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.getButtonTypes().add(ButtonType.OK);
         alert.initOwner(ownerNode.getScene().getWindow());
