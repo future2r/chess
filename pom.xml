@@ -25,6 +25,7 @@
         <module>game</module>
         <module>pgn</module>
         <module>fx</module>
+        <module>ai</module>
     </modules>
 
     <dependencyManagement>
