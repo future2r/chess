@@ -25,29 +25,16 @@ public final class PGN {
 
     private static final Charset encoding = StandardCharsets.ISO_8859_1;
 
-    public static List<PGNGameInfo> readGameInfos(Path file) throws IOException {
-        return read(file, new PGNGameInfoListener());
-    }
-
-    public static PGNGame readGame(Path file, int index) throws IOException {
-        List<PGNGame> games = readGames(file, index, index);
-        if (games.isEmpty()) throw new IOException("No game found for index: " + index);
-        return games.get(0);
-    }
-
-    public static List<PGNGame> readGames(Path file, int fromIndex, int toIndex) throws IOException {
-        return read(file, new PGNGameListener(fromIndex, toIndex));
-    }
-
-    private static <T> T read(Path file, PGNDatabaseListener<T> listener) throws IOException {
+    public static List<PGNGame> readGames(Path file) throws IOException {
         CharStream cs = CharStreams.fromPath(file, encoding);
         PGNLexer lexer = new PGNLexer(cs);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         PGNParser parser = new PGNParser(tokens);
 
+        PGNGamesListener listener = new PGNGamesListener();
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(listener, parser.parse());
 
-        return listener.getData();
+        return listener.getGames();
     }
 }

@@ -9,87 +9,7 @@ import java.util.Map;
 
 public final class PGNGame {
 
-    private static final class TagGameInfo implements PGNGameInfo {
-
-        private final PGNGame game;
-
-        TagGameInfo(PGNGame game) {
-            this.game = game;
-        }
-
-        @Override
-        public String getEvent() {
-            return this.game.getTag(PGN.EVENT_TAG);
-        }
-
-        @Override
-        public void setEvent(String event) {
-            this.game.setTag(PGN.EVENT_TAG, event);
-        }
-
-        @Override
-        public String getSite() {
-            return this.game.getTag(PGN.SITE_TAG);
-        }
-
-        @Override
-        public void setSite(String site) {
-            this.game.setTag(PGN.SITE_TAG, site);
-        }
-
-        @Override
-        public String getDate() {
-            return this.game.getTag(PGN.DATE_TAG);
-        }
-
-        @Override
-        public void setDate(String date) {
-            this.game.setTag(PGN.DATE_TAG, date);
-        }
-
-        @Override
-        public String getRound() {
-            return this.game.getTag(PGN.ROUND_TAG);
-        }
-
-        @Override
-        public void setRound(String round) {
-            this.game.setTag(PGN.ROUND_TAG, round);
-        }
-
-        @Override
-        public String getWhite() {
-            return this.game.getTag(PGN.WHITE_TAG);
-        }
-
-        @Override
-        public void setWhite(String white) {
-            this.game.setTag(PGN.WHITE_TAG, white);
-        }
-
-        @Override
-        public String getBlack() {
-            return this.game.getTag(PGN.BLACK_TAG);
-        }
-
-        @Override
-        public void setBlack(String black) {
-            this.game.setTag(PGN.BLACK_TAG, black);
-        }
-
-        @Override
-        public PGNResult getResult() {
-            return PGNUtils.toResult(this.game.getTag(PGN.RESULT_TAG));
-        }
-
-        @Override
-        public void setResult(PGNResult result) {
-            this.game.setTag(PGN.RESULT_TAG, result.getText());
-        }
-    }
-
     private final Map<String, String> tags = new HashMap<>();
-    private PGNGameInfo info;
     private final List<SAN.Ply> plies = new ArrayList<>();
 
     public String getTag(String key) {
@@ -101,11 +21,60 @@ public final class PGNGame {
         else this.tags.remove(key);
     }
 
-    public PGNGameInfo getInfo() {
-        if (this.info == null) {
-            this.info = new TagGameInfo(this);
-        }
-        return this.info;
+    public String getEvent() {
+        return getTag(PGN.EVENT_TAG);
+    }
+
+    public void setEvent(String event) {
+        setTag(PGN.EVENT_TAG, event);
+    }
+
+    public String getSite() {
+        return getTag(PGN.SITE_TAG);
+    }
+
+    public void setSite(String site) {
+        setTag(PGN.SITE_TAG, site);
+    }
+
+    public String getDate() {
+        return getTag(PGN.DATE_TAG);
+    }
+
+    public void setDate(String date) {
+        setTag(PGN.DATE_TAG, date);
+    }
+
+    public String getRound() {
+        return getTag(PGN.ROUND_TAG);
+    }
+
+    public void setRound(String round) {
+        setTag(PGN.ROUND_TAG, round);
+    }
+
+    public String getWhite() {
+        return getTag(PGN.WHITE_TAG);
+    }
+
+    public void setWhite(String white) {
+        setTag(PGN.WHITE_TAG, white);
+    }
+
+    public String getBlack() {
+        return getTag(PGN.BLACK_TAG);
+    }
+
+    public void setBlack(String black) {
+        setTag(PGN.BLACK_TAG, black);
+    }
+
+    public PGNResult getResult() {
+        return PGNUtils.toResult(getTag(PGN.RESULT_TAG));
+    }
+
+    public void setResult(PGNResult result) {
+        setTag(PGN.RESULT_TAG, result.getText());
     }
 
     public List<SAN.Ply> getPlies() {
