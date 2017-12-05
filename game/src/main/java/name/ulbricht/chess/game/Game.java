@@ -1,6 +1,7 @@
 package name.ulbricht.chess.game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -98,6 +99,10 @@ public final class Game {
 
     private void setPiece(Coordinate coordinate, Piece piece) {
         this.board[coordinate.ordinal()] = piece;
+    }
+
+    public List<Ply> getValidPlies() {
+        return Collections.unmodifiableList(this.validPlies);
     }
 
     public List<Ply> getValidPlies(Coordinate source) {

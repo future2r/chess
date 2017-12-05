@@ -1,5 +1,6 @@
 package name.ulbricht.chess.game;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,8 +33,8 @@ public final class SAN {
 
         private Ply(PlyType type, PieceType piece, char sourceColumn, char sourceRow,
                     boolean captures, Coordinate target, PieceType promotion, boolean check) {
-            this.type = type;
-            this.piece = piece;
+            this.type = Objects.requireNonNull(type);
+            this.piece = Objects.requireNonNull(piece);
             this.sourceColumn = sourceColumn;
             this.sourceRow = sourceRow;
             this.captures = captures;
@@ -42,6 +43,19 @@ public final class SAN {
             this.check = check;
         }
 
+        @Override
+        public String toString() {
+            return "{" +
+                    "type=" + this.type +
+                    " piece=" + this.piece +
+                    " sourceColumn=" + this.sourceColumn +
+                    " sourceRow=" + this.sourceRow +
+                    " captures=" + this.captures +
+                    " target=" + this.target +
+                    " promotion=" + this.promotion +
+                    " check=" + this.check +
+                    "}";
+        }
     }
 
     private static final Logger log = Logger.getLogger(SAN.class.getPackage().getName());
@@ -75,7 +89,7 @@ public final class SAN {
         if (matcher.group(GROUP_MOVE) != null) {
 
             String sPiece = matcher.group(GROUP_PIECE);
-            PieceType pieceType = !sPiece.isEmpty() ? pieceType(sPiece.charAt(0)) : null;
+            PieceType pieceType = !sPiece.isEmpty() ? pieceType(sPiece.charAt(0)) : PieceType.PAWN;
 
             String sSourceColumn = matcher.group(GROUP_SOURCE_COLUMN);
             char srcColumnIdx = !sSourceColumn.isEmpty() ? sSourceColumn.charAt(0) : 0;
@@ -98,13 +112,13 @@ public final class SAN {
         } else if (matcher.group(GROUP_KING_SIDE_CASTLING) != null) {
             boolean check = !matcher.group(GROUP_KING_SIDE_CASTLING_CHECK).isEmpty();
 
-            return new Ply(PlyType.KING_SIDE_CASTLING, null, (char) 0, (char) 0,
+            return new Ply(PlyType.KING_SIDE_CASTLING, PieceType.KING, (char) 0, (char) 0,
                     false, null, null, check);
 
         } else if (matcher.group(GROUP_QUEEN_SIDE_CASTLING) != null) {
             boolean check = !matcher.group(GROUP_QUEEN_SIDE_CASTLING_CHECK).isEmpty();
 
-            return new Ply(PlyType.QUEEN_SIDE_CASTLING, null, (char) 0, (char) 0,
+            return new Ply(PlyType.QUEEN_SIDE_CASTLING, PieceType.KING, (char) 0, (char) 0,
                     false, null, null, check);
 
         } else {

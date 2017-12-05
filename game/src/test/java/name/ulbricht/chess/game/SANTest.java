@@ -11,7 +11,7 @@ final class SANTest {
         SAN.Ply ply = SAN.ply("e4");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -25,7 +25,7 @@ final class SANTest {
         SAN.Ply ply = SAN.ply("c6+");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -39,7 +39,7 @@ final class SANTest {
         SAN.Ply ply = SAN.ply("b8=Q");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -53,7 +53,7 @@ final class SANTest {
         SAN.Ply ply = SAN.ply("a1=Q+");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -67,7 +67,7 @@ final class SANTest {
         SAN.Ply ply = SAN.ply("dxe4");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals('d', ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertTrue(ply.captures);
@@ -81,7 +81,7 @@ final class SANTest {
         SAN.Ply ply = SAN.ply("cxf8+");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals('c', ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertTrue(ply.captures);
@@ -95,7 +95,7 @@ final class SANTest {
         SAN.Ply ply = SAN.ply("axb1=R");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals('a', ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertTrue(ply.captures);
@@ -109,7 +109,7 @@ final class SANTest {
         SAN.Ply ply = SAN.ply("fxg8=N+");
 
         assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals('f', ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertTrue(ply.captures);
@@ -207,7 +207,7 @@ final class SANTest {
         SAN.Ply ply = SAN.ply("O-O");
 
         assertEquals(SAN.PlyType.KING_SIDE_CASTLING, ply.type);
-        assertNull(ply.piece);
+        assertEquals(PieceType.KING, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -221,7 +221,7 @@ final class SANTest {
         SAN.Ply ply = SAN.ply("O-O+");
 
         assertEquals(SAN.PlyType.KING_SIDE_CASTLING, ply.type);
-        assertNull(ply.piece);
+        assertEquals(PieceType.KING, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -235,7 +235,7 @@ final class SANTest {
         SAN.Ply ply = SAN.ply("O-O-O");
 
         assertEquals(SAN.PlyType.QUEEN_SIDE_CASTLING, ply.type);
-        assertNull(ply.piece);
+        assertEquals(PieceType.KING, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -249,7 +249,7 @@ final class SANTest {
         SAN.Ply ply = SAN.ply("O-O-O+");
 
         assertEquals(SAN.PlyType.QUEEN_SIDE_CASTLING, ply.type);
-        assertNull(ply.piece);
+        assertEquals(PieceType.KING, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
