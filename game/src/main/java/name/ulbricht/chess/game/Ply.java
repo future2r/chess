@@ -90,7 +90,7 @@ public final class Ply {
 
         int row = piece.player == Player.WHITE ? 0 : 7;
         Coordinate source = Coordinate.valueOf(4, row);
-        Coordinate target = Coordinate.valueOf(1, row);
+        Coordinate target = Coordinate.valueOf(2, row);
 
         return new Ply(PlyType.QUEEN_SIDE_CASTLING, piece, source, target, null, null);
     }
@@ -153,10 +153,10 @@ public final class Ply {
         switch (this.type) {
             case MOVE:
                 if (this.capturedPiece != null)
-                    return String.format(Messages.getString("Ply.MOVE.displayNamePattern"),
+                    return String.format(Messages.getString("Ply.MOVE.captures.displayNamePattern"),
                             this.piece.getDisplayName(), this.source, this.target,
                             this.capturedPiece.getDisplayName());
-                return String.format(Messages.getString("Ply.MOVE.captures.displayNamePattern"),
+                return String.format(Messages.getString("Ply.MOVE.displayNamePattern"),
                         this.piece.getDisplayName(), this.source, this.target);
             case QUEEN_SIDE_CASTLING:
                 return String.format(Messages.getString("Ply.QUEEN_SIDE_CASTLING.displayNamePattern"),

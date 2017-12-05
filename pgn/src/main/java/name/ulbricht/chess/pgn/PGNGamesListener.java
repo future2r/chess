@@ -1,51 +1,34 @@
 package name.ulbricht.chess.pgn;
 
 import name.ulbricht.chess.game.SAN;
+import name.ulbricht.chess.game.SANPly;
 import name.ulbricht.chess.pgn.antlr.PGNBaseListener;
 import name.ulbricht.chess.pgn.antlr.PGNParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-final class PGNGameListener extends PGNBaseListener implements PGNDatabaseListener<List<PGNGame>> {
+final class PGNGamesListener extends PGNBaseListener {
 
     private final List<PGNGame> games = new ArrayList<>();
-    private int fromIndex;
-    private int toIndex;
 
-    private int currentIndex = -1;
     private PGNGame currentGame;
     private String currentTagName;
     private String currentTagValue;
 
-    PGNGameListener(int fromIndex, int toIndex) {
-        if (fromIndex < 0) throw new IllegalArgumentException("fromIndex cannot be < 0");
-        if (toIndex < 0) throw new IllegalArgumentException("toIndex cannot be < 0");
-        if (fromIndex > toIndex) throw new IllegalArgumentException("toIndex cannot be > toIndex");
-
-        this.fromIndex = fromIndex;
-        this.toIndex = toIndex;
-    }
-
-    @Override
-    public List<PGNGame> getData() {
+    public List<PGNGame> getGames() {
         return this.games;
     }
 
     @Override
     public void enterPgn_game(PGNParser.Pgn_gameContext ctx) {
-        this.currentIndex++;
-        if (this.currentIndex >= this.fromIndex && this.currentIndex <= this.toIndex) {
-            this.currentGame = new PGNGame();
-        }
+        this.currentGame = new PGNGame();
     }
 
     @Override
     public void exitPgn_game(PGNParser.Pgn_gameContext ctx) {
-        if (this.currentGame != null) {
-            this.games.add(this.currentGame);
-            this.currentGame = null;
-        }
+        this.games.add(this.currentGame);
+        this.currentGame = null;
     }
 
     @Override
@@ -72,7 +55,7 @@ final class PGNGameListener extends PGNBaseListener implements PGNDatabaseListen
     @Override
     public void enterSan_move(PGNParser.San_moveContext ctx) {
         if (this.currentGame != null) {
-            SAN.Ply ply = SAN.ply(ctx.SYMBOL().getText());
+            SANPly ply = SAN.ply(ctx.SYMBOL().getText());
             this.currentGame.getPlies().add(ply);
         }
     }

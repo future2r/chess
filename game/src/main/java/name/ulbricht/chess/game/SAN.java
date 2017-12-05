@@ -1,8 +1,10 @@
 package name.ulbricht.chess.game;
 
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Implemenation of the Standard Algebraic Notation.
@@ -14,35 +16,6 @@ public final class SAN {
     public static final char BISHOP = 'B';
     public static final char QUEEN = 'Q';
     public static final char KING = 'K';
-
-    public enum PlyType {
-        MOVE, KING_SIDE_CASTLING, QUEEN_SIDE_CASTLING
-    }
-
-    public static final class Ply {
-
-        public final PlyType type;
-        public final PieceType piece;
-        public final char sourceColumn;
-        public final char sourceRow;
-        public final boolean captures;
-        public final Coordinate target;
-        public final PieceType promotion;
-        public final boolean check;
-
-        private Ply(PlyType type, PieceType piece, char sourceColumn, char sourceRow,
-                    boolean captures, Coordinate target, PieceType promotion, boolean check) {
-            this.type = type;
-            this.piece = piece;
-            this.sourceColumn = sourceColumn;
-            this.sourceRow = sourceRow;
-            this.captures = captures;
-            this.target = target;
-            this.promotion = promotion;
-            this.check = check;
-        }
-
-    }
 
     private static final Logger log = Logger.getLogger(SAN.class.getPackage().getName());
 
@@ -64,7 +37,7 @@ public final class SAN {
                     "|(?<qc>(O-O-O)(?<qcc>\\+?))" +
                     "|(?<kc>(O-O)(?<kcc>\\+?))");
 
-    public static Ply ply(String s) {
+    public static SANPly ply(String s) {
         log.fine(() -> "Parsing " + s);
 
         Matcher matcher = pattern.matcher(s);
@@ -75,7 +48,7 @@ public final class SAN {
         if (matcher.group(GROUP_MOVE) != null) {
 
             String sPiece = matcher.group(GROUP_PIECE);
-            PieceType pieceType = !sPiece.isEmpty() ? pieceType(sPiece.charAt(0)) : null;
+            PieceType pieceType = !sPiece.isEmpty() ? pieceType(sPiece.charAt(0)) : PieceType.PAWN;
 
             String sSourceColumn = matcher.group(GROUP_SOURCE_COLUMN);
             char srcColumnIdx = !sSourceColumn.isEmpty() ? sSourceColumn.charAt(0) : 0;
@@ -92,19 +65,19 @@ public final class SAN {
 
             boolean check = !matcher.group(GROUP_CHECK).isEmpty();
 
-            return new Ply(PlyType.MOVE, pieceType, srcColumnIdx, srcRowIdx,
+            return new SANPly(SANPlyType.MOVE, pieceType, srcColumnIdx, srcRowIdx,
                     captures, target, promotion, check);
 
         } else if (matcher.group(GROUP_KING_SIDE_CASTLING) != null) {
             boolean check = !matcher.group(GROUP_KING_SIDE_CASTLING_CHECK).isEmpty();
 
-            return new Ply(PlyType.KING_SIDE_CASTLING, null, (char) 0, (char) 0,
+            return new SANPly(SANPlyType.KING_SIDE_CASTLING, PieceType.KING, (char) 0, (char) 0,
                     false, null, null, check);
 
         } else if (matcher.group(GROUP_QUEEN_SIDE_CASTLING) != null) {
             boolean check = !matcher.group(GROUP_QUEEN_SIDE_CASTLING_CHECK).isEmpty();
 
-            return new Ply(PlyType.QUEEN_SIDE_CASTLING, null, (char) 0, (char) 0,
+            return new SANPly(SANPlyType.QUEEN_SIDE_CASTLING, PieceType.KING, (char) 0, (char) 0,
                     false, null, null, check);
 
         } else {
@@ -145,6 +118,98 @@ public final class SAN {
             default:
                 throw new IllegalArgumentException("Illegal piece type symbol: " + symbol);
         }
+    }
+
+    /**
+     * Finds a valid ply for the active player that matches the noted ply.
+     *
+     * @param game   the current game
+     * @param sanPly the noted SAN ply
+     * @return a matching ply the is valid for the active player in the current game, otherwise {@code null}
+     */
+    public static Ply findPly(Game game, SANPly sanPly) {
+        Player player = game.getActivePlayer();
+        List<name.ulbricht.chess.game.Ply> plies = game.getValidPlies();
+        if (plies.isEmpty()) return null;
+
+        switch (sanPly.type) {
+            case MOVE: {
+                Piece piece = Piece.valueOf(sanPly.piece, player);
+                List<Ply> filteredPlies = game.getValidPlies().stream()
+                        .filter(p -> p.piece == piece)
+                        .filter(p -> p.target == sanPly.target)
+                        .collect(Collectors.toList());
+                if (filteredPlies.isEmpty()) return null;
+
+                Ply ply = null;
+
+                if (piece.type == PieceType.PAWN) {
+                    if (sanPly.captures) {
+                        // find the right pawn ply
+                        for (Ply candidatePly : filteredPlies) {
+                            if (sourceMatchs(sanPly, candidatePly)) {
+                                if (ply != null) throw new IllegalStateException("To many plies found");
+                                ply = candidatePly;
+                            }
+                        }
+                    } else {
+                        // there should be only one ply left
+                        if (filteredPlies.size() != 1) throw new IllegalStateException("To many plies found");
+                        ply = filteredPlies.get(0);
+                    }
+
+                    if (ply == null) return null;
+
+                    // set the promotion
+                    if (sanPly.promotion != null) {
+                        if (ply.type != PlyType.PAWN_PROMOTION)
+                            throw new IllegalStateException("found ply is not a pawn promotion");
+                        ply.promotion = sanPly.promotion;
+                    }
+                } else {
+                    // if there is only one ply for this piece and target, we're done
+                    if (filteredPlies.size() == 1) {
+                        ply = filteredPlies.get(0);
+                    } else {
+                        // find the correct ply
+                        for (Ply candidatePly : filteredPlies) {
+                            if (sourceMatchs(sanPly, candidatePly)) {
+                                if (ply != null) throw new IllegalStateException("To many plies found");
+                                ply = candidatePly;
+                            }
+                        }
+                    }
+                }
+
+                if (ply == null) return null;
+
+                // check capturing
+                if (sanPly.captures) {
+                    if (ply.captures == null || ply.capturedPiece == null)
+                        throw new IllegalStateException("Found ply does not capture");
+                } else {
+                    if (ply.captures != null || ply.capturedPiece != null)
+                        throw new IllegalStateException("Found ply does capture");
+                }
+
+                return ply;
+            }
+            case KING_SIDE_CASTLING:
+                return game.getValidPlies().stream()
+                        .filter(p -> p.type == PlyType.KING_SIDE_CASTLING)
+                        .findFirst().orElse(null);
+            case QUEEN_SIDE_CASTLING:
+                return game.getValidPlies().stream()
+                        .filter(p -> p.type == PlyType.QUEEN_SIDE_CASTLING)
+                        .findFirst().orElse(null);
+            default:
+                throw new IllegalArgumentException("Illegal SAN ply type: " + sanPly.type);
+        }
+    }
+
+    private static boolean sourceMatchs(SANPly sanPly, Ply ply) {
+        return (sanPly.sourceColumn == 0 || sanPly.sourceColumn == ply.source.columnName) &&
+                (sanPly.sourceRow == 0 || sanPly.sourceRow == ply.source.rowName);
     }
 
     private SAN() {

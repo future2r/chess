@@ -57,7 +57,7 @@ final class PlyTest {
 
         assertEquals(Piece.WHITE_KING, ply.piece);
         assertEquals(Coordinate.e1, ply.source);
-        assertEquals(Coordinate.b1, ply.target);
+        assertEquals(Coordinate.c1, ply.target);
         assertNull(ply.captures);
         assertNull(ply.capturedPiece);
     }
@@ -79,7 +79,7 @@ final class PlyTest {
 
         assertEquals(Piece.BLACK_KING, ply.piece);
         assertEquals(Coordinate.e8, ply.source);
-        assertEquals(Coordinate.b8, ply.target);
+        assertEquals(Coordinate.c8, ply.target);
         assertNull(ply.captures);
         assertNull(ply.capturedPiece);
     }

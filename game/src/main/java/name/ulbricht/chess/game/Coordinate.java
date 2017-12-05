@@ -18,9 +18,9 @@ public enum Coordinate {
     a8, b8, c8, d8, e8, f8, g8, h8;
 
     public final int columnIndex;
-    public final String columnName;
+    public final char columnName;
     public final int rowIndex;
-    public final String rowName;
+    public final char rowName;
 
     Coordinate() {
         this.columnIndex = ordinal() % ROWS;
@@ -68,8 +68,8 @@ public enum Coordinate {
      * @return a name for the column index
      * @throws IndexOutOfBoundsException if the index exceeds the lower or upper limit
      */
-    public static String toColumnName(int columnIndex) throws IndexOutOfBoundsException {
-        return Character.valueOf((char) (97 + checkColumnIndex(columnIndex))).toString();
+    public static char toColumnName(int columnIndex) throws IndexOutOfBoundsException {
+        return (char) (97 + checkColumnIndex(columnIndex));
     }
 
     public static int toColumnIndex(String s) {
@@ -89,8 +89,8 @@ public enum Coordinate {
      * @return a name for the row index
      * @throws IndexOutOfBoundsException if the index exceeds the lower or upper limit
      */
-    public static String toRowName(int rowIndex) {
-        return Character.valueOf((char) (49 + checkRowIndex(rowIndex))).toString();
+    public static char toRowName(int rowIndex) {
+        return (char) (49 + checkRowIndex(rowIndex));
     }
 
     public static int toRowIndex(String s) {

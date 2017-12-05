@@ -8,10 +8,10 @@ final class SANTest {
 
     @Test
     void pawnMove() {
-        SAN.Ply ply = SAN.ply("e4");
+        SANPly ply = SAN.ply("e4");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(SANPlyType.MOVE, ply.type);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -22,10 +22,10 @@ final class SANTest {
 
     @Test
     void pawnMove_Check() {
-        SAN.Ply ply = SAN.ply("c6+");
+        SANPly ply = SAN.ply("c6+");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(SANPlyType.MOVE, ply.type);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -36,10 +36,10 @@ final class SANTest {
 
     @Test
     void pawnMove_Promotion() {
-        SAN.Ply ply = SAN.ply("b8=Q");
+        SANPly ply = SAN.ply("b8=Q");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(SANPlyType.MOVE, ply.type);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -50,10 +50,10 @@ final class SANTest {
 
     @Test
     void pawnMove_Promotion_Check() {
-        SAN.Ply ply = SAN.ply("a1=Q+");
+        SANPly ply = SAN.ply("a1=Q+");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(SANPlyType.MOVE, ply.type);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -64,10 +64,10 @@ final class SANTest {
 
     @Test
     void pawnCapture() {
-        SAN.Ply ply = SAN.ply("dxe4");
+        SANPly ply = SAN.ply("dxe4");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(SANPlyType.MOVE, ply.type);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals('d', ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertTrue(ply.captures);
@@ -78,10 +78,10 @@ final class SANTest {
 
     @Test
     void pawnCapture_Check() {
-        SAN.Ply ply = SAN.ply("cxf8+");
+        SANPly ply = SAN.ply("cxf8+");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(SANPlyType.MOVE, ply.type);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals('c', ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertTrue(ply.captures);
@@ -92,10 +92,10 @@ final class SANTest {
 
     @Test
     void pawnCapture_Promotion() {
-        SAN.Ply ply = SAN.ply("axb1=R");
+        SANPly ply = SAN.ply("axb1=R");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(SANPlyType.MOVE, ply.type);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals('a', ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertTrue(ply.captures);
@@ -106,10 +106,10 @@ final class SANTest {
 
     @Test
     void pawnCapture_Promotion_Check() {
-        SAN.Ply ply = SAN.ply("fxg8=N+");
+        SANPly ply = SAN.ply("fxg8=N+");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
-        assertNull(ply.piece);
+        assertEquals(SANPlyType.MOVE, ply.type);
+        assertEquals(PieceType.PAWN, ply.piece);
         assertEquals('f', ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertTrue(ply.captures);
@@ -120,9 +120,9 @@ final class SANTest {
 
     @Test
     void pieceMove() {
-        SAN.Ply ply = SAN.ply("Nd2");
+        SANPly ply = SAN.ply("Nd2");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
+        assertEquals(SANPlyType.MOVE, ply.type);
         assertEquals(PieceType.KNIGHT, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
@@ -134,9 +134,9 @@ final class SANTest {
 
     @Test
     void pieceMove_Check() {
-        SAN.Ply ply = SAN.ply("Bc2+");
+        SANPly ply = SAN.ply("Bc2+");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
+        assertEquals(SANPlyType.MOVE, ply.type);
         assertEquals(PieceType.BISHOP, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
@@ -148,9 +148,9 @@ final class SANTest {
 
     @Test
     void pieceMove_Column() {
-        SAN.Ply ply = SAN.ply("Rae1");
+        SANPly ply = SAN.ply("Rae1");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
+        assertEquals(SANPlyType.MOVE, ply.type);
         assertEquals(PieceType.ROOK, ply.piece);
         assertEquals('a', ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
@@ -162,9 +162,9 @@ final class SANTest {
 
     @Test
     void pieceMove_Row() {
-        SAN.Ply ply = SAN.ply("N5f3");
+        SANPly ply = SAN.ply("N5f3");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
+        assertEquals(SANPlyType.MOVE, ply.type);
         assertEquals(PieceType.KNIGHT, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals('5', ply.sourceRow);
@@ -176,9 +176,9 @@ final class SANTest {
 
     @Test
     void pieceCapture() {
-        SAN.Ply ply = SAN.ply("Qxe7");
+        SANPly ply = SAN.ply("Qxe7");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
+        assertEquals(SANPlyType.MOVE, ply.type);
         assertEquals(PieceType.QUEEN, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
@@ -190,9 +190,9 @@ final class SANTest {
 
     @Test
     void pieceCapture_Check() {
-        SAN.Ply ply = SAN.ply("Rxd5+");
+        SANPly ply = SAN.ply("Rxd5+");
 
-        assertEquals(SAN.PlyType.MOVE, ply.type);
+        assertEquals(SANPlyType.MOVE, ply.type);
         assertEquals(PieceType.ROOK, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
@@ -204,10 +204,10 @@ final class SANTest {
 
     @Test
     void kingSideCastling() {
-        SAN.Ply ply = SAN.ply("O-O");
+        SANPly ply = SAN.ply("O-O");
 
-        assertEquals(SAN.PlyType.KING_SIDE_CASTLING, ply.type);
-        assertNull(ply.piece);
+        assertEquals(SANPlyType.KING_SIDE_CASTLING, ply.type);
+        assertEquals(PieceType.KING, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -218,10 +218,10 @@ final class SANTest {
 
     @Test
     void kingSideCastling_Check() {
-        SAN.Ply ply = SAN.ply("O-O+");
+        SANPly ply = SAN.ply("O-O+");
 
-        assertEquals(SAN.PlyType.KING_SIDE_CASTLING, ply.type);
-        assertNull(ply.piece);
+        assertEquals(SANPlyType.KING_SIDE_CASTLING, ply.type);
+        assertEquals(PieceType.KING, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -232,10 +232,10 @@ final class SANTest {
 
     @Test
     void queenSideCastling() {
-        SAN.Ply ply = SAN.ply("O-O-O");
+        SANPly ply = SAN.ply("O-O-O");
 
-        assertEquals(SAN.PlyType.QUEEN_SIDE_CASTLING, ply.type);
-        assertNull(ply.piece);
+        assertEquals(SANPlyType.QUEEN_SIDE_CASTLING, ply.type);
+        assertEquals(PieceType.KING, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
@@ -246,10 +246,10 @@ final class SANTest {
 
     @Test
     void queenSideCastling_Check() {
-        SAN.Ply ply = SAN.ply("O-O-O+");
+        SANPly ply = SAN.ply("O-O-O+");
 
-        assertEquals(SAN.PlyType.QUEEN_SIDE_CASTLING, ply.type);
-        assertNull(ply.piece);
+        assertEquals(SANPlyType.QUEEN_SIDE_CASTLING, ply.type);
+        assertEquals(PieceType.KING, ply.piece);
         assertEquals(0, ply.sourceColumn);
         assertEquals(0, ply.sourceRow);
         assertFalse(ply.captures);
