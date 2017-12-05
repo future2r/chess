@@ -10,7 +10,7 @@ final class CoordinateTest {
 
     @ParameterizedTest(name = "{index}: [{arguments}]")
     @CsvFileSource(resources = "coordinates.txt", delimiter = '\t' /* numLinesToSkip=1 (skip header comes in 5.1)*/)
-    void testIndices(int fieldIndex, int columnIndex, String columnName, int rowIndex, String rowName, String fieldName) {
+    void testIndices(int fieldIndex, int columnIndex, char columnName, int rowIndex, char rowName, String fieldName) {
 
         // parse from name
         Coordinate coordinate = Coordinate.valueOf(fieldName);

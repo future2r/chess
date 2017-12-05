@@ -25,11 +25,11 @@ abstract class AbstractBoardRenderer implements BoardRenderer {
         switch (border) {
             case LEFT:
             case RIGHT:
-                text = Coordinate.toRowName(index);
+                text = Character.toString(Coordinate.toRowName(index));
                 break;
             case TOP:
             case BOTTOM:
-                text = Coordinate.toColumnName(index);
+                text = Character.toString(Coordinate.toColumnName(index));
                 break;
         }
 
