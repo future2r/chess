@@ -237,7 +237,7 @@ public final class Game {
                 }
                 break;
             case BLACK_KING:
-                if (ply.source == Coordinate.d8) {
+                if (ply.source == Coordinate.e8) {
                     this.blackQueenSideCastlingAvailable = false;
                     this.blackKingSideCastlingAvailable = false;
                 }
@@ -246,12 +246,12 @@ public final class Game {
         if (ply.capturedPiece != null) {
             switch (ply.capturedPiece) {
                 case WHITE_ROOK:
-                    if (ply.source == Coordinate.a1) this.whiteQueenSideCastlingAvailable = false;
-                    if (ply.source == Coordinate.h1) this.whiteKingSideCastlingAvailable = false;
+                    if (ply.captures == Coordinate.a1) this.whiteQueenSideCastlingAvailable = false;
+                    if (ply.captures == Coordinate.h1) this.whiteKingSideCastlingAvailable = false;
                     break;
                 case BLACK_ROOK:
-                    if (ply.source == Coordinate.a8) this.blackQueenSideCastlingAvailable = false;
-                    if (ply.source == Coordinate.h8) this.blackKingSideCastlingAvailable = false;
+                    if (ply.captures == Coordinate.a8) this.blackQueenSideCastlingAvailable = false;
+                    if (ply.captures == Coordinate.h8) this.blackKingSideCastlingAvailable = false;
                     break;
             }
         }

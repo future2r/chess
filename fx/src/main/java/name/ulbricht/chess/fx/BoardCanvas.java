@@ -87,6 +87,7 @@ final class BoardCanvas extends Canvas {
     void setGame(Game game) {
         this.game = game;
         this.activePlayerProperty.set(this.game.getActivePlayer());
+        this.checkStateProperty.set(this.game.getCheckState());
         this.focusedSquareProperty.set(null);
         this.selectedSquareProperty.set(null);
         draw();

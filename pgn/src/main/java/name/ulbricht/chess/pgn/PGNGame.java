@@ -1,6 +1,6 @@
 package name.ulbricht.chess.pgn;
 
-import name.ulbricht.chess.game.SAN;
+import name.ulbricht.chess.game.SANPly;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.Map;
 public final class PGNGame {
 
     private final Map<String, String> tags = new HashMap<>();
-    private final List<SAN.Ply> plies = new ArrayList<>();
+    private final List<SANPly> plies = new ArrayList<>();
 
     public String getTag(String key) {
         return this.tags.get(key);
@@ -77,7 +77,7 @@ public final class PGNGame {
         setTag(PGN.RESULT_TAG, result.getText());
     }
 
-    public List<SAN.Ply> getPlies() {
+    public List<SANPly> getPlies() {
         return this.plies;
     }
 }

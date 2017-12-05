@@ -1,6 +1,7 @@
 package name.ulbricht.chess.pgn;
 
 import name.ulbricht.chess.game.SAN;
+import name.ulbricht.chess.game.SANPly;
 import name.ulbricht.chess.pgn.antlr.PGNBaseListener;
 import name.ulbricht.chess.pgn.antlr.PGNParser;
 
@@ -54,7 +55,7 @@ final class PGNGamesListener extends PGNBaseListener {
     @Override
     public void enterSan_move(PGNParser.San_moveContext ctx) {
         if (this.currentGame != null) {
-            SAN.Ply ply = SAN.ply(ctx.SYMBOL().getText());
+            SANPly ply = SAN.ply(ctx.SYMBOL().getText());
             this.currentGame.getPlies().add(ply);
         }
     }

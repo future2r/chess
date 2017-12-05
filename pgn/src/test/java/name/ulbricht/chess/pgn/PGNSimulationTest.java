@@ -1,16 +1,12 @@
 package name.ulbricht.chess.pgn;
 
-import name.ulbricht.chess.game.CheckState;
-import name.ulbricht.chess.game.Game;
-import name.ulbricht.chess.game.Ply;
-import name.ulbricht.chess.game.SAN;
+import name.ulbricht.chess.game.*;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 final class PGNSimulationTest {
 
     @TestFactory
-    public Stream<DynamicTest> createTests() {
-        String[] fileNames = {"Wikipedia (de).pgn", "Wikipedia (en).pgn"};
+    Stream<DynamicTest> createTests() {
+        String[] fileNames = {/*"Wikipedia (de).pgn", "Wikipedia (en).pgn",*/ "Kasparov.pgn"};
 
         return Stream.of(fileNames).flatMap(fileName -> {
             try {
@@ -28,7 +24,9 @@ final class PGNSimulationTest {
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-        }).map(game -> DynamicTest.dynamicTest(game.getEvent(), () -> simulateGame(game)));
+        }).map(game -> DynamicTest.dynamicTest(
+                game.getEvent() + ", " + game.getSite() + ", " + game.getDate() + ", round " + game.getRound(),
+                () -> simulateGame(game)));
     }
 
     /**
@@ -40,29 +38,16 @@ final class PGNSimulationTest {
     private void simulateGame(PGNGame pgnGame) {
         Game game = new Game();
 
-        for (SAN.Ply sanPly : pgnGame.getPlies()) {
-            Ply ply = findPly(game, sanPly);
+        for (SANPly sanPly : pgnGame.getPlies()) {
+            Ply ply = SAN.findPly(game, sanPly);
+            assertNotNull(ply, "SAN ply not found in valid game plies");
 
             game.performPly(ply);
 
-            if (sanPly.check) assertEquals(CheckState.CHECK, game.getCheckState());
-            else assertEquals(CheckState.NONE, game.getCheckState());
+            // check for check
+            if (sanPly.check)
+                assertTrue(game.getCheckState() == CheckState.CHECK || game.getCheckState() == CheckState.CHECKMATE, sanPly.toString());
+            else assertEquals(CheckState.NONE, game.getCheckState(), sanPly.toString());
         }
-    }
-
-    /**
-     * Find a valid ply for the active player that matches the noted ply from the database.
-     *
-     * @param game   the current game
-     * @param sanPly the noted SAN ply
-     * @return a matching ply the is valid for the active player in the current game.
-     */
-    private Ply findPly(Game game, SAN.Ply sanPly) {
-        List<Ply> validPlies = game.getValidPlies();
-        assertFalse(validPlies.isEmpty(), "No more valid moves in game.");
-
-
-        fail("No valid ply found for SAN ply: " + sanPly);
-        return null;
     }
 }

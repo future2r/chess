@@ -144,6 +144,7 @@ final class Rules {
 
     static Ply kingSideCastlingPly(Piece[] board, Coordinate source, List<Coordinate> attacked) {
         Piece piece = Objects.requireNonNull(board[Objects.requireNonNull(source).ordinal()]);
+        if (piece.type != PieceType.KING) throw new IllegalArgumentException("Castling not allowed for piece.type");
 
         // king cannot be in check
         if (attacked.contains(source)) return null;
@@ -158,12 +159,13 @@ final class Rules {
         Coordinate target = Coordinate.valueOf(6, row);
         if (board[target.ordinal()] != null || attacked.contains(target)) return null;
         Coordinate rookSource = Coordinate.valueOf(7, row);
-        if (board[rookSource.ordinal()] != rook || attacked.contains(rookSource)) return null;
+        if (board[rookSource.ordinal()] != rook) return null;
         return Ply.kingSideCastling(piece);
     }
 
     static Ply queenSideCastlingPly(Piece[] board, Coordinate source, List<Coordinate> attacked) {
         Piece piece = Objects.requireNonNull(board[Objects.requireNonNull(source).ordinal()]);
+        if (piece.type != PieceType.KING) throw new IllegalArgumentException("Castling not allowed for piece.type");
 
         // king cannot be in check
         if (attacked.contains(source)) return null;
@@ -175,12 +177,10 @@ final class Rules {
         // queen side (none attacked)
         Coordinate empty = Coordinate.valueOf(3, row);
         if (board[empty.ordinal()] != null || attacked.contains(empty)) return null;
-        empty = Coordinate.valueOf(2, row);
-        if (board[empty.ordinal()] != null || attacked.contains(empty)) return null;
-        Coordinate target = Coordinate.valueOf(1, row);
+        Coordinate target = Coordinate.valueOf(2, row);
         if (board[target.ordinal()] != null || attacked.contains(target)) return null;
         Coordinate rookSource = Coordinate.valueOf(0, row);
-        if (board[rookSource.ordinal()] != rook || attacked.contains(rookSource)) return null;
+        if (board[rookSource.ordinal()] != rook) return null;
         return Ply.queenSideCastling(piece);
     }
 
@@ -212,7 +212,7 @@ final class Rules {
             case QUEEN_SIDE_CASTLING: {
                 move(board, ply.source, ply.target);
                 int row = ply.piece.player == Player.WHITE ? 0 : 7;
-                move(board, Coordinate.valueOf(0, row), Coordinate.valueOf(2, row));
+                move(board, Coordinate.valueOf(0, row), Coordinate.valueOf(3, row));
             }
             break;
             default:
