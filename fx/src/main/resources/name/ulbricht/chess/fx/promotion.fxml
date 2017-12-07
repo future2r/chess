@@ -6,9 +6,7 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0"
             prefWidth="500.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="name.ulbricht.chess.fx.PromotionController">
-    <children>
-        <ListView fx:id="pieceListView" orientation="HORIZONTAL"
-                  AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0"
-                  AnchorPane.topAnchor="4.0"/>
-    </children>
+    <ListView fx:id="pieceListView" orientation="HORIZONTAL"
+              AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0"
+              AnchorPane.topAnchor="4.0"/>
 </AnchorPane>

@@ -8,71 +8,63 @@
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="name.ulbricht.chess.fx.MainController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
-            <menus>
-                <Menu mnemonicParsing="false" text="%main.gameMenu.text">
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#newGame" text="%main.newGameMenuItem.text">
-                            <accelerator>
-                                <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP"
-                                                    shortcut="UP"/>
-                            </accelerator>
-                        </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#openBoard" text="%main.openBoardMenuItem.text">
-                            <accelerator>
-                                <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP"
-                                                    shortcut="UP"/>
-                            </accelerator>
-                        </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#saveBoard" text="%main.saveBoardMenuItem.text">
-                            <accelerator>
-                                <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP"
-                                                    shortcut="UP"/>
-                            </accelerator>
-                        </MenuItem>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="%main.exitMenuItem.text"/>
-                    </items>
-                </Menu>
-                <Menu fx:id="designMenu" mnemonicParsing="false" text="%main.designMenu.text"/>
-                <Menu mnemonicParsing="false" text="%main.helpMenu.text">
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#showAbout" text="%main.aboutMenuItem.text"/>
-                    </items>
-                </Menu>
-            </menus>
+            <Menu mnemonicParsing="false" text="%main.gameMenu.text">
+                <MenuItem mnemonicParsing="false" onAction="#newGame" text="%main.newGameMenuItem.text">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#openBoard" text="%main.openBoardMenuItem.text">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#saveBoard" text="%main.saveBoardMenuItem.text">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <SeparatorMenuItem mnemonicParsing="false"/>
+                <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="%main.exitMenuItem.text"/>
+            </Menu>
+            <Menu fx:id="designMenu" mnemonicParsing="false" text="%main.designMenu.text"/>
+            <Menu mnemonicParsing="false" text="%main.helpMenu.text">
+                <MenuItem mnemonicParsing="false" onAction="#showAbout" text="%main.aboutMenuItem.text"/>
+            </Menu>
         </MenuBar>
     </top>
     <bottom>
         <HBox BorderPane.alignment="CENTER">
-            <children>
-                <Label text="%main.currentPlayer.text">
-                    <padding>
-                        <Insets left="2.0" right="2.0"/>
-                    </padding>
-                </Label>
-                <Label fx:id="currentPlayerValueLabel" style="-fx-font-weight: bold;">
-                    <padding>
-                        <Insets left="2.0" right="2.0"/>
-                    </padding>
-                </Label>
-                <Separator orientation="VERTICAL"/>
-                <Label text="%main.selectedSquareLabel.text">
-                    <padding>
-                        <Insets left="2.0" right="2.0"/>
-                    </padding>
-                </Label>
-                <Label fx:id="selectedSquareValueLabel" style="-fx-font-weight: bold;">
-                    <padding>
-                        <Insets left="2.0" right="2.0"/>
-                    </padding>
-                </Label>
-                <Separator orientation="VERTICAL"/>
-                <Label fx:id="checkLabel" style="-fx-font-weight: bold; -fx-text-fill: red;">
-                    <padding>
-                        <Insets left="2.0" right="2.0"/>
-                    </padding>
-                </Label>
-            </children>
+            <Label text="%main.currentPlayer.text">
+                <padding>
+                    <Insets left="2.0" right="2.0"/>
+                </padding>
+            </Label>
+            <Label fx:id="currentPlayerValueLabel" style="-fx-font-weight: bold;">
+                <padding>
+                    <Insets left="2.0" right="2.0"/>
+                </padding>
+            </Label>
+            <Separator orientation="VERTICAL"/>
+            <Label text="%main.selectedSquareLabel.text">
+                <padding>
+                    <Insets left="2.0" right="2.0"/>
+                </padding>
+            </Label>
+            <Label fx:id="selectedSquareValueLabel" style="-fx-font-weight: bold;">
+                <padding>
+                    <Insets left="2.0" right="2.0"/>
+                </padding>
+            </Label>
+            <Separator orientation="VERTICAL"/>
+            <Label fx:id="checkLabel" style="-fx-font-weight: bold; -fx-text-fill: red;">
+                <padding>
+                    <Insets left="2.0" right="2.0"/>
+                </padding>
+            </Label>
             <padding>
                 <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
             </padding>

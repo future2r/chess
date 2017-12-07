@@ -15,7 +15,7 @@ final class PGNReadTest {
     private static Stream<Arguments> createReadAllGamesArguments() throws IOException {
         Path filesPath = Paths.get(System.getProperty("user.dir")).getParent().resolve("files");
         return Files.find(filesPath, 1, (file, attr) -> file.getFileName().toString().endsWith(".pgn"))
-                .map(file -> Arguments.of(file));
+                .map(Arguments::of);
     }
 
     @ParameterizedTest(name = "{index}: {0}")

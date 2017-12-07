@@ -13,7 +13,7 @@ import name.ulbricht.chess.game.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class PieceTypeCellFactory implements Callback<ListView<PieceType>, ListCell<PieceType>> {
+final class PieceTypeCellFactory implements Callback<ListView<PieceType>, ListCell<PieceType>> {
 
     private final BoardRenderer renderer;
     private final Player player;

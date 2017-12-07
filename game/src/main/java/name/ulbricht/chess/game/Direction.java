@@ -1,6 +1,6 @@
 package name.ulbricht.chess.game;
 
-public interface Direction {
+interface Direction {
 
     int column();
 

@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public final class BoardDesign {
 
-    private static List<BoardDesign> designs = new ArrayList<>();
+    private static final List<BoardDesign> designs = new ArrayList<>();
 
     static {
         designs.add(new BoardDesign(DefaultBoardRenderer.ID, DefaultBoardRenderer.class));

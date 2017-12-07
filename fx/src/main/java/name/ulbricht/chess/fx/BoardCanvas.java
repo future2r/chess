@@ -43,7 +43,7 @@ final class BoardCanvas extends Canvas {
         }
     }
 
-    private Tooltip tooltip;
+    private final Tooltip tooltip;
 
     private Game game;
     private BoardRenderer renderer;

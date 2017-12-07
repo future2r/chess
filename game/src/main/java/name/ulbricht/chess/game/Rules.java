@@ -21,13 +21,13 @@ public final class Rules {
                 : Coordinate.e8;
     }
 
-    public static Coordinate initialKingSideRookCoordinate(Player player) {
+    private static Coordinate initialKingSideRookCoordinate(Player player) {
         return Objects.requireNonNull(player, "player cannot be null") == Player.WHITE
                 ? Coordinate.h1
                 : Coordinate.h8;
     }
 
-    public static Coordinate initialQueenSideRookCoordinate(Player player) {
+    private static Coordinate initialQueenSideRookCoordinate(Player player) {
         return Objects.requireNonNull(player, "player cannot be null") == Player.WHITE
                 ? Coordinate.a1
                 : Coordinate.a8;

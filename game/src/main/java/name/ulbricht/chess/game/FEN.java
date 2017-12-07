@@ -210,11 +210,22 @@ public final class FEN {
 
         if (!s.equals(EMPTY_FIELD)) {
             for (char c : s.toCharArray()) {
-                if (c == WHITE_KING) setup.setWhiteKingSideCastlingAvailable(true);
-                else if (c == WHITE_QUEEN) setup.setWhiteQueenSideCastlingAvailable(true);
-                else if (c == BLACK_KING) setup.setBlackKingSideCastlingAvailable(true);
-                else if (c == BLACK_QUEEN) setup.setBlackQueenSideCastlingAvailable(true);
-                else throw new IllegalArgumentException("Illegal character: " + c);
+                switch (c) {
+                    case WHITE_KING:
+                        setup.setWhiteKingSideCastlingAvailable(true);
+                        break;
+                    case WHITE_QUEEN:
+                        setup.setWhiteQueenSideCastlingAvailable(true);
+                        break;
+                    case BLACK_KING:
+                        setup.setBlackKingSideCastlingAvailable(true);
+                        break;
+                    case BLACK_QUEEN:
+                        setup.setBlackQueenSideCastlingAvailable(true);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Illegal character: " + c);
+                }
             }
         }
     }
@@ -291,7 +302,7 @@ public final class FEN {
         }
     }
 
-    public static Player player(char symbol) {
+    private static Player player(char symbol) {
         switch (symbol) {
             case WHITE_PLAYER:
                 return Player.WHITE;
