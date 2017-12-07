@@ -141,23 +141,25 @@ public final class Game {
                         break;
                     case KING:
                         plies.addAll(Rules.plies(this.board, source, 1, MoveDirection.values()));
-                        if (piece.player == Player.WHITE) {
-                            if (this.whiteKingSideCastlingAvailable) {
-                                Ply ply = Rules.kingSideCastlingPly(this.board, source, attacked);
-                                if (ply != null) plies.add(ply);
-                            }
-                            if (this.whiteQueenSideCastlingAvailable) {
-                                Ply ply = Rules.queenSideCastlingPly(this.board, source, attacked);
-                                if (ply != null) plies.add(ply);
-                            }
-                        } else {
-                            if (this.blackKingSideCastlingAvailable) {
-                                Ply ply = Rules.kingSideCastlingPly(this.board, source, attacked);
-                                if (ply != null) plies.add(ply);
-                            }
-                            if (this.blackQueenSideCastlingAvailable) {
-                                Ply ply = Rules.queenSideCastlingPly(this.board, source, attacked);
-                                if (ply != null) plies.add(ply);
+                        if (source == Rules.initialKingCoordinate(piece.player)) {
+                            if (piece.player == Player.WHITE) {
+                                if (this.whiteKingSideCastlingAvailable) {
+                                    Ply ply = Rules.kingSideCastlingPly(this.board, source, attacked);
+                                    if (ply != null) plies.add(ply);
+                                }
+                                if (this.whiteQueenSideCastlingAvailable) {
+                                    Ply ply = Rules.queenSideCastlingPly(this.board, source, attacked);
+                                    if (ply != null) plies.add(ply);
+                                }
+                            } else {
+                                if (this.blackKingSideCastlingAvailable) {
+                                    Ply ply = Rules.kingSideCastlingPly(this.board, source, attacked);
+                                    if (ply != null) plies.add(ply);
+                                }
+                                if (this.blackQueenSideCastlingAvailable) {
+                                    Ply ply = Rules.queenSideCastlingPly(this.board, source, attacked);
+                                    if (ply != null) plies.add(ply);
+                                }
                             }
                         }
                         break;

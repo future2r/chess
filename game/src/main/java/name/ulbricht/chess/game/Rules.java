@@ -14,6 +14,24 @@ public final class Rules {
                 : Coordinate.ROWS - 1;
     }
 
+    public static Coordinate initialKingCoordinate(Player player) {
+        return Objects.requireNonNull(player, "player cannot be null") == Player.WHITE
+                ? Coordinate.e1
+                : Coordinate.e8;
+    }
+
+    public static Coordinate initialKingSideRookCoordinate(Player player) {
+        return Objects.requireNonNull(player, "player cannot be null") == Player.WHITE
+                ? Coordinate.h1
+                : Coordinate.h8;
+    }
+
+    public static Coordinate initialQueenSideRookCoordinate(Player player) {
+        return Objects.requireNonNull(player, "player cannot be null") == Player.WHITE
+                ? Coordinate.a1
+                : Coordinate.a8;
+    }
+
     static Coordinate king(Piece[] board, Player player) {
         Piece king = player == Player.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
         for (Coordinate coordinate : Coordinate.values()) {
@@ -152,43 +170,65 @@ public final class Rules {
 
     static Ply kingSideCastlingPly(Piece[] board, Coordinate source, List<Coordinate> attacked) {
         Piece piece = Objects.requireNonNull(board[Objects.requireNonNull(source).ordinal()]);
-        if (piece.type != PieceType.KING) throw new IllegalArgumentException("Castling not allowed for piece.type");
+
+        // piece must be a king
+        if (piece.type != PieceType.KING)
+            throw new IllegalArgumentException("Castling not allowed for " + piece.type);
+
+        // king must be on his initial position
+        if (source != initialKingCoordinate(piece.player))
+            throw new IllegalArgumentException("Not a valid source " + source);
 
         // king cannot be in check
         if (attacked.contains(source)) return null;
 
-        // the row and rook depends on the player
-        int row = baseRowIndex(piece.player);
-        Piece rook = Piece.valueOf(PieceType.ROOK, piece.player);
+        // rook must be on its initial position
+        Coordinate rookSource = initialKingSideRookCoordinate(piece.player);
+        if (board[rookSource.ordinal()] != Piece.valueOf(PieceType.ROOK, piece.player)) return null;
 
-        // king side (none attacked)
-        Coordinate empty = Coordinate.valueOf(5, row);
-        if (board[empty.ordinal()] != null || attacked.contains(empty)) return null;
-        Coordinate target = Coordinate.valueOf(6, row);
-        if (board[target.ordinal()] != null || attacked.contains(target)) return null;
-        Coordinate rookSource = Coordinate.valueOf(7, row);
-        if (board[rookSource.ordinal()] != rook) return null;
+        // no piece between king and rook
+        Coordinate square = source.go(MoveDirection.RIGHT);
+        while (square != rookSource) {
+            if (board[square.ordinal()] != null) return null;
+            square = square.go(MoveDirection.RIGHT);
+        }
+
+        // way and target of the king cannot be in check
+        if (attacked.contains(source.go(MoveDirection.RIGHT))) return null;
+        if (attacked.contains(source.go(MoveDirection.RIGHT, 2))) return null;
+
         return Ply.kingSideCastling(piece);
     }
 
     static Ply queenSideCastlingPly(Piece[] board, Coordinate source, List<Coordinate> attacked) {
         Piece piece = Objects.requireNonNull(board[Objects.requireNonNull(source).ordinal()]);
-        if (piece.type != PieceType.KING) throw new IllegalArgumentException("Castling not allowed for piece.type");
+
+        // piece must be a king
+        if (piece.type != PieceType.KING)
+            throw new IllegalArgumentException("Castling not allowed for " + piece.type);
+
+        // king must be on his initial position
+        if (source != initialKingCoordinate(piece.player))
+            throw new IllegalArgumentException("Not a valid source " + source);
 
         // king cannot be in check
         if (attacked.contains(source)) return null;
 
-        // the row and rook depends on the player
-        int row = baseRowIndex(piece.player);
-        Piece rook = Piece.valueOf(PieceType.ROOK, piece.player);
+        // rook must be on its initial position
+        Coordinate rookSource = initialQueenSideRookCoordinate(piece.player);
+        if (board[rookSource.ordinal()] != Piece.valueOf(PieceType.ROOK, piece.player)) return null;
 
-        // queen side (none attacked)
-        Coordinate empty = Coordinate.valueOf(3, row);
-        if (board[empty.ordinal()] != null || attacked.contains(empty)) return null;
-        Coordinate target = Coordinate.valueOf(2, row);
-        if (board[target.ordinal()] != null || attacked.contains(target)) return null;
-        Coordinate rookSource = Coordinate.valueOf(0, row);
-        if (board[rookSource.ordinal()] != rook) return null;
+        // no piece between king and rook
+        Coordinate square = source.go(MoveDirection.LEFT);
+        while (square != rookSource) {
+            if (board[square.ordinal()] != null) return null;
+            square = square.go(MoveDirection.LEFT);
+        }
+
+        // way and target of the king cannot be in check
+        if (attacked.contains(source.go(MoveDirection.LEFT))) return null;
+        if (attacked.contains(source.go(MoveDirection.LEFT, 2))) return null;
+
         return Ply.queenSideCastling(piece);
     }
 
@@ -217,13 +257,17 @@ public final class Rules {
             case KING_SIDE_CASTLING: {
                 move(board, ply.source, ply.target);
                 int row = baseRowIndex(ply.piece.player);
-                move(board, Coordinate.valueOf(7, row), Coordinate.valueOf(5, row));
+                move(board,
+                        Coordinate.valueOf(Coordinate.COLUMNS - 1, row),
+                        ply.source.go(MoveDirection.RIGHT));
             }
             break;
             case QUEEN_SIDE_CASTLING: {
                 move(board, ply.source, ply.target);
                 int row = baseRowIndex(ply.piece.player);
-                move(board, Coordinate.valueOf(0, row), Coordinate.valueOf(3, row));
+                move(board,
+                        Coordinate.valueOf(0, row),
+                        ply.source.go(MoveDirection.LEFT));
             }
             break;
             default:
