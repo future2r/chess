@@ -54,7 +54,7 @@ public final class Ply {
         Objects.requireNonNull(source);
 
         Objects.requireNonNull(target);
-        int promotionRow = piece.player == Player.WHITE ? 7 : 0;
+        int promotionRow = Rules.baseRowIndex(piece.player.opponent());
         if (target.rowIndex != promotionRow)
             throw new IllegalArgumentException("Illegal promotion row: " + target.rowIndex);
 
@@ -66,7 +66,7 @@ public final class Ply {
         Objects.requireNonNull(source);
 
         Objects.requireNonNull(target);
-        int promotionRow = piece.player == Player.WHITE ? 7 : 0;
+        int promotionRow = Rules.baseRowIndex(piece.player.opponent());
         if (target.rowIndex != promotionRow)
             throw new IllegalArgumentException("Illegal promotion row: " + target.rowIndex);
 
@@ -78,7 +78,7 @@ public final class Ply {
     static Ply kingSideCastling(Piece piece) {
         requirePieceType(piece, PieceType.KING);
 
-        int row = piece.player == Player.WHITE ? 0 : 7;
+        int row = Rules.baseRowIndex(piece.player);
         Coordinate source = Coordinate.valueOf(4, row);
         Coordinate target = Coordinate.valueOf(6, row);
 
@@ -88,7 +88,7 @@ public final class Ply {
     static Ply queenSideCastling(Piece piece) {
         requirePieceType(piece, PieceType.KING);
 
-        int row = piece.player == Player.WHITE ? 0 : 7;
+        int row = Rules.baseRowIndex(piece.player);
         Coordinate source = Coordinate.valueOf(4, row);
         Coordinate target = Coordinate.valueOf(2, row);
 

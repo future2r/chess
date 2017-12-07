@@ -8,6 +8,12 @@ public final class Rules {
 
     public static final List<PieceType> promotionPieceTypes = List.of(PieceType.QUEEN, PieceType.BISHOP, PieceType.KNIGHT, PieceType.ROOK);
 
+    public static int baseRowIndex(Player player) {
+        return Objects.requireNonNull(player, "player cannot be null") == Player.WHITE
+                ? 0
+                : Coordinate.ROWS - 1;
+    }
+
     static Coordinate king(Piece[] board, Player player) {
         Piece king = player == Player.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
         for (Coordinate coordinate : Coordinate.values()) {
@@ -98,7 +104,7 @@ public final class Rules {
 
         Direction direction = MoveDirection.forward(piece.player);
         int startRow = piece.player == Player.WHITE ? 1 : 6;
-        int promotionRow = piece.player == Player.WHITE ? 7 : 0;
+        int promotionRow = baseRowIndex(piece.player.opponent());
 
         // first field in move direction
         Coordinate target = source.go(direction);
@@ -152,8 +158,8 @@ public final class Rules {
         if (attacked.contains(source)) return null;
 
         // the row and rook depends on the player
-        int row = piece.player == Player.WHITE ? 0 : 7;
-        Piece rook = piece.player == Player.WHITE ? Piece.WHITE_ROOK : Piece.BLACK_ROOK;
+        int row = baseRowIndex(piece.player);
+        Piece rook = Piece.valueOf(PieceType.ROOK, piece.player);
 
         // king side (none attacked)
         Coordinate empty = Coordinate.valueOf(5, row);
@@ -173,8 +179,8 @@ public final class Rules {
         if (attacked.contains(source)) return null;
 
         // the row and rook depends on the player
-        int row = piece.player == Player.WHITE ? 0 : 7;
-        Piece rook = piece.player == Player.WHITE ? Piece.WHITE_ROOK : Piece.BLACK_ROOK;
+        int row = baseRowIndex(piece.player);
+        Piece rook = Piece.valueOf(PieceType.ROOK, piece.player);
 
         // queen side (none attacked)
         Coordinate empty = Coordinate.valueOf(3, row);
@@ -210,13 +216,13 @@ public final class Rules {
                 break;
             case KING_SIDE_CASTLING: {
                 move(board, ply.source, ply.target);
-                int row = ply.piece.player == Player.WHITE ? 0 : 7;
+                int row = baseRowIndex(ply.piece.player);
                 move(board, Coordinate.valueOf(7, row), Coordinate.valueOf(5, row));
             }
             break;
             case QUEEN_SIDE_CASTLING: {
                 move(board, ply.source, ply.target);
-                int row = ply.piece.player == Player.WHITE ? 0 : 7;
+                int row = baseRowIndex(ply.piece.player);
                 move(board, Coordinate.valueOf(0, row), Coordinate.valueOf(3, row));
             }
             break;
