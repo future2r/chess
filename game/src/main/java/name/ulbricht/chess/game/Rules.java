@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-final class Rules {
+public final class Rules {
+
+    public static final List<PieceType> promotionPieceTypes = List.of(PieceType.QUEEN, PieceType.BISHOP, PieceType.KNIGHT, PieceType.ROOK);
 
     static Coordinate king(Piece[] board, Player player) {
         Piece king = player == Player.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
@@ -200,8 +202,11 @@ final class Rules {
             case PAWN_PROMOTION:
                 if (ply.captures != null) board[ply.captures.ordinal()] = null;
                 board[ply.source.ordinal()] = null;
-                board[ply.target.ordinal()] = Piece.valueOf(
+                Piece promotionPiece = Piece.valueOf(
                         ply.promotion != null ? ply.promotion : PieceType.QUEEN, ply.piece.player);
+                if (!promotionPieceTypes.contains(promotionPiece.type))
+                    throw new IllegalStateException("Not a valid promotion piece: " + promotionPiece);
+                board[ply.target.ordinal()] = promotionPiece;
                 break;
             case KING_SIDE_CASTLING: {
                 move(board, ply.source, ply.target);

@@ -10,10 +10,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.ListView;
 import name.ulbricht.chess.fx.design.BoardRenderer;
-import name.ulbricht.chess.game.Coordinate;
-import name.ulbricht.chess.game.PieceType;
-import name.ulbricht.chess.game.Player;
-import name.ulbricht.chess.game.Ply;
+import name.ulbricht.chess.game.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -51,7 +48,7 @@ public final class PromotionController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.pieceListView.getItems().addAll(PieceType.QUEEN, PieceType.BISHOP, PieceType.KNIGHT, PieceType.ROOK);
+        this.pieceListView.getItems().addAll(Rules.promotionPieceTypes);
         this.pieceListView.getSelectionModel().select(0);
         Platform.runLater(() -> this.pieceListView.requestFocus());
     }
