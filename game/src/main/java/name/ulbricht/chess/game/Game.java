@@ -1,8 +1,6 @@
 package name.ulbricht.chess.game;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -13,6 +11,19 @@ public final class Game {
     private Board board;
     private CheckState checkState;
     private final List<Ply> validPlies = new ArrayList<>();
+
+    private static class HistoryItem {
+        final Board board;
+        final Ply ply;
+
+        private HistoryItem(Board board, Ply ply) {
+            this.board = Objects.requireNonNull(board, "board cannot be null");
+            this.ply = Objects.requireNonNull(ply, "ply cannot be null");
+        }
+    }
+
+    private Stack<HistoryItem> history = new Stack<>();
+    private Stack<HistoryItem> redo = new Stack<>();
 
     /**
      * Creates a new game. This game will have a new board with the initial positions of the pieces.
@@ -164,59 +175,64 @@ public final class Game {
      *
      * @param ply the ply to perform
      */
-    public void performPly(Ply ply) {
+    public void perform(Ply ply) {
+        // actually perform the ply
+        doPerform(ply);
+
+        // the game goes on, clear the redo buffer
+        this.redo.clear();
+    }
+
+    private void doPerform(Ply ply) {
         // must be a known legal ply
         if (!this.validPlies.contains(ply))
             throw new IllegalArgumentException("Not a valid ply");
 
-        Rules.performPly(this.board, ply);
+        // try to perform the ply on a copy of the board
+        Board nextBoard = this.board.clone();
+        Rules.performPly(nextBoard, ply);
 
-        // set en passant target
-        if (ply.type == PlyType.PAWN_DOUBLE_ADVANCE) {
-            Coordinate target = ply.target;
-            this.board.setEnPassantTarget(Coordinate.valueOf(target.columnIndex, ply.piece.player == Player.WHITE ? 2 : 5));
-        } else {
-            this.board.setEnPassantTarget(null);
-        }
+        // add current board and ply to history
+        history.push(new HistoryItem(this.board, ply));
 
-        // update castling availability
-        switch (ply.piece) {
-            case WHITE_ROOK:
-                if (ply.source == Coordinate.a1) this.board.setWhiteQueenSideCastlingAvailable(false);
-                if (ply.source == Coordinate.h1) this.board.setWhiteKingSideCastlingAvailable(false);
-                break;
-            case BLACK_ROOK:
-                if (ply.source == Coordinate.a8) this.board.setBlackQueenSideCastlingAvailable(false);
-                if (ply.source == Coordinate.h8) this.board.setBlackKingSideCastlingAvailable(false);
-                break;
-            case WHITE_KING:
-                if (ply.source == Rules.initialKingCoordinate(Player.WHITE)) {
-                    this.board.setWhiteQueenSideCastlingAvailable(false);
-                    this.board.setWhiteKingSideCastlingAvailable(false);
-                }
-                break;
-            case BLACK_KING:
-                if (ply.source == Rules.initialKingCoordinate(Player.BLACK)) {
-                    this.board.setBlackQueenSideCastlingAvailable(false);
-                    this.board.setBlackKingSideCastlingAvailable(false);
-                }
-                break;
-        }
-        if (ply.capturedPiece != null) {
-            switch (ply.capturedPiece) {
-                case WHITE_ROOK:
-                    if (ply.captures == Coordinate.a1) this.board.setWhiteQueenSideCastlingAvailable(false);
-                    if (ply.captures == Coordinate.h1) this.board.setWhiteKingSideCastlingAvailable(false);
-                    break;
-                case BLACK_ROOK:
-                    if (ply.captures == Coordinate.a8) this.board.setBlackQueenSideCastlingAvailable(false);
-                    if (ply.captures == Coordinate.h8) this.board.setBlackKingSideCastlingAvailable(false);
-                    break;
-            }
-        }
+        // replace the current board
+        this.board = nextBoard;
 
-        this.board.setActivePlayer(this.board.getActivePlayer().opponent());
+        // find valid plies
         updateValidPlies();
+    }
+
+    public boolean isUndoAvailable() {
+        return this.history.size() > 0;
+    }
+
+    public void undo() {
+        if (isUndoAvailable()) {
+            HistoryItem item = this.history.pop();
+
+            // put the undone item into the redo stack
+            this.redo.push(item);
+
+            // replace the board with the previous board
+            this.board = item.board;
+
+            // find valid plies
+            updateValidPlies();
+        }
+    }
+
+    public boolean isRedoAvailable() {
+        return this.redo.size() > 0;
+    }
+
+    public void redo() {
+        if (isRedoAvailable()) {
+            // get the latest item from the redo
+            HistoryItem item = this.redo.pop();
+
+            // perform the ply
+            doPerform(item.ply);
+        }
     }
 
     @Override

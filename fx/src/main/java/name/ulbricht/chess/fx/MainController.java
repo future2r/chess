@@ -1,6 +1,7 @@
 package name.ulbricht.chess.fx;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +36,10 @@ public final class MainController implements Initializable {
     @FXML
     private BorderPane root;
     @FXML
+    private MenuItem undoMenuItem;
+    @FXML
+    private MenuItem redoMenuItem;
+    @FXML
     private Menu designMenu;
     @FXML
     private Pane boardPane;
@@ -58,6 +63,9 @@ public final class MainController implements Initializable {
         this.canvas.selectedSquareProperty().addListener((observable, oldValue, newValue) -> updateSelectedSquareLabel(newValue));
         this.canvas.activePlayerProperty().addListener((observable, oldValue, newValue) -> updateCurrentPlayer(newValue));
         this.canvas.checkStateProperty().addListener((observable, oldValue, newValue) -> updateCheckState(newValue));
+
+        this.undoMenuItem.disableProperty().bind(Bindings.not(this.canvas.undoAvailableProperty()));
+        this.redoMenuItem.disableProperty().bind(Bindings.not(this.canvas.redoAvailableProperty()));
 
         createDesignMenuItems();
         updateCurrentPlayer(this.canvas.activePlayerProperty().get());
@@ -156,6 +164,16 @@ public final class MainController implements Initializable {
     @FXML
     private void exitApplication() {
         getStage().close();
+    }
+
+    @FXML
+    private void undo() {
+        this.canvas.undo();
+    }
+
+    @FXML
+    private void redo() {
+        this.canvas.redo();
     }
 
     @FXML

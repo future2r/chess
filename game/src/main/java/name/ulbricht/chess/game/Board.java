@@ -118,15 +118,13 @@ public final class Board implements Cloneable {
 
     @Override
     public String toString() {
-
-
         StringBuilder sb = new StringBuilder("{pieces=");
         for (int row = 0; row < Coordinate.ROWS; row++) {
             sb.append('\n');
             for (int column = Coordinate.COLUMNS - 1; column >= 0; column--) {
                 Piece piece = getPiece(Coordinate.valueOf(column, row));
                 if (piece != null) sb.append(FEN.symbol(piece));
-                else sb.append(' ');
+                else sb.append('.');
             }
         }
         sb.append('}');

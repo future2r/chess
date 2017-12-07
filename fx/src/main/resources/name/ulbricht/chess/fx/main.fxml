@@ -30,6 +30,20 @@
                 <SeparatorMenuItem mnemonicParsing="false"/>
                 <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="%main.exitMenuItem.text"/>
             </Menu>
+            <Menu mnemonicParsing="false" text="%main.editMenu.text">
+                <MenuItem fx:id="undoMenuItem" mnemonicParsing="false" onAction="#undo" text="%main.undoMenuItem.text">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+                <MenuItem fx:id="redoMenuItem" mnemonicParsing="false" onAction="#redo" text="%main.redoMenuItem.text">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP"
+                                            shortcut="UP"/>
+                    </accelerator>
+                </MenuItem>
+            </Menu>
             <Menu fx:id="designMenu" mnemonicParsing="false" text="%main.designMenu.text"/>
             <Menu mnemonicParsing="false" text="%main.helpMenu.text">
                 <MenuItem mnemonicParsing="false" onAction="#showAbout" text="%main.aboutMenuItem.text"/>

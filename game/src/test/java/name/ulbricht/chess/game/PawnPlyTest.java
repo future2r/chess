@@ -37,7 +37,7 @@ final class PawnPlyTest extends AbstractPlyTest {
                 .filter(p -> p.target == Coordinate.e5)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Expected ply not found"));
-        game.performPly(ply);
+        game.perform(ply);
 
         // check plies for white pawn
         expectPlyNumber(game, "Pf5", 2);
@@ -86,7 +86,7 @@ final class PawnPlyTest extends AbstractPlyTest {
                 .filter(p -> p.target == Coordinate.e4)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Expected ply not found"));
-        game.performPly(ply);
+        game.perform(ply);
 
         // check plies for black pawn
         expectPlyNumber(game, "pf4", 2);
