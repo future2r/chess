@@ -1,6 +1,7 @@
 package name.ulbricht.chess.game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,19 +33,11 @@ public final class Rules {
                 : Coordinate.a8;
     }
 
-    static Coordinate king(Piece[] board, Player player) {
-        Piece king = player == Player.WHITE ? Piece.WHITE_KING : Piece.BLACK_KING;
-        for (Coordinate coordinate : Coordinate.values()) {
-            if (board[coordinate.ordinal()] == king) return coordinate;
-        }
-        throw new IllegalStateException("Piece not found: " + king);
-    }
-
-    static List<Coordinate> attacks(Piece[] board, Player attacker) {
+    static List<Coordinate> attacks(Board board, Player attacker) {
         List<Coordinate> squares = new ArrayList<>();
 
         for (Coordinate source : Coordinate.values()) {
-            Piece piece = board[source.ordinal()];
+            Piece piece = board.getPiece(source);
             if (piece != null && piece.player == attacker) {
                 switch (piece.type) {
                     case QUEEN:
@@ -74,14 +67,16 @@ public final class Rules {
         return squares;
     }
 
-    private static List<Coordinate> attacks(Piece[] board, Coordinate source, int steps, Direction... directions) {
+    private static List<Coordinate> attacks(Board board, Coordinate source, int steps, Direction... directions) {
+        Piece piece = board.getPiece(source);
+        if (piece == null) return Collections.emptyList();
+
         List<Coordinate> squares = new ArrayList<>();
-        Piece piece = Objects.requireNonNull(board[Objects.requireNonNull(source).ordinal()]);
         for (Direction direction : directions) {
             for (int step = 1; step <= steps; step++) {
                 Coordinate target = source.go(direction, step);
                 if (target == null) break;
-                Piece targetPiece = board[target.ordinal()];
+                Piece targetPiece = board.getPiece(target);
                 if (targetPiece == null) {
                     squares.add(target);
                 } else if (targetPiece.player.isOpponent(piece.player)) {
@@ -95,14 +90,16 @@ public final class Rules {
         return squares;
     }
 
-    static List<Ply> plies(Piece[] board, Coordinate source, int steps, Direction... directions) {
+    static List<Ply> plies(Board board, Coordinate source, int steps, Direction... directions) {
+        Piece piece = board.getPiece(source);
+        if (piece == null) return Collections.emptyList();
+
         List<Ply> plies = new ArrayList<>();
-        Piece piece = Objects.requireNonNull(board[Objects.requireNonNull(source).ordinal()]);
         for (Direction direction : directions) {
             for (int step = 1; step <= steps; step++) {
                 Coordinate target = source.go(direction, step);
                 if (target == null) break;
-                Piece targetPiece = board[target.ordinal()];
+                Piece targetPiece = board.getPiece(target);
                 if (targetPiece == null) {
                     plies.add(Ply.move(piece, source, target));
                 } else if (targetPiece.player.isOpponent(piece.player)) {
@@ -116,17 +113,18 @@ public final class Rules {
         return plies;
     }
 
-    static List<Ply> pawnPlies(Piece[] board, Coordinate source, Coordinate enPassantTarget) {
-        List<Ply> plies = new ArrayList<>();
-        Piece piece = Objects.requireNonNull(board[Objects.requireNonNull(source).ordinal()]);
+    static List<Ply> pawnPlies(Board board, Coordinate source, Coordinate enPassantTarget) {
+        Piece piece = board.getPiece(source);
+        if (piece == null) return Collections.emptyList();
 
+        List<Ply> plies = new ArrayList<>();
         Direction direction = MoveDirection.forward(piece.player);
         int startRow = piece.player == Player.WHITE ? 1 : 6;
         int promotionRow = baseRowIndex(piece.player.opponent());
 
         // first field in move direction
         Coordinate target = source.go(direction);
-        if (target != null && board[target.ordinal()] == null) {
+        if (target != null && board.isEmpty(target)) {
             if (target.rowIndex == promotionRow) {
                 plies.add(Ply.pawnPromotion(piece, source, target));
             } else {
@@ -136,7 +134,7 @@ public final class Rules {
             // double advance in move direction
             if (source.rowIndex == startRow) {
                 target = source.go(direction, 2);
-                if (target != null && board[target.ordinal()] == null) {
+                if (target != null && board.isEmpty(target)) {
                     plies.add(Ply.pawnDoubleAdvance(piece, source));
                 }
             }
@@ -147,7 +145,7 @@ public final class Rules {
                 MoveDirection.forwardLeft(piece.player), MoveDirection.forwardRight(piece.player)}) {
             target = source.go(captureDirection);
             if (target != null) {
-                Piece capturedPiece = board[target.ordinal()];
+                Piece capturedPiece = board.getPiece(target);
                 if (capturedPiece != null && capturedPiece.player.isOpponent(piece.player)) {
                     if (target.rowIndex == promotionRow) {
                         plies.add(Ply.pawnPromotionAndCaptures(piece, source, target, capturedPiece));
@@ -157,7 +155,7 @@ public final class Rules {
                 }
                 if (target == enPassantTarget) {
                     Coordinate captures = Coordinate.valueOf(target.columnIndex, piece.player == Player.WHITE ? 4 : 3);
-                    capturedPiece = board[captures.ordinal()];
+                    capturedPiece = board.getPiece(captures);
                     if (capturedPiece.type == PieceType.PAWN && capturedPiece.player.isOpponent(piece.player)) {
                         plies.add(Ply.pawnEnPassant(piece, source, target));
                     }
@@ -168,8 +166,9 @@ public final class Rules {
         return plies;
     }
 
-    static Ply kingSideCastlingPly(Piece[] board, Coordinate source, List<Coordinate> attacked) {
-        Piece piece = Objects.requireNonNull(board[Objects.requireNonNull(source).ordinal()]);
+    static Ply kingSideCastlingPly(Board board, Coordinate source, List<Coordinate> attacked) {
+        Piece piece = board.getPiece(source);
+        if (piece == null) return null;
 
         // piece must be a king
         if (piece.type != PieceType.KING)
@@ -184,12 +183,12 @@ public final class Rules {
 
         // rook must be on its initial position
         Coordinate rookSource = initialKingSideRookCoordinate(piece.player);
-        if (board[rookSource.ordinal()] != Piece.valueOf(PieceType.ROOK, piece.player)) return null;
+        if (board.getPiece(rookSource) != Piece.valueOf(PieceType.ROOK, piece.player)) return null;
 
         // no piece between king and rook
         Coordinate square = source.go(MoveDirection.RIGHT);
         while (square != rookSource) {
-            if (board[square.ordinal()] != null) return null;
+            if (board.getPiece(square) != null) return null;
             square = square.go(MoveDirection.RIGHT);
         }
 
@@ -200,8 +199,9 @@ public final class Rules {
         return Ply.kingSideCastling(piece);
     }
 
-    static Ply queenSideCastlingPly(Piece[] board, Coordinate source, List<Coordinate> attacked) {
-        Piece piece = Objects.requireNonNull(board[Objects.requireNonNull(source).ordinal()]);
+    static Ply queenSideCastlingPly(Board board, Coordinate source, List<Coordinate> attacked) {
+        Piece piece = board.getPiece(source);
+        if (piece == null) return null;
 
         // piece must be a king
         if (piece.type != PieceType.KING)
@@ -216,12 +216,12 @@ public final class Rules {
 
         // rook must be on its initial position
         Coordinate rookSource = initialQueenSideRookCoordinate(piece.player);
-        if (board[rookSource.ordinal()] != Piece.valueOf(PieceType.ROOK, piece.player)) return null;
+        if (board.getPiece(rookSource) != Piece.valueOf(PieceType.ROOK, piece.player)) return null;
 
         // no piece between king and rook
         Coordinate square = source.go(MoveDirection.LEFT);
         while (square != rookSource) {
-            if (board[square.ordinal()] != null) return null;
+            if (board.getPiece(square) != null) return null;
             square = square.go(MoveDirection.LEFT);
         }
 
@@ -232,27 +232,28 @@ public final class Rules {
         return Ply.queenSideCastling(piece);
     }
 
-    static void performPly(Piece[] board, Ply ply) {
+    static void performPly(Board board, Ply ply) {
         switch (ply.type) {
             case MOVE:
-                if (ply.captures != null) board[ply.captures.ordinal()] = null;
+                if (ply.captures != null) board.setPiece(ply.captures, null);
                 move(board, ply.source, ply.target);
                 break;
             case PAWN_DOUBLE_ADVANCE:
                 move(board, ply.source, ply.target);
                 break;
             case PAWN_EN_PASSANT:
-                board[ply.captures.ordinal()] = null;
+                board.setPiece(ply.captures, null);
                 move(board, ply.source, ply.target);
                 break;
             case PAWN_PROMOTION:
-                if (ply.captures != null) board[ply.captures.ordinal()] = null;
-                board[ply.source.ordinal()] = null;
                 Piece promotionPiece = Piece.valueOf(
                         ply.promotion != null ? ply.promotion : PieceType.QUEEN, ply.piece.player);
                 if (!promotionPieceTypes.contains(promotionPiece.type))
                     throw new IllegalStateException("Not a valid promotion piece: " + promotionPiece);
-                board[ply.target.ordinal()] = promotionPiece;
+
+                if (ply.captures != null) board.setPiece(ply.captures, null);
+                board.setPiece(ply.source, null);
+                board.setPiece(ply.target, promotionPiece);
                 break;
             case KING_SIDE_CASTLING: {
                 move(board, ply.source, ply.target);
@@ -275,9 +276,9 @@ public final class Rules {
         }
     }
 
-    private static void move(Piece[] board, Coordinate source, Coordinate target) {
-        Piece piece = board[source.ordinal()];
-        board[source.ordinal()] = null;
-        board[target.ordinal()] = piece;
+    private static void move(Board board, Coordinate source, Coordinate target) {
+        Piece piece = board.getPiece(source);
+        board.setPiece(source, null);
+        board.setPiece(target, piece);
     }
 }

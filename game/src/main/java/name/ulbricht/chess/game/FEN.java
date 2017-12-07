@@ -3,7 +3,7 @@ package name.ulbricht.chess.game;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -46,14 +46,14 @@ public final class FEN {
 
     private static final Pattern pattern = Pattern.compile(
             "(?<row8>[prnbqkPRNBQK1-8]{1,8})" +
-                    "\\/(?<row7>[prnbqkPRNBQK1-8]{1,8})" +
-                    "\\/(?<row6>[prnbqkPRNBQK1-8]{1,8})" +
-                    "\\/(?<row5>[prnbqkPRNBQK1-8]{1,8})" +
-                    "\\/(?<row4>[prnbqkPRNBQK1-8]{1,8})" +
-                    "\\/(?<row3>[prnbqkPRNBQK1-8]{1,8})" +
-                    "\\/(?<row2>[prnbqkPRNBQK1-8]{1,8})" +
-                    "\\/(?<row1>[prnbqkPRNBQK1-8]{1,8})" +
-                    " (?<ply>w|b)" +
+                    "/(?<row7>[prnbqkPRNBQK1-8]{1,8})" +
+                    "/(?<row6>[prnbqkPRNBQK1-8]{1,8})" +
+                    "/(?<row5>[prnbqkPRNBQK1-8]{1,8})" +
+                    "/(?<row4>[prnbqkPRNBQK1-8]{1,8})" +
+                    "/(?<row3>[prnbqkPRNBQK1-8]{1,8})" +
+                    "/(?<row2>[prnbqkPRNBQK1-8]{1,8})" +
+                    "/(?<row1>[prnbqkPRNBQK1-8]{1,8})" +
+                    " (?<ply>[wb])" +
                     " (?<cas>-|[KQkq]{1,4})" +
                     " (?<ept>-|[a-h][1-8])" +
                     " (?<hmc>[0-9]{1,3})" +
@@ -175,7 +175,7 @@ public final class FEN {
     }
 
     public static void toFile(Path file, Setup setup) throws IOException {
-        Files.write(file, Arrays.asList(toString(setup)));
+        Files.write(file, List.of(toString(setup)));
     }
 
     private static void parseRow(Setup setup, int rowIndex, String s) {
@@ -249,7 +249,7 @@ public final class FEN {
         }
     }
 
-    public static char symbol(Player player) {
+    private static char symbol(Player player) {
         switch (Objects.requireNonNull(player, "player cannot be null")) {
             case WHITE:
                 return WHITE_PLAYER;
