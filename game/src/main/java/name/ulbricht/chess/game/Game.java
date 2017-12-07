@@ -3,7 +3,6 @@ package name.ulbricht.chess.game;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -11,7 +10,7 @@ import java.util.stream.Collectors;
  */
 public final class Game {
 
-    private final Piece[] board;
+    private final Board board = new Board();
     private Player activePlayer;
     private CheckState checkState;
     private final List<Ply> validPlies = new ArrayList<>();
@@ -33,11 +32,9 @@ public final class Game {
      * Creates a new game. This game will have a new board with the initial positions of the pieces.
      */
     public Game(Setup setup) {
-        this.board = new Piece[Coordinate.COLUMNS * Coordinate.ROWS];
-
         // TODO we should check if there is a king for each side
         for (Coordinate coordinate : Coordinate.values()) {
-            setPiece(coordinate, setup.getPiece(coordinate));
+            this.board.setPiece(coordinate, setup.getPiece(coordinate));
         }
 
         this.activePlayer = setup.getActivePlayer();
@@ -94,11 +91,7 @@ public final class Game {
      * @return the piece or {@code null}
      */
     public Piece getPiece(Coordinate coordinate) {
-        return this.board[Objects.requireNonNull(coordinate, "coordinate cannot be null").ordinal()];
-    }
-
-    private void setPiece(Coordinate coordinate, Piece piece) {
-        this.board[coordinate.ordinal()] = piece;
+        return this.board.getPiece(coordinate);
     }
 
     public List<Ply> getValidPlies() {
@@ -127,7 +120,7 @@ public final class Game {
         List<Coordinate> attacked = Rules.attacks(this.board, this.activePlayer.opponent());
 
         // check if the king is in check
-        Coordinate kingPosition = Rules.king(this.board, this.activePlayer);
+        Coordinate kingPosition = this.board.king(this.activePlayer);
         if (attacked.contains(kingPosition)) this.checkState = CheckState.CHECK;
 
         // find legal plies
@@ -141,23 +134,25 @@ public final class Game {
                         break;
                     case KING:
                         plies.addAll(Rules.plies(this.board, source, 1, MoveDirection.values()));
-                        if (piece.player == Player.WHITE) {
-                            if (this.whiteKingSideCastlingAvailable) {
-                                Ply ply = Rules.kingSideCastlingPly(this.board, source, attacked);
-                                if (ply != null) plies.add(ply);
-                            }
-                            if (this.whiteQueenSideCastlingAvailable) {
-                                Ply ply = Rules.queenSideCastlingPly(this.board, source, attacked);
-                                if (ply != null) plies.add(ply);
-                            }
-                        } else {
-                            if (this.blackKingSideCastlingAvailable) {
-                                Ply ply = Rules.kingSideCastlingPly(this.board, source, attacked);
-                                if (ply != null) plies.add(ply);
-                            }
-                            if (this.blackQueenSideCastlingAvailable) {
-                                Ply ply = Rules.queenSideCastlingPly(this.board, source, attacked);
-                                if (ply != null) plies.add(ply);
+                        if (source == Rules.initialKingCoordinate(piece.player)) {
+                            if (piece.player == Player.WHITE) {
+                                if (this.whiteKingSideCastlingAvailable) {
+                                    Ply ply = Rules.kingSideCastlingPly(this.board, source, attacked);
+                                    if (ply != null) plies.add(ply);
+                                }
+                                if (this.whiteQueenSideCastlingAvailable) {
+                                    Ply ply = Rules.queenSideCastlingPly(this.board, source, attacked);
+                                    if (ply != null) plies.add(ply);
+                                }
+                            } else {
+                                if (this.blackKingSideCastlingAvailable) {
+                                    Ply ply = Rules.kingSideCastlingPly(this.board, source, attacked);
+                                    if (ply != null) plies.add(ply);
+                                }
+                                if (this.blackQueenSideCastlingAvailable) {
+                                    Ply ply = Rules.queenSideCastlingPly(this.board, source, attacked);
+                                    if (ply != null) plies.add(ply);
+                                }
                             }
                         }
                         break;
@@ -183,11 +178,11 @@ public final class Game {
         for (Ply ply : plies) {
 
             // perform the ply on a temporary board
-            Piece[] simBoard = this.board.clone();
+            Board simBoard = this.board.clone();
             Rules.performPly(simBoard, ply);
 
             // find the king of this player (may have moved) for check test
-            kingPosition = Rules.king(simBoard, this.activePlayer);
+            kingPosition = simBoard.king(this.activePlayer);
 
             // check if the king is in check after this move
             List<Coordinate> simAttacked = Rules.attacks(simBoard, this.activePlayer.opponent());
@@ -258,5 +253,18 @@ public final class Game {
 
         this.activePlayer = this.activePlayer.opponent();
         updateValidPlies();
+    }
+
+    @Override
+    public String toString() {
+        return "{board=" + this.board +
+                "\nactivePlayer=" + this.activePlayer +
+                "\ncheckState=" + this.checkState +
+                "\nvalidPlies=" + this.validPlies +
+                "\nwhiteKingSideCastlingAvailable=" + this.whiteKingSideCastlingAvailable +
+                "\nwhiteQueenSideCastlingAvailable=" + this.whiteQueenSideCastlingAvailable +
+                "\nblackKingSideCastlingAvailable=" + this.blackKingSideCastlingAvailable +
+                "\nblackQueenSideCastlingAvailable=" + this.blackQueenSideCastlingAvailable +
+                "\nenpassantTarget=" + this.enPassantTarget;
     }
 }

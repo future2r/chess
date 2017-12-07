@@ -43,7 +43,7 @@ final class BoardCanvas extends Canvas {
         }
     }
 
-    private Tooltip tooltip;
+    private final Tooltip tooltip;
 
     private Game game;
     private BoardRenderer renderer;
@@ -203,13 +203,22 @@ final class BoardCanvas extends Canvas {
                 .findFirst();
 
         if (ply.isPresent()) {
-            performMove(ply.get());
+            performPly(ply.get());
         } else {
             this.selectedSquareProperty.set(coordinate);
         }
     }
 
-    private void performMove(Ply ply) {
+    private void performPly(Ply ply) {
+        if (ply.type == PlyType.PAWN_PROMOTION) {
+            PieceType promotion = PromotionController.showDialog(this, this.renderer, ply);
+            if (promotion != null) {
+                ply.promotion = promotion;
+            } else {
+                return;
+            }
+        }
+
         this.game.performPly(ply);
 
         this.activePlayerProperty.set(this.game.getActivePlayer());

@@ -12,7 +12,7 @@ public final class Setup {
         return FEN.createSetup(FEN.STANDARD);
     }
 
-    private final Piece[] board = new Piece[Coordinate.ROWS * Coordinate.COLUMNS];
+    private final Board board = new Board();
     private Player activePlayer = Player.WHITE;
     private boolean whiteKingSideCastlingAvailable = true;
     private boolean whiteQueenSideCastlingAvailable = true;
@@ -22,16 +22,12 @@ public final class Setup {
     private int halfMoveClock = 0;
     private int fullMoveNumber = 1;
 
-    private Setup() {
-        // hidden
-    }
-
     public Piece getPiece(Coordinate coordinate) {
-        return this.board[coordinate.ordinal()];
+        return this.board.getPiece(coordinate);
     }
 
     public void setPiece(Coordinate coordinate, Piece piece) {
-        this.board[coordinate.ordinal()] = piece;
+        this.board.setPiece(coordinate, piece);
     }
 
     public Player getActivePlayer() {

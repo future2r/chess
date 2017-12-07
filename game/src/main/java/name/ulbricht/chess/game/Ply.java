@@ -54,7 +54,7 @@ public final class Ply {
         Objects.requireNonNull(source);
 
         Objects.requireNonNull(target);
-        int promotionRow = piece.player == Player.WHITE ? 7 : 0;
+        int promotionRow = Rules.baseRowIndex(piece.player.opponent());
         if (target.rowIndex != promotionRow)
             throw new IllegalArgumentException("Illegal promotion row: " + target.rowIndex);
 
@@ -66,7 +66,7 @@ public final class Ply {
         Objects.requireNonNull(source);
 
         Objects.requireNonNull(target);
-        int promotionRow = piece.player == Player.WHITE ? 7 : 0;
+        int promotionRow = Rules.baseRowIndex(piece.player.opponent());
         if (target.rowIndex != promotionRow)
             throw new IllegalArgumentException("Illegal promotion row: " + target.rowIndex);
 
@@ -77,22 +77,16 @@ public final class Ply {
 
     static Ply kingSideCastling(Piece piece) {
         requirePieceType(piece, PieceType.KING);
-
-        int row = piece.player == Player.WHITE ? 0 : 7;
-        Coordinate source = Coordinate.valueOf(4, row);
-        Coordinate target = Coordinate.valueOf(6, row);
-
-        return new Ply(PlyType.KING_SIDE_CASTLING, piece, source, target, null, null);
+        Coordinate source = Rules.initialKingCoordinate(piece.player);
+        return new Ply(PlyType.KING_SIDE_CASTLING, piece, source, source.go(MoveDirection.RIGHT, 2),
+                null, null);
     }
 
     static Ply queenSideCastling(Piece piece) {
         requirePieceType(piece, PieceType.KING);
-
-        int row = piece.player == Player.WHITE ? 0 : 7;
-        Coordinate source = Coordinate.valueOf(4, row);
-        Coordinate target = Coordinate.valueOf(2, row);
-
-        return new Ply(PlyType.QUEEN_SIDE_CASTLING, piece, source, target, null, null);
+        Coordinate source = Rules.initialKingCoordinate(piece.player);
+        return new Ply(PlyType.QUEEN_SIDE_CASTLING, piece, source, source.go(MoveDirection.LEFT,2),
+                null, null);
     }
 
     private static void requirePieceType(Piece piece, PieceType... validPieceTypes) {

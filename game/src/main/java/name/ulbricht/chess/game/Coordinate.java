@@ -69,16 +69,7 @@ public enum Coordinate {
      * @throws IndexOutOfBoundsException if the index exceeds the lower or upper limit
      */
     public static char toColumnName(int columnIndex) throws IndexOutOfBoundsException {
-        return (char) (97 + checkColumnIndex(columnIndex));
-    }
-
-    public static int toColumnIndex(String s) {
-        if (s != null && s.length() == 1) return toColumnIndex(s.charAt(0));
-        throw new IllegalArgumentException("Illegal column name: " + s);
-    }
-
-    public static int toColumnIndex(char c) {
-        return checkColumnIndex(c - 97);
+        return (char) ('a' + checkColumnIndex(columnIndex));
     }
 
     /**
@@ -90,16 +81,7 @@ public enum Coordinate {
      * @throws IndexOutOfBoundsException if the index exceeds the lower or upper limit
      */
     public static char toRowName(int rowIndex) {
-        return (char) (49 + checkRowIndex(rowIndex));
-    }
-
-    public static int toRowIndex(String s) {
-        if (s != null && s.length() == 1) return toRowIndex(s.charAt(0));
-        throw new IllegalArgumentException("Illegal row name: " + s);
-    }
-
-    public static int toRowIndex(char c) {
-        return checkRowIndex(c + 49);
+        return (char) ('1' + checkRowIndex(rowIndex));
     }
 
     /**

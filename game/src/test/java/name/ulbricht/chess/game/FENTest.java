@@ -173,6 +173,7 @@ final class FENTest {
     @Test
     void assertToString_Empty() {
         Setup setup = Setup.empty();
+        System.out.println(setup.toString());
         assertEquals("8/8/8/8/8/8/8/8 w KQkq - 0 1", FEN.toString(setup));
     }
 }
