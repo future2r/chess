@@ -56,7 +56,7 @@ final class KingPlyTest extends AbstractPlyTest {
 
     @Test
     void whiteSelfBlocking() {
-        Game game = whiteStandard();
+        Game game = whiteInitial();
         expectPlyNumber(game, "ke1", 0);
     }
 

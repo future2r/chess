@@ -128,7 +128,7 @@ public final class MainController implements Initializable {
             Path file = FileChoosers.openFile(this.root, FileChoosers.Category.BOARDS, FileChoosers.Format.FEN);
             if (file != null) {
                 try {
-                    Setup setup = FEN.fromFile(file);
+                    Board setup = FEN.fromFile(file);
                     Game game = new Game(setup);
                     this.canvas.setGame(game);
                 } catch (IOException | IllegalArgumentException e) {
@@ -141,12 +141,12 @@ public final class MainController implements Initializable {
 
     @FXML
     private void saveBoard() {
-        Setup setup = this.canvas.getGame().getSetup();
+        Board board = this.canvas.getGame().getBoard();
 
         Path file = FileChoosers.saveFile(this.root, FileChoosers.Category.BOARDS, FileChoosers.Format.FEN);
         if (file != null) {
             try {
-                FEN.toFile(file, setup);
+                FEN.toFile(file, board);
             } catch (IOException e) {
                 GUIUtils.showError(this.root, Messages.getString("alert.saveBoard.error.contentText") + "\n" + e.getMessage());
             }

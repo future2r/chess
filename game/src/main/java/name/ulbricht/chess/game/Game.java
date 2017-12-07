@@ -10,65 +10,29 @@ import java.util.stream.Collectors;
  */
 public final class Game {
 
-    private final Board board = new Board();
-    private Player activePlayer;
+    private Board board;
     private CheckState checkState;
     private final List<Ply> validPlies = new ArrayList<>();
-
-    private boolean whiteKingSideCastlingAvailable;
-    private boolean whiteQueenSideCastlingAvailable;
-    private boolean blackKingSideCastlingAvailable;
-    private boolean blackQueenSideCastlingAvailable;
-    private Coordinate enPassantTarget;
 
     /**
      * Creates a new game. This game will have a new board with the initial positions of the pieces.
      */
     public Game() {
-        this(Setup.standard());
+        this(Board.initial());
     }
 
     /**
      * Creates a new game. This game will have a new board with the initial positions of the pieces.
      */
-    public Game(Setup setup) {
+    public Game(Board board) {
         // TODO we should check if there is a king for each side
-        for (Coordinate coordinate : Coordinate.values()) {
-            this.board.setPiece(coordinate, setup.getPiece(coordinate));
-        }
-
-        this.activePlayer = setup.getActivePlayer();
-
-        this.whiteKingSideCastlingAvailable = setup.isWhiteKingSideCastlingAvailable();
-        this.whiteQueenSideCastlingAvailable = setup.isWhiteQueenSideCastlingAvailable();
-        this.blackKingSideCastlingAvailable = setup.isBlackKingSideCastlingAvailable();
-        this.blackQueenSideCastlingAvailable = setup.isBlackQueenSideCastlingAvailable();
-
-        // TODO we should check if this can be valid
-        this.enPassantTarget = setup.getEnPassantTarget();
-
+        // TODO check if the en-passant target is correct
+        this.board = board.clone();
         updateValidPlies();
     }
 
-    public Setup getSetup() {
-        Setup setup = Setup.empty();
-
-        for (Coordinate coordinate : Coordinate.values()) {
-            setup.setPiece(coordinate, getPiece(coordinate));
-        }
-        setup.setActivePlayer(this.activePlayer);
-
-        setup.setWhiteKingSideCastlingAvailable(this.whiteKingSideCastlingAvailable);
-        setup.setWhiteQueenSideCastlingAvailable(this.whiteQueenSideCastlingAvailable);
-        setup.setBlackKingSideCastlingAvailable(this.blackKingSideCastlingAvailable);
-        setup.setBlackQueenSideCastlingAvailable(this.blackQueenSideCastlingAvailable);
-
-        setup.setEnPassantTarget(this.enPassantTarget);
-
-        // TODO half move clock
-        // TODO full move number
-
-        return setup;
+    public Board getBoard() {
+        return this.board.clone();
     }
 
     /**
@@ -77,7 +41,7 @@ public final class Game {
      * @return the current player
      */
     public Player getActivePlayer() {
-        return activePlayer;
+        return this.board.getActivePlayer();
     }
 
     public CheckState getCheckState() {
@@ -117,17 +81,17 @@ public final class Game {
         this.validPlies.clear();
 
         // find the squares attacked by the opponent
-        List<Coordinate> attacked = Rules.attacks(this.board, this.activePlayer.opponent());
+        List<Coordinate> attacked = Rules.attacks(this.board, this.board.getActivePlayer().opponent());
 
         // check if the king is in check
-        Coordinate kingPosition = this.board.king(this.activePlayer);
+        Coordinate kingPosition = this.board.king(this.board.getActivePlayer());
         if (attacked.contains(kingPosition)) this.checkState = CheckState.CHECK;
 
         // find legal plies
         List<Ply> plies = new ArrayList<>();
         for (Coordinate source : Coordinate.values()) {
             Piece piece = getPiece(source);
-            if (piece != null && piece.player == this.activePlayer) {
+            if (piece != null && piece.player == this.board.getActivePlayer()) {
                 switch (piece.type) {
                     case QUEEN:
                         plies.addAll(Rules.plies(this.board, source, Integer.MAX_VALUE, MoveDirection.values()));
@@ -136,20 +100,20 @@ public final class Game {
                         plies.addAll(Rules.plies(this.board, source, 1, MoveDirection.values()));
                         if (source == Rules.initialKingCoordinate(piece.player)) {
                             if (piece.player == Player.WHITE) {
-                                if (this.whiteKingSideCastlingAvailable) {
+                                if (this.board.isWhiteKingSideCastlingAvailable()) {
                                     Ply ply = Rules.kingSideCastlingPly(this.board, source, attacked);
                                     if (ply != null) plies.add(ply);
                                 }
-                                if (this.whiteQueenSideCastlingAvailable) {
+                                if (this.board.isWhiteQueenSideCastlingAvailable()) {
                                     Ply ply = Rules.queenSideCastlingPly(this.board, source, attacked);
                                     if (ply != null) plies.add(ply);
                                 }
                             } else {
-                                if (this.blackKingSideCastlingAvailable) {
+                                if (this.board.isBlackKingSideCastlingAvailable()) {
                                     Ply ply = Rules.kingSideCastlingPly(this.board, source, attacked);
                                     if (ply != null) plies.add(ply);
                                 }
-                                if (this.blackQueenSideCastlingAvailable) {
+                                if (this.board.isBlackQueenSideCastlingAvailable()) {
                                     Ply ply = Rules.queenSideCastlingPly(this.board, source, attacked);
                                     if (ply != null) plies.add(ply);
                                 }
@@ -168,7 +132,7 @@ public final class Game {
                         plies.addAll(Rules.plies(this.board, source, 1, KnightJump.values()));
                         break;
                     case PAWN:
-                        plies.addAll(Rules.pawnPlies(this.board, source, this.enPassantTarget));
+                        plies.addAll(Rules.pawnPlies(this.board, source, this.board.getEnPassantTarget()));
                         break;
                 }
             }
@@ -182,10 +146,10 @@ public final class Game {
             Rules.performPly(simBoard, ply);
 
             // find the king of this player (may have moved) for check test
-            kingPosition = simBoard.king(this.activePlayer);
+            kingPosition = simBoard.king(this.board.getActivePlayer());
 
             // check if the king is in check after this move
-            List<Coordinate> simAttacked = Rules.attacks(simBoard, this.activePlayer.opponent());
+            List<Coordinate> simAttacked = Rules.attacks(simBoard, this.board.getActivePlayer().opponent());
             if (!simAttacked.contains(kingPosition)) {
                 this.validPlies.add(ply);
             }
@@ -210,61 +174,55 @@ public final class Game {
         // set en passant target
         if (ply.type == PlyType.PAWN_DOUBLE_ADVANCE) {
             Coordinate target = ply.target;
-            this.enPassantTarget = Coordinate.valueOf(target.columnIndex, ply.piece.player == Player.WHITE ? 2 : 5);
+            this.board.setEnPassantTarget(Coordinate.valueOf(target.columnIndex, ply.piece.player == Player.WHITE ? 2 : 5));
         } else {
-            this.enPassantTarget = null;
+            this.board.setEnPassantTarget(null);
         }
 
         // update castling availability
         switch (ply.piece) {
             case WHITE_ROOK:
-                if (ply.source == Coordinate.a1) this.whiteQueenSideCastlingAvailable = false;
-                if (ply.source == Coordinate.h1) this.whiteKingSideCastlingAvailable = false;
+                if (ply.source == Coordinate.a1) this.board.setWhiteQueenSideCastlingAvailable(false);
+                if (ply.source == Coordinate.h1) this.board.setWhiteKingSideCastlingAvailable(false);
                 break;
             case BLACK_ROOK:
-                if (ply.source == Coordinate.a8) this.blackQueenSideCastlingAvailable = false;
-                if (ply.source == Coordinate.h8) this.blackKingSideCastlingAvailable = false;
+                if (ply.source == Coordinate.a8) this.board.setBlackQueenSideCastlingAvailable(false);
+                if (ply.source == Coordinate.h8) this.board.setBlackKingSideCastlingAvailable(false);
                 break;
             case WHITE_KING:
-                if (ply.source == Coordinate.e1) {
-                    this.whiteQueenSideCastlingAvailable = false;
-                    this.whiteKingSideCastlingAvailable = false;
+                if (ply.source == Rules.initialKingCoordinate(Player.WHITE)) {
+                    this.board.setWhiteQueenSideCastlingAvailable(false);
+                    this.board.setWhiteKingSideCastlingAvailable(false);
                 }
                 break;
             case BLACK_KING:
-                if (ply.source == Coordinate.e8) {
-                    this.blackQueenSideCastlingAvailable = false;
-                    this.blackKingSideCastlingAvailable = false;
+                if (ply.source == Rules.initialKingCoordinate(Player.BLACK)) {
+                    this.board.setBlackQueenSideCastlingAvailable(false);
+                    this.board.setBlackKingSideCastlingAvailable(false);
                 }
                 break;
         }
         if (ply.capturedPiece != null) {
             switch (ply.capturedPiece) {
                 case WHITE_ROOK:
-                    if (ply.captures == Coordinate.a1) this.whiteQueenSideCastlingAvailable = false;
-                    if (ply.captures == Coordinate.h1) this.whiteKingSideCastlingAvailable = false;
+                    if (ply.captures == Coordinate.a1) this.board.setWhiteQueenSideCastlingAvailable(false);
+                    if (ply.captures == Coordinate.h1) this.board.setWhiteKingSideCastlingAvailable(false);
                     break;
                 case BLACK_ROOK:
-                    if (ply.captures == Coordinate.a8) this.blackQueenSideCastlingAvailable = false;
-                    if (ply.captures == Coordinate.h8) this.blackKingSideCastlingAvailable = false;
+                    if (ply.captures == Coordinate.a8) this.board.setBlackQueenSideCastlingAvailable(false);
+                    if (ply.captures == Coordinate.h8) this.board.setBlackKingSideCastlingAvailable(false);
                     break;
             }
         }
 
-        this.activePlayer = this.activePlayer.opponent();
+        this.board.setActivePlayer(this.board.getActivePlayer().opponent());
         updateValidPlies();
     }
 
     @Override
     public String toString() {
         return "{board=" + this.board +
-                "\nactivePlayer=" + this.activePlayer +
                 "\ncheckState=" + this.checkState +
-                "\nvalidPlies=" + this.validPlies +
-                "\nwhiteKingSideCastlingAvailable=" + this.whiteKingSideCastlingAvailable +
-                "\nwhiteQueenSideCastlingAvailable=" + this.whiteQueenSideCastlingAvailable +
-                "\nblackKingSideCastlingAvailable=" + this.blackKingSideCastlingAvailable +
-                "\nblackQueenSideCastlingAvailable=" + this.blackQueenSideCastlingAvailable +
-                "\nenpassantTarget=" + this.enPassantTarget;
+                "\nvalidPlies=" + this.validPlies;
     }
 }

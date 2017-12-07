@@ -15,9 +15,9 @@ final class GameTest {
 
     private static Stream<Arguments> createSetupArguments() {
         Collection<Arguments> arguments = new ArrayList<>();
-        Setup setup = Setup.standard();
+        Board board = Board.initial();
         for (Coordinate coordinate : Coordinate.values()) {
-            arguments.add(Arguments.of(coordinate, setup.getPiece(coordinate)));
+            arguments.add(Arguments.of(coordinate, board.getPiece(coordinate)));
         }
         return arguments.stream();
     }
