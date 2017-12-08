@@ -39,7 +39,7 @@ final class DefaultBoardRenderer extends AbstractBoardRenderer {
     public void drawSquare(GraphicsContext gc, double size, Coordinate coordinate, Piece piece,
                            boolean focused, boolean squareFocused, boolean squareSelected, SquareIndicator indicator) {
         Image squareImage = ((coordinate.columnIndex + coordinate.rowIndex) % 2) == 0 ?
-                this.lightSquareImage : this.darkSquareImage;
+                this.darkSquareImage : this.lightSquareImage;
         gc.drawImage(squareImage, 0, 0, size, size);
 
         // focused & selected

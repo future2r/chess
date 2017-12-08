@@ -32,8 +32,8 @@ final class ClassicBoardRenderer extends AbstractBoardRenderer {
         // background
         Color backgroundColor;
         if (((coordinate.columnIndex + coordinate.rowIndex) % 2) == 0)
-            backgroundColor = Color.rgb(0xFF, 0xCC, 0x99);
-        else backgroundColor = Color.rgb(0xCC, 0x99, 0x66);
+            backgroundColor = Color.rgb(0xCC, 0x99, 0x66);
+        else backgroundColor = Color.rgb(0xFF, 0xCC, 0x99);
         gc.setFill(backgroundColor);
         gc.fillRect(0, 0, size + 1, size + 1);
 
