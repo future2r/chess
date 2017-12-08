@@ -78,7 +78,7 @@ final class BoardCanvas extends Canvas {
         this.focusedSquareProperty.addListener((observable, oldValue, newValue) -> draw());
         this.displayedPliesProperty.addListener((observable, oldValue, newValue) -> draw());
 
-        update();
+        updateProperties();
     }
 
     Game getGame() {
@@ -89,7 +89,7 @@ final class BoardCanvas extends Canvas {
         this.game = game;
         this.focusedSquareProperty.set(null);
         this.selectedSquareProperty.set(null);
-        update();
+        updateProperties();
         draw();
     }
 
@@ -120,13 +120,15 @@ final class BoardCanvas extends Canvas {
 
     void undo(){
         this.game.undo();
-        update();
+        this.selectedSquareProperty.set(null);
+        updateProperties();
         draw();
     }
 
     void redo(){
         this.game.redo();
-        update();
+        this.selectedSquareProperty.set(null);
+        updateProperties();
         draw();
     }
 
@@ -243,10 +245,10 @@ final class BoardCanvas extends Canvas {
 
         this.selectedSquareProperty.set(null);
         this.focusedSquareProperty.set(ply.target);
-        update();
+        updateProperties();
     }
 
-    private void update(){
+    private void updateProperties(){
         this.activePlayerProperty.set(this.game.getActivePlayer());
         this.checkStateProperty.set(this.game.getCheckState());
         this.undoAvailable.set(this.game.isUndoAvailable());
