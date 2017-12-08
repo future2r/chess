@@ -122,9 +122,11 @@ public final class Board implements Cloneable {
         for (int row = 0; row < Coordinate.ROWS; row++) {
             sb.append('\n');
             for (int column = Coordinate.COLUMNS - 1; column >= 0; column--) {
+                sb.append(' ');
                 Piece piece = getPiece(Coordinate.valueOf(column, row));
                 if (piece != null) sb.append(FEN.symbol(piece));
                 else sb.append('.');
+                sb.append(' ');
             }
         }
         sb.append('}');
@@ -140,9 +142,9 @@ public final class Board implements Cloneable {
         sb.append(this.blackQueenSideCastlingAvailable);
         sb.append("\nenpassantTarget=");
         sb.append(this.enPassantTarget);
-        sb.append("\nhalfMoveClock");
+        sb.append("\nhalfMoveClock=");
         sb.append(this.halfMoveClock);
-        sb.append("\nfullMoveNumber");
+        sb.append("\nfullMoveNumber=");
         sb.append(this.fullMoveNumber);
 
         return sb.toString();
