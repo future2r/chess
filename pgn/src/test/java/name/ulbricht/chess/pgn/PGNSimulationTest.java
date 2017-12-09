@@ -46,7 +46,7 @@ final class PGNSimulationTest {
             Ply ply = SAN.findPly(game, sanPly);
             assertNotNull(ply, "SAN ply not found in valid game plies");
 
-            game.performPly(ply);
+            game.perform(ply);
 
             // check for check (that seems to be optional in PGN)
             if ((sanPly.check && game.getCheckState() == CheckState.NONE) ||

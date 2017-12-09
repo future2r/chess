@@ -233,6 +233,8 @@ public final class Rules {
     }
 
     static void performPly(Board board, Ply ply) {
+        board.setEnPassantTarget(null);
+
         switch (ply.type) {
             case MOVE:
                 if (ply.captures != null) board.setPiece(ply.captures, null);
@@ -240,6 +242,7 @@ public final class Rules {
                 break;
             case PAWN_DOUBLE_ADVANCE:
                 move(board, ply.source, ply.target);
+                board.setEnPassantTarget(Coordinate.valueOf(ply.target.columnIndex, ply.piece.player == Player.WHITE ? 2 : 5));
                 break;
             case PAWN_EN_PASSANT:
                 board.setPiece(ply.captures, null);
@@ -274,6 +277,45 @@ public final class Rules {
             default:
                 throw new IllegalArgumentException("Unsupported ply type: " + ply.type);
         }
+
+        // update castling availability
+        switch (ply.piece) {
+            case WHITE_ROOK:
+                if (ply.source == Coordinate.a1) board.setWhiteQueenSideCastlingAvailable(false);
+                if (ply.source == Coordinate.h1) board.setWhiteKingSideCastlingAvailable(false);
+                break;
+            case BLACK_ROOK:
+                if (ply.source == Coordinate.a8) board.setBlackQueenSideCastlingAvailable(false);
+                if (ply.source == Coordinate.h8) board.setBlackKingSideCastlingAvailable(false);
+                break;
+            case WHITE_KING:
+                if (ply.source == Rules.initialKingCoordinate(Player.WHITE)) {
+                    board.setWhiteQueenSideCastlingAvailable(false);
+                    board.setWhiteKingSideCastlingAvailable(false);
+                }
+                break;
+            case BLACK_KING:
+                if (ply.source == Rules.initialKingCoordinate(Player.BLACK)) {
+                    board.setBlackQueenSideCastlingAvailable(false);
+                    board.setBlackKingSideCastlingAvailable(false);
+                }
+                break;
+        }
+        if (ply.capturedPiece != null) {
+            switch (ply.capturedPiece) {
+                case WHITE_ROOK:
+                    if (ply.captures == Coordinate.a1) board.setWhiteQueenSideCastlingAvailable(false);
+                    if (ply.captures == Coordinate.h1) board.setWhiteKingSideCastlingAvailable(false);
+                    break;
+                case BLACK_ROOK:
+                    if (ply.captures == Coordinate.a8) board.setBlackQueenSideCastlingAvailable(false);
+                    if (ply.captures == Coordinate.h8) board.setBlackKingSideCastlingAvailable(false);
+                    break;
+            }
+        }
+
+        // switch the player
+        board.setActivePlayer(board.getActivePlayer().opponent());
     }
 
     private static void move(Board board, Coordinate source, Coordinate target) {

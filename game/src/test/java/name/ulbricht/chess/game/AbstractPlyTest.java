@@ -7,53 +7,53 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 abstract class AbstractPlyTest {
 
-    static Game whiteStandard() {
-        Setup setup = Setup.standard();
-        setup.setActivePlayer(Player.WHITE);
-        return new Game(setup);
+    static Game whiteInitial() {
+        Board board = Board.initial();
+        board.setActivePlayer(Player.WHITE);
+        return new Game(board);
     }
 
     static Game white(String... positions) {
-        Setup setup = Setup.empty();
-        setup.setActivePlayer(Player.WHITE);
-        return game(setup, positions);
+        Board board = new Board();
+        board.setActivePlayer(Player.WHITE);
+        return game(board, positions);
     }
 
     static Game whiteCastlingAvailable(String... positions) {
-        Setup setup = Setup.empty();
-        setup.setActivePlayer(Player.WHITE);
-        setup.setWhiteKingSideCastlingAvailable(true);
-        setup.setWhiteQueenSideCastlingAvailable(true);
-        return game(setup, positions);
+        Board board = new Board();
+        board.setActivePlayer(Player.WHITE);
+        board.setWhiteKingSideCastlingAvailable(true);
+        board.setWhiteQueenSideCastlingAvailable(true);
+        return game(board, positions);
     }
 
     static Game black(String... positions) {
-        Setup setup = Setup.empty();
-        setup.setActivePlayer(Player.BLACK);
-        return game(setup, positions);
+        Board board = new Board();
+        board.setActivePlayer(Player.BLACK);
+        return game(board, positions);
     }
 
     static Game blackStandard() {
-        Setup setup = Setup.standard();
-        setup.setActivePlayer(Player.BLACK);
-        return new Game(setup);
+        Board board = Board.initial();
+        board.setActivePlayer(Player.BLACK);
+        return new Game(board);
     }
 
     static Game blackCastlingAvailable(String... positions) {
-        Setup setup = Setup.empty();
-        setup.setActivePlayer(Player.BLACK);
-        setup.setBlackKingSideCastlingAvailable(true);
-        setup.setBlackQueenSideCastlingAvailable(true);
-        return game(setup, positions);
+        Board board = new Board();
+        board.setActivePlayer(Player.BLACK);
+        board.setBlackKingSideCastlingAvailable(true);
+        board.setBlackQueenSideCastlingAvailable(true);
+        return game(board, positions);
     }
 
-    private static Game game(Setup setup, String... positions) {
+    private static Game game(Board board, String... positions) {
         for (String pos : positions) {
             Piece piece = FEN.piece(pos.charAt(0));
             Coordinate coordinate = Coordinate.valueOf(pos.substring(1));
-            setup.setPiece(coordinate, piece);
+            board.setPiece(coordinate, piece);
         }
-        return new Game(setup);
+        return new Game(board);
     }
 
     static void expectPlyNumber(Game game, String sourcePiece, int plyNumber) {

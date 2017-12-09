@@ -50,6 +50,8 @@ final class BoardCanvas extends Canvas {
 
     private final ReadOnlyObjectWrapper<Player> activePlayerProperty = new ReadOnlyObjectWrapper<>();
     private final ReadOnlyObjectWrapper<CheckState> checkStateProperty = new ReadOnlyObjectWrapper<>();
+    private final ReadOnlyBooleanWrapper undoAvailable = new ReadOnlyBooleanWrapper();
+    private final ReadOnlyBooleanWrapper redoAvailable = new ReadOnlyBooleanWrapper();
     private final ObjectProperty<Coordinate> selectedSquareProperty = new SimpleObjectProperty<>();
     private final ObjectProperty<Coordinate> focusedSquareProperty = new SimpleObjectProperty<>();
     private final ReadOnlyListWrapper<Ply> displayedPliesProperty = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
@@ -76,8 +78,7 @@ final class BoardCanvas extends Canvas {
         this.focusedSquareProperty.addListener((observable, oldValue, newValue) -> draw());
         this.displayedPliesProperty.addListener((observable, oldValue, newValue) -> draw());
 
-        this.activePlayerProperty.set(this.game.getActivePlayer());
-        this.checkStateProperty.set(this.game.getCheckState());
+        updateProperties();
     }
 
     Game getGame() {
@@ -86,10 +87,9 @@ final class BoardCanvas extends Canvas {
 
     void setGame(Game game) {
         this.game = game;
-        this.activePlayerProperty.set(this.game.getActivePlayer());
-        this.checkStateProperty.set(this.game.getCheckState());
         this.focusedSquareProperty.set(null);
         this.selectedSquareProperty.set(null);
+        updateProperties();
         draw();
     }
 
@@ -106,8 +106,30 @@ final class BoardCanvas extends Canvas {
         return this.checkStateProperty.getReadOnlyProperty();
     }
 
+    ReadOnlyBooleanProperty undoAvailableProperty() {
+        return this.undoAvailable.getReadOnlyProperty();
+    }
+
+    ReadOnlyBooleanProperty redoAvailableProperty() {
+        return this.redoAvailable.getReadOnlyProperty();
+    }
+
     ObjectProperty<Coordinate> selectedSquareProperty() {
         return this.selectedSquareProperty;
+    }
+
+    void undo(){
+        this.game.undo();
+        this.selectedSquareProperty.set(null);
+        updateProperties();
+        draw();
+    }
+
+    void redo(){
+        this.game.redo();
+        this.selectedSquareProperty.set(null);
+        updateProperties();
+        draw();
     }
 
     private void tooltipShowing() {
@@ -219,14 +241,19 @@ final class BoardCanvas extends Canvas {
             }
         }
 
-        this.game.performPly(ply);
+        this.game.perform(ply);
 
-        this.activePlayerProperty.set(this.game.getActivePlayer());
-        this.checkStateProperty.set(this.game.getCheckState());
         this.selectedSquareProperty.set(null);
         this.focusedSquareProperty.set(ply.target);
+        updateProperties();
     }
 
+    private void updateProperties(){
+        this.activePlayerProperty.set(this.game.getActivePlayer());
+        this.checkStateProperty.set(this.game.getCheckState());
+        this.undoAvailable.set(this.game.isUndoAvailable());
+        this.redoAvailable.set(this.game.isRedoAvailable());
+    }
 
     private Coordinate getSquareAt(double x, double y) {
         if (this.renderer != null) {

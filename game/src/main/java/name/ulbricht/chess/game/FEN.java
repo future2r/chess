@@ -33,7 +33,7 @@ public final class FEN {
     private static final char BLACK_QUEEN = 'q';
     private static final char BLACK_KING = 'k';
 
-    public static final String STANDARD = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    public static final String INITIAL = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     private static final Logger log = Logger.getLogger(FEN.class.getPackage().getName());
 
@@ -63,7 +63,7 @@ public final class FEN {
     private static final char FIELD_SEPARATOR = ' ';
     private static final String EMPTY_FIELD = "-";
 
-    public static Setup createSetup(String s) {
+    public static Board createBoard(String s) {
         log.fine(() -> "Parsing " + s);
 
         Matcher matcher = pattern.matcher(s);
@@ -71,17 +71,17 @@ public final class FEN {
 
         log.fine(() -> createLog(matcher));
 
-        Setup setup = Setup.empty();
+        Board board = new Board();
         for (int row = 0; row < Coordinate.ROWS; row++) {
-            parseRow(setup, row, matcher.group(GROUP_ROW_PREFIX + (row + 1)));
-            parseActivePlayer(setup, matcher.group(GROUP_PLAYER));
-            parseCastling(setup, matcher.group(GROUP_CASTLING));
-            parseEnPassantTarget(setup, matcher.group(GROUP_EN_PASSANT_TARGET));
-            parseHalfMoveClock(setup, matcher.group(GROUP_HALF_MOVE_CLOCK));
-            parseFullMoveNumber(setup, matcher.group(GROUP_FULL_MOVE_NUMBER));
+            parseRow(board, row, matcher.group(GROUP_ROW_PREFIX + (row + 1)));
+            parseActivePlayer(board, matcher.group(GROUP_PLAYER));
+            parseCastling(board, matcher.group(GROUP_CASTLING));
+            parseEnPassantTarget(board, matcher.group(GROUP_EN_PASSANT_TARGET));
+            parseHalfMoveClock(board, matcher.group(GROUP_HALF_MOVE_CLOCK));
+            parseFullMoveNumber(board, matcher.group(GROUP_FULL_MOVE_NUMBER));
         }
 
-        return setup;
+        return board;
     }
 
     private static String createLog(Matcher matcher) {
@@ -101,7 +101,7 @@ public final class FEN {
         return sb.toString();
     }
 
-    public static String toString(Setup setup) {
+    public static String toString(Board setup) {
         StringBuilder sb = new StringBuilder();
 
         // positions
@@ -167,18 +167,18 @@ public final class FEN {
         return sb.toString();
     }
 
-    public static Setup fromFile(Path file) throws IOException {
-        return FEN.createSetup(Files.lines(file)
+    public static Board fromFile(Path file) throws IOException {
+        return FEN.createBoard(Files.lines(file)
                 .limit(1)
                 .findFirst()
                 .orElseThrow(() -> new IOException("Cannot read empty file")));
     }
 
-    public static void toFile(Path file, Setup setup) throws IOException {
+    public static void toFile(Path file, Board setup) throws IOException {
         Files.write(file, List.of(toString(setup)));
     }
 
-    private static void parseRow(Setup setup, int rowIndex, String s) {
+    private static void parseRow(Board setup, int rowIndex, String s) {
         int columnIndex = -1;
         for (char c : s.toCharArray()) {
             if (c >= '1' && c <= '8') {
@@ -195,14 +195,14 @@ public final class FEN {
         }
     }
 
-    private static void parseActivePlayer(Setup setup, String s) {
+    private static void parseActivePlayer(Board setup, String s) {
         if (s.length() == 1) {
             setup.setActivePlayer(player(s.charAt(0)));
         } else
             throw new IllegalArgumentException("Invalid active player field: " + s);
     }
 
-    private static void parseCastling(Setup setup, String s) {
+    private static void parseCastling(Board setup, String s) {
         setup.setWhiteKingSideCastlingAvailable(false);
         setup.setWhiteQueenSideCastlingAvailable(false);
         setup.setBlackKingSideCastlingAvailable(false);
@@ -230,7 +230,7 @@ public final class FEN {
         }
     }
 
-    private static void parseEnPassantTarget(Setup setup, String s) {
+    private static void parseEnPassantTarget(Board setup, String s) {
         if (!s.equals(EMPTY_FIELD)) {
             Coordinate coordinate = Coordinate.valueOf(s);
             int expectedRowIndex = setup.getActivePlayer() == Player.WHITE ? 5 : 2;
@@ -240,7 +240,7 @@ public final class FEN {
         }
     }
 
-    private static void parseHalfMoveClock(Setup setup, String s) {
+    private static void parseHalfMoveClock(Board setup, String s) {
         try {
             int value = Integer.parseInt(s);
             if (value < 0) throw new IllegalArgumentException("Illegal value for half go clock: " + value);
@@ -250,7 +250,7 @@ public final class FEN {
         }
     }
 
-    private static void parseFullMoveNumber(Setup setup, String s) {
+    private static void parseFullMoveNumber(Board setup, String s) {
         try {
             int value = Integer.parseInt(s);
             if (value < 1) throw new IllegalArgumentException("Illegal value for full go number: " + value);
