@@ -18,7 +18,7 @@ public final class Board implements Cloneable {
     private int halfMoveClock = 0;
     private int fullMoveNumber = 1;
 
-    Piece getPiece(Coordinate coordinate) {
+    public Piece getPiece(Coordinate coordinate) {
         return this.pieces[Objects.requireNonNull(coordinate, "coordinate cannot be null").ordinal()];
     }
 

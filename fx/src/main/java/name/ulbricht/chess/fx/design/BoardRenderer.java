@@ -18,8 +18,6 @@ public interface BoardRenderer {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
 
-    void drawBackground(GraphicsContext gc, double width, double height);
-
     void drawSquare(GraphicsContext gc, double size, Coordinate coordinate, Piece piece,
                     boolean focused, boolean squareFocused, boolean squareSelected, SquareIndicator indicator);
 

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="650"
+          xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="name.ulbricht.chess.fx.NewGameController">
+    <fx:define>
+        <ToggleGroup fx:id="startPlayerToggleGroup"/>
+        <FXCollections fx:id="playerItems" fx:factory="observableArrayList">
+            <String fx:value="Mensch"/>
+        </FXCollections>
+    </fx:define>
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="NEVER"/>
+        <RowConstraints vgrow="ALWAYS"/>
+    </rowConstraints>
+    <children>
+        <TitledPane collapsible="false" focusTraversable="false" text="%new-game.playerPane.title"
+                    GridPane.hgrow="ALWAYS">
+            <content>
+                <GridPane hgap="8" vgap="8">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES"/>
+                        <RowConstraints vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <children>
+                        <Label text="%new-game.whitePlayerLabel.text"/>
+                        <ComboBox fx:id="whitePlayerComboBox" GridPane.columnIndex="1">
+                            <items>
+                                <fx:reference source="playerItems"/>
+                            </items>
+                        </ComboBox>
+                        <Label text="%new-game.blackPlayerLabel.text" GridPane.rowIndex="1"/>
+                        <ComboBox fx:id="blackPlayerComboBox" GridPane.columnIndex="1"
+                                  GridPane.rowIndex="1">
+                            <items>
+                                <fx:reference source="playerItems"/>
+                            </items>
+                        </ComboBox>
+                    </children>
+                </GridPane>
+            </content>
+        </TitledPane>
+        <TitledPane collapsible="false" focusTraversable="false" text="%new-game.boardSetupPane.title"
+                    GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" GridPane.valignment="TOP" GridPane.fillHeight="true" GridPane.rowIndex="1">
+            <content>
+                <GridPane hgap="8" vgap="8">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                        <ColumnConstraints hgrow="NEVER"/>
+                        <ColumnConstraints hgrow="SOMETIMES"/>
+                        <ColumnConstraints hgrow="SOMETIMES"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES"/>
+                        <RowConstraints vgrow="NEVER"/>
+                        <RowConstraints vgrow="NEVER"/>
+                        <RowConstraints vgrow="NEVER"/>
+                        <RowConstraints vgrow="NEVER"/>
+                        <RowConstraints vgrow="NEVER"/>
+                    </rowConstraints>
+                    <children>
+                        <Pane fx:id="canvasPane" minWidth="250" minHeight="250" GridPane.rowSpan="7"
+                              GridPane.halignment="LEFT" GridPane.valignment="TOP"/>
+                        <Label text="%new-game.startPlayerLabel.text" GridPane.columnIndex="1"/>
+                        <RadioButton fx:id="whiteStartPlayerRadioButton"
+                                     text="%new-game.whiteStartPlayerRadioButton.text" selected="true"
+                                     GridPane.columnIndex="2" toggleGroup="$startPlayerToggleGroup"/>
+                        <RadioButton fx:id="blackStartPlayerRadioButton"
+                                     text="%new-game.blackStartPlayerRadioButton.text" GridPane.columnIndex="3"
+                                     toggleGroup="$startPlayerToggleGroup"/>
+                        <Label text="%new-game.enPassantTargetLabel.text" GridPane.columnIndex="1"
+                               GridPane.rowIndex="1"/>
+                        <ComboBox fx:id="enPassantTargetComboBox" GridPane.columnIndex="2" GridPane.rowIndex="1"
+                                  GridPane.columnSpan="2" prefWidth="100"/>
+                        <CheckBox fx:id="whiteKingSideCastlingCheckBox"
+                                  text="%new-game.whiteKingSideCastlingCheckBox.text" GridPane.columnIndex="1"
+                                  GridPane.rowIndex="2"
+                                  GridPane.columnSpan="3"/>
+                        <CheckBox fx:id="whiteQueenSideCastlingCheckBox"
+                                  text="%new-game.whiteQueenSideCastlingCheckBox.text" GridPane.columnIndex="1"
+                                  GridPane.rowIndex="3"
+                                  GridPane.columnSpan="3"/>
+                        <CheckBox fx:id="blackKingSideCastlingCheckBox"
+                                  text="%new-game.blackKingSideCastlingCheckBox.text" GridPane.columnIndex="1"
+                                  GridPane.rowIndex="4"
+                                  GridPane.columnSpan="3"/>
+                        <CheckBox fx:id="blackQueenSideCastlingCheckBox"
+                                  text="%new-game.blackQueenSideCastlingCheckBox.text" GridPane.columnIndex="1"
+                                  GridPane.rowIndex="5"
+                                  GridPane.columnSpan="3"/>
+                        <VBox GridPane.columnIndex="4" GridPane.rowSpan="6" alignment="TOP_RIGHT" spacing="4"
+                              fillWidth="true" >
+                            <children>
+                                <Button text="%new-game.defaultSetupButton.text"/>
+                                <Button text="%new-game.loadBoardSetupButton.text"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </GridPane>
+            </content>
+        </TitledPane>
+    </children>
+</GridPane>

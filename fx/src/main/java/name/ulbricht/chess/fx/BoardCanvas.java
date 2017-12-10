@@ -1,22 +1,18 @@
 package name.ulbricht.chess.fx;
 
-import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.geometry.Point2D;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.util.Duration;
-import name.ulbricht.chess.fx.design.BoardDesign;
 import name.ulbricht.chess.fx.design.BoardRenderer;
 import name.ulbricht.chess.game.*;
 
-import java.util.List;
-import java.util.Optional;
-
-final class BoardCanvas extends Canvas {
+class BoardCanvas extends Canvas {
 
     private static final class Dimensions {
 
@@ -45,25 +41,17 @@ final class BoardCanvas extends Canvas {
 
     private final Tooltip tooltip;
 
-    private Game game;
+    private Board board;
     private BoardRenderer renderer;
 
     private final ReadOnlyObjectWrapper<Player> activePlayerProperty = new ReadOnlyObjectWrapper<>();
-    private final ReadOnlyObjectWrapper<CheckState> checkStateProperty = new ReadOnlyObjectWrapper<>();
-    private final ReadOnlyBooleanWrapper undoAvailable = new ReadOnlyBooleanWrapper();
-    private final ReadOnlyBooleanWrapper redoAvailable = new ReadOnlyBooleanWrapper();
     private final ObjectProperty<Coordinate> selectedSquareProperty = new SimpleObjectProperty<>();
     private final ObjectProperty<Coordinate> focusedSquareProperty = new SimpleObjectProperty<>();
-    private final ReadOnlyListWrapper<Ply> displayedPliesProperty = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
 
     BoardCanvas() {
-        this.game = new Game();
-
         setFocusTraversable(true);
 
         this.tooltip = new Tooltip();
-        this.tooltip.setShowDelay(Duration.ZERO);
-        this.tooltip.setOnShowing(e -> tooltipShowing());
 
         setOnMouseMoved(this::mouseMoved);
         setOnMousePressed(this::mousePressed);
@@ -73,93 +61,74 @@ final class BoardCanvas extends Canvas {
         heightProperty().addListener((observable, oldValue, newValue) -> draw());
         focusedProperty().addListener((observable, oldValue, newValue) -> draw());
 
-        this.selectedSquareProperty.addListener((observable, oldValue, newValue) -> draw());
-        this.selectedSquareProperty.addListener((observable, oldValue, newValue) -> updateDisplayedPlies());
-        this.focusedSquareProperty.addListener((observable, oldValue, newValue) -> draw());
-        this.displayedPliesProperty.addListener((observable, oldValue, newValue) -> draw());
+        focusedSquareProperty().addListener((observable, oldValue, newValue) -> draw());
+        selectedSquareProperty().addListener((observable, oldValue, newValue) -> draw());
 
-        updateProperties();
+        setBoard(new Board());
     }
 
-    Game getGame() {
-        return this.game;
-    }
-
-    void setGame(Game game) {
-        this.game = game;
+    void setBoard(Board board) {
+        this.board = board;
         this.focusedSquareProperty.set(null);
         this.selectedSquareProperty.set(null);
-        updateProperties();
+        updateBoardProperties();
         draw();
     }
 
-    void setDesign(BoardDesign design) {
-        this.renderer = design.createRenderer();
+    void setRenderer(BoardRenderer renderer) {
+        this.renderer = renderer;
         draw();
+    }
+
+    BoardRenderer getRenderer() {
+        return this.renderer;
     }
 
     ReadOnlyObjectProperty<Player> activePlayerProperty() {
         return this.activePlayerProperty.getReadOnlyProperty();
     }
 
-    ReadOnlyObjectProperty<CheckState> checkStateProperty() {
-        return this.checkStateProperty.getReadOnlyProperty();
-    }
-
-    ReadOnlyBooleanProperty undoAvailableProperty() {
-        return this.undoAvailable.getReadOnlyProperty();
-    }
-
-    ReadOnlyBooleanProperty redoAvailableProperty() {
-        return this.redoAvailable.getReadOnlyProperty();
-    }
-
     ObjectProperty<Coordinate> selectedSquareProperty() {
         return this.selectedSquareProperty;
     }
 
-    void undo(){
-        this.game.undo();
-        this.selectedSquareProperty.set(null);
-        updateProperties();
-        draw();
-    }
-
-    void redo(){
-        this.game.redo();
-        this.selectedSquareProperty.set(null);
-        updateProperties();
-        draw();
-    }
-
-    private void tooltipShowing() {
-        Point2D pos = localToScreen(0, 0);
-        this.tooltip.setX(pos.getX());
-        this.tooltip.setY(pos.getY());
+    ObjectProperty<Coordinate> focusedSquareProperty() {
+        return this.focusedSquareProperty;
     }
 
     private void mouseMoved(MouseEvent e) {
         Coordinate coordinate = getSquareAt(e.getX(), e.getY());
+        String text = null;
         if (coordinate != null) {
-            Optional<Ply> ply = this.displayedPliesProperty.stream()
-                    .filter(m -> coordinate.equals(m.target) || coordinate.equals(m.captures))
-                    .findFirst();
-            if (ply.isPresent()) {
-                tooltip.setText(ply.get().getDisplayName());
-                Tooltip.install(this, tooltip);
-            } else {
-                this.tooltip.setText("");
-                Tooltip.uninstall(this, tooltip);
-            }
+            text = createTooltipText(coordinate);
             this.focusedSquareProperty.set(coordinate);
         } else {
-            this.tooltip.setText("");
-            Tooltip.uninstall(this, tooltip);
             this.focusedSquareProperty.set(null);
+        }
+
+        if (text != null) {
+            tooltip.setText(text);
+            Tooltip.install(this, tooltip);
+            this.tooltip.setX(e.getScreenX());
+            this.tooltip.setY(e.getScreenY());
+        } else {
+            this.tooltip.setText(null);
+            Tooltip.uninstall(this, tooltip);
         }
     }
 
+    protected String createTooltipText(Coordinate coordinate) {
+        if (coordinate != null) {
+            Piece piece = this.board.getPiece(coordinate);
+            if (piece != null)
+                return String.format(Messages.getString("BoardCanvas.tooltip.text.piece"), piece.getDisplayName(), coordinate);
+            else return String.format(Messages.getString("BoardCanvas.tooltip.text.empty"), coordinate);
+        }
+        return null;
+    }
+
     private void mousePressed(MouseEvent e) {
+        e.consume();
         if (!isFocused()) requestFocus();
 
         Coordinate square = getSquareAt(e.getX(), e.getY());
@@ -208,6 +177,7 @@ final class BoardCanvas extends Canvas {
             case ENTER:
                 if (focused != null) {
                     selectSquare(focused);
+                    e.consume();
                 }
                 break;
             case ESCAPE:
@@ -218,41 +188,8 @@ final class BoardCanvas extends Canvas {
         }
     }
 
-    private void selectSquare(Coordinate coordinate) {
-        // check if we can execute a go
-        Optional<Ply> ply = this.displayedPliesProperty.stream()
-                .filter(m -> coordinate.equals(m.target) || coordinate.equals(m.captures))
-                .findFirst();
-
-        if (ply.isPresent()) {
-            performPly(ply.get());
-        } else {
-            this.selectedSquareProperty.set(coordinate);
-        }
-    }
-
-    private void performPly(Ply ply) {
-        if (ply.type == PlyType.PAWN_PROMOTION) {
-            PieceType promotion = PromotionController.showDialog(this, this.renderer, ply);
-            if (promotion != null) {
-                ply.promotion = promotion;
-            } else {
-                return;
-            }
-        }
-
-        this.game.perform(ply);
-
-        this.selectedSquareProperty.set(null);
-        this.focusedSquareProperty.set(ply.target);
-        updateProperties();
-    }
-
-    private void updateProperties(){
-        this.activePlayerProperty.set(this.game.getActivePlayer());
-        this.checkStateProperty.set(this.game.getCheckState());
-        this.undoAvailable.set(this.game.isUndoAvailable());
-        this.redoAvailable.set(this.game.isRedoAvailable());
+    protected void selectSquare(Coordinate coordinate) {
+        this.selectedSquareProperty.set(coordinate);
     }
 
     private Coordinate getSquareAt(double x, double y) {
@@ -267,7 +204,11 @@ final class BoardCanvas extends Canvas {
         return null;
     }
 
-    private void draw() {
+    void updateBoardProperties() {
+        this.activePlayerProperty.set(this.board.getActivePlayer());
+    }
+
+    void draw() {
         double width = getWidth();
         double height = getHeight();
 
@@ -279,9 +220,6 @@ final class BoardCanvas extends Canvas {
 
         // calculate the dimensions
         Dimensions dim = new Dimensions(width, height);
-
-        // draw the canvas background
-        this.renderer.drawBackground(gc, width, height);
 
         // draw vertical borders
         double xLeftBorder = dim.xOffset;
@@ -354,16 +292,9 @@ final class BoardCanvas extends Canvas {
             gc.save();
             gc.translate(squareXOffset, squareYOffset);
 
-            BoardRenderer.SquareIndicator squareIndicator;
-            if (this.displayedPliesProperty.stream().anyMatch(m -> coordinate.equals(m.captures))) {
-                squareIndicator = BoardRenderer.SquareIndicator.CAPTURED;
-            } else if (this.displayedPliesProperty.stream().anyMatch(m -> coordinate.equals(m.target))) {
-                squareIndicator = BoardRenderer.SquareIndicator.TARGET;
-            } else {
-                squareIndicator = null;
-            }
+            BoardRenderer.SquareIndicator squareIndicator = createSquareIndicator(coordinate);
 
-            this.renderer.drawSquare(gc, dim.squareSize, coordinate, this.game.getPiece(coordinate), isFocused(),
+            this.renderer.drawSquare(gc, dim.squareSize, coordinate, this.board.getPiece(coordinate), isFocused(),
                     coordinate.equals(this.focusedSquareProperty.get()),
                     coordinate.equals(this.selectedSquareProperty.get()),
                     squareIndicator);
@@ -371,12 +302,7 @@ final class BoardCanvas extends Canvas {
         }
     }
 
-    private void updateDisplayedPlies() {
-        this.displayedPliesProperty.clear();
-        Coordinate selected = this.selectedSquareProperty.get();
-        if (selected != null) {
-            List<Ply> plies = this.game.getValidPlies(selected);
-            if (!plies.isEmpty()) this.displayedPliesProperty.addAll(plies);
-        }
+    protected BoardRenderer.SquareIndicator createSquareIndicator(Coordinate coordinate) {
+        return null;
     }
 }

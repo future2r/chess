@@ -50,12 +50,12 @@ public final class MainController implements Initializable {
     @FXML
     private Label checkLabel;
 
-    private BoardCanvas canvas;
+    private GameCanvas canvas;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        this.canvas = new BoardCanvas();
+        this.canvas = new GameCanvas();
         this.boardPane.getChildren().addAll(this.canvas);
         this.canvas.widthProperty().bind(this.boardPane.widthProperty());
         this.canvas.heightProperty().bind(this.boardPane.heightProperty());
@@ -94,7 +94,7 @@ public final class MainController implements Initializable {
     private void changeDesign(ActionEvent e) {
         RadioMenuItem menuItem = (RadioMenuItem) e.getSource();
         BoardDesign design = (BoardDesign) menuItem.getUserData();
-        this.canvas.setDesign(design);
+        this.canvas.setRenderer(design.createRenderer());
     }
 
     private void updateSelectedSquareLabel(Coordinate selected) {
@@ -121,30 +121,35 @@ public final class MainController implements Initializable {
 
     @FXML
     private void newGame() {
-        if (GUIUtils.showQuestion(this.root, Messages.getString("alert.newGame.title"),
-                Messages.getString("alert.newGame.contentText"))
-                .orElse(ButtonType.CANCEL) == ButtonType.YES) {
-            this.canvas.setGame(new Game());
+        if (confirmCancelGame()) {
+            doNewGame(Board.initial());
         }
     }
 
     @FXML
     private void openBoard() {
-        if (GUIUtils.showQuestion(this.root, Messages.getString("alert.openBoard.title"),
-                Messages.getString("alert.openBoard.question.contentText"))
-                .orElse(ButtonType.CANCEL) == ButtonType.YES) {
+        if (confirmCancelGame()) {
             Path file = FileChoosers.openFile(this.root, FileChoosers.Category.BOARDS, FileChoosers.Format.FEN);
             if (file != null) {
                 try {
-                    Board setup = FEN.fromFile(file);
-                    Game game = new Game(setup);
-                    this.canvas.setGame(game);
+                    doNewGame(FEN.fromFile(file));
                 } catch (IOException | IllegalArgumentException e) {
                     e.printStackTrace();
-                    GUIUtils.showError(this.root, Messages.getString("alert.openBoard.error.contentText") + "\n" + e.getMessage());
+                    GUIUtils.showError(this.root, Messages.getString("alert.openBoardError.contentText") + "\n" + e.getMessage());
                 }
             }
         }
+    }
+
+    private void doNewGame(Board board) {
+        NewGameController.showDialog(this.root, board, this.canvas.getRenderer());
+        //this.canvas.setGame(new Game());
+    }
+
+    private boolean confirmCancelGame() {
+        return GUIUtils.showQuestion(this.root, Messages.getString("alert.cancelGame.title"),
+                Messages.getString("alert.cancelGame.contentText"))
+                .orElse(ButtonType.CANCEL) == ButtonType.YES;
     }
 
     @FXML
@@ -156,7 +161,7 @@ public final class MainController implements Initializable {
             try {
                 FEN.toFile(file, board);
             } catch (IOException e) {
-                GUIUtils.showError(this.root, Messages.getString("alert.saveBoard.error.contentText") + "\n" + e.getMessage());
+                GUIUtils.showError(this.root, Messages.getString("alert.saveBoardError.contentText") + "\n" + e.getMessage());
             }
         }
     }

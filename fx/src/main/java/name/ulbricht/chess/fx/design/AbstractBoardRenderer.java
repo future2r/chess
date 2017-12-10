@@ -11,12 +11,6 @@ import name.ulbricht.chess.game.Coordinate;
 abstract class AbstractBoardRenderer implements BoardRenderer {
 
     @Override
-    public void drawBackground(GraphicsContext gc, double width, double height) {
-        gc.setFill(Color.DARKGRAY);
-        gc.fillRect(0, 0, width, height);
-    }
-
-    @Override
     public void drawBorder(GraphicsContext gc, double width, double height, Border border, int index, boolean focused) {
         gc.setFill(focused ? Color.GRAY : Color.SILVER);
         gc.fillRect(0, 0, width + 1, height + 1);
